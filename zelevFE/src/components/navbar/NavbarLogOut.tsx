@@ -60,9 +60,9 @@ export default function NavbarLogOut() {
                             </Link>
                         </li>
                     </ul>
-                    <div className="w-full flex items-center min-h-16 overflow-auto">
+                    <div className="w-full flex items-center justify-between min-h-16 overflow-auto">
                         <section className="w-full">
-                            <ul className="flex list-none gap-4 pl-4 text-lg max-md:hidden">
+                            <ul className="flex list-none gap-4 pl-4 mr-4 text-lg max-md:hidden">
                                 <li>
                                     <Link
                                         href="/"

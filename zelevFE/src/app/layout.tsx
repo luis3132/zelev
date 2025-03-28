@@ -15,10 +15,10 @@ export default function RootLayout({
   return (
     <html lang="es">
       <head>
-        <link />
+        <link rel="icon" href="/logo/logo.png" />
       </head>
       <body
-        className={`antialiased h-dvh bg-black/90 flex flex-col md:pt-20`}
+        className={`antialiased max-h-dvh overflow-scroll bg-black/90 flex flex-col md:pt-20 max-md:mb-20`}
       >
         {children}
       </body>
