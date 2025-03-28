@@ -1,0 +1,24 @@
+@import url('https://fonts.googleapis.com/css2?family=Quintessential&display=swap');
+@import "tailwindcss";
+
+@theme {
+    --font-Quintessential: 'Quintessential', cursive;
+}
+
+html {
+    color: #ffffff;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 0; /* Removes scrollbar width */
+    background: transparent; /* Transparent background */
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: gray; /* Gray scrollbar thumb */
+}
+
+h-inherit {
+    height: inherit;
+}
