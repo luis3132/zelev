@@ -22,3 +22,7 @@ html {
 h-inherit {
     height: inherit;
 }
+
+max-h-inherit {
+    max-height: inherit;
+}

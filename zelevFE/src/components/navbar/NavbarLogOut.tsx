@@ -18,8 +18,8 @@ export default function NavbarLogOut() {
 
     return (
         <>
-            <div className="w-full pt-2 px-2 max-md:pb-2 md:pb-4 fixed z-50 md:top-0 bottom-0 left-0">
-                <nav className={`flex flex-col items-end duration-500 transition-all bg-white/20 shadow-lg backdrop-blur-xs 
+            <div className="w-full pt-2 px-2 fixed z-50 md:h-32 md:top-0 bottom-0 left-0 max-md:pb-2">
+                <nav className={`flex flex-col items-end duration-500 transition-all bg-white/25 shadow-lg backdrop-blur-xs 
                     rounded-2xl shadow-white-10 w-full ${openMenus ? "max-md:h-28" : "max-md:h-16"} overflow-hidden`}>
                     <ul className={`w-full flex list-none justify-around text-lg md:hidden overflow-hidden transition-all duration-300 
                         ${openMenus ? "pt-4 pb-1" : "h-0"}`}>
@@ -60,8 +60,8 @@ export default function NavbarLogOut() {
                             </Link>
                         </li>
                     </ul>
-                    <div className="w-full flex items-center justify-between min-h-16 overflow-auto">
-                        <section className="w-full">
+                    <div className="w-full flex max-md:flex-row-reverse items-center justify-between min-h-16 overflow-auto">
+                        <section className="w-full max-md:flex max-md:justify-end">
                             <ul className="flex list-none gap-4 pl-4 mr-4 text-lg max-md:hidden">
                                 <li>
                                     <Link
@@ -101,7 +101,7 @@ export default function NavbarLogOut() {
                                 </li>
                             </ul>
                             <button
-                                className={`md:hidden ml-4 flex items-center cursor-pointer w-min duration-300 transition-transform transform 
+                                className={`md:hidden mx-4 flex items-center cursor-pointer w-min duration-300 transition-transform transform 
                                 ${openMenus ? "rotate-90" : "rotate-0"}`}
                                 onClick={handleOpenMenus}
                             >
@@ -124,9 +124,9 @@ export default function NavbarLogOut() {
                                 <h1 className="font-Quintessential text-4xl w-min">ZELÉV</h1>
                             </Link>
                         </section>
-                        <section className="w-full flex justify-end pr-4">
+                        <section className="w-full flex md:justify-end justify-startwidth={1000} height={1000} md:pr-4 pl-4">
                             <Link
-                                href="/"
+                                href="auth/login"
                                 className={`flex items-center cursor-pointer p-2 rounded-lg ${clickedMenu === "LogIn" ? "bg-white/20" : "bg-white/5"}`}
                                 onClick={() => clicked("LogIn")}
                             >
