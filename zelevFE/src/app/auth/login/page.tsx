@@ -35,6 +35,7 @@ export default function Login() {
                                 id="email"
                                 type="email"
                                 placeholder="Correo electrónico"
+                                required
                                 className="w-full max-w-[300px] p-2 rounded-md border border-gray-300 focus:outline-none focus:ring focus:ring-blue-500"
                             />
                             <label htmlFor="password" className="sr-only">Contraseña</label>
@@ -42,6 +43,7 @@ export default function Login() {
                                 id="password"
                                 type="password"
                                 placeholder="Contraseña"
+                                required
                                 className="w-full max-w-[300px] p-2 rounded-md border border-gray-300 focus:outline-none focus:ring focus:ring-blue-500"
                             />
                             <button

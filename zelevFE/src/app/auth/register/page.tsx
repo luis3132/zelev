@@ -28,7 +28,7 @@ export default function Login() {
                         </figure>
                     </header>
                     <article className="w-full md:w-1/2 flex flex-col items-center justify-center rounded-4xl shadow-2xl shadow-white/5 pb-4">
-                        <h2 className="font-Quintessential text-center text-white/80 text-2xl p-4">Iniciar sesión</h2>
+                        <h2 className="font-Quintessential text-center text-white/80 text-2xl p-4">Registrate</h2>
                         <form className="flex flex-col items-center gap-4">
                             <label htmlFor="email" className="sr-only">Correo electrónico</label>
                             <label htmlFor="cedula" className="sr-only">Cédula</label>
@@ -36,6 +36,7 @@ export default function Login() {
                                 id="cedula"
                                 type="text"
                                 placeholder="Cédula"
+                                required
                                 className="w-full max-w-[300px] p-2 rounded-md border border-gray-300 focus:outline-none focus:ring focus:ring-blue-500"
                             />
                             <label htmlFor="nombres" className="sr-only">Nombres</label>
@@ -43,6 +44,7 @@ export default function Login() {
                                 id="nombres"
                                 type="text"
                                 placeholder="Nombres"
+                                required
                                 className="w-full max-w-[300px] p-2 rounded-md border border-gray-300 focus:outline-none focus:ring focus:ring-blue-500"
                             />
                             <label htmlFor="apellidos" className="sr-only">Apellidos</label>
@@ -50,6 +52,15 @@ export default function Login() {
                                 id="apellidos"
                                 type="text"
                                 placeholder="Apellidos"
+                                required
+                                className="w-full max-w-[300px] p-2 rounded-md border border-gray-300 focus:outline-none focus:ring focus:ring-blue-500"
+                            />
+                            <label htmlFor="email" className="sr-only">Correo electrónico</label>
+                            <input
+                                id="email"
+                                type="email"
+                                placeholder="Correo electrónico"
+                                required
                                 className="w-full max-w-[300px] p-2 rounded-md border border-gray-300 focus:outline-none focus:ring focus:ring-blue-500"
                             />
                             <label htmlFor="password" className="sr-only">Contraseña</label>
@@ -57,6 +68,7 @@ export default function Login() {
                                 id="password"
                                 type="password"
                                 placeholder="Contraseña"
+                                required
                                 className="w-full max-w-[300px] p-2 rounded-md border border-gray-300 focus:outline-none focus:ring focus:ring-blue-500"
                             />
                             <label htmlFor="confirmPassword" className="sr-only">Confirmar Contraseña</label>
@@ -64,6 +76,7 @@ export default function Login() {
                                 id="confirmPassword"
                                 type="password"
                                 placeholder="Confirmar Contraseña"
+                                required
                                 className="w-full max-w-[300px] p-2 rounded-md border border-gray-300 focus:outline-none focus:ring focus:ring-blue-500"
                             />
                             <button

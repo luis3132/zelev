@@ -25,7 +25,7 @@ export default function NavbarLogOut() {
                         ${openMenus ? "pt-4 pb-1" : "h-0"}`}>
                         <li>
                             <Link
-                                href="/"
+                                href="/categoria/hombre"
                                 className={`cursor-pointer p-2 rounded-lg ${clickedMenu === "HOMBRE" ? "bg-white/20" : "bg-white/5"}`}
                                 onClick={() => clicked("HOMBRE")}
                             >
@@ -34,7 +34,7 @@ export default function NavbarLogOut() {
                         </li>
                         <li>
                             <Link
-                                href="/"
+                                href="/categoria/mujer"
                                 className={`cursor-pointer p-2 rounded-lg ${clickedMenu === "MUJER" ? "bg-white/20" : "bg-white/5"}`}
                                 onClick={() => clicked("MUJER")}
                             >
@@ -43,7 +43,7 @@ export default function NavbarLogOut() {
                         </li>
                         <li>
                             <Link
-                                href="/"
+                                href="/categoria/nino"
                                 className={`cursor-pointer p-2 rounded-lg ${clickedMenu === "NINOS" ? "bg-white/20" : "bg-white/5"}`}
                                 onClick={() => clicked("NINOS")}
                             >
@@ -52,7 +52,7 @@ export default function NavbarLogOut() {
                         </li>
                         <li>
                             <Link
-                                href="/"
+                                href="/categoria/outlet"
                                 className={`cursor-pointer p-2 rounded-lg ${clickedMenu === "OUTLET" ? "bg-white/20" : "bg-white/5"}`}
                                 onClick={() => clicked("OUTLET")}
                             >
@@ -65,7 +65,7 @@ export default function NavbarLogOut() {
                             <ul className="flex list-none gap-4 pl-4 mr-4 text-lg max-md:hidden">
                                 <li>
                                     <Link
-                                        href="/"
+                                        href="/categoria/hombre"
                                         className={`cursor-pointer p-2 rounded-lg ${clickedMenu === "HOMBRE" ? "bg-white/20" : "bg-white/5"}`}
                                         onClick={() => clicked("HOMBRE")}
                                     >
@@ -74,7 +74,7 @@ export default function NavbarLogOut() {
                                 </li>
                                 <li>
                                     <Link
-                                        href="/"
+                                        href="/categoria/mujer"
                                         className={`cursor-pointer p-2 rounded-lg ${clickedMenu === "MUJER" ? "bg-white/20" : "bg-white/5"}`}
                                         onClick={() => clicked("MUJER")}
                                     >
@@ -83,7 +83,7 @@ export default function NavbarLogOut() {
                                 </li>
                                 <li>
                                     <Link
-                                        href="/"
+                                        href="/categoria/nino"
                                         className={`cursor-pointer p-2 rounded-lg ${clickedMenu === "NINOS" ? "bg-white/20" : "bg-white/5"}`}
                                         onClick={() => clicked("NINOS")}
                                     >
@@ -92,7 +92,7 @@ export default function NavbarLogOut() {
                                 </li>
                                 <li>
                                     <Link
-                                        href="/"
+                                        href="/categoria/outlet"
                                         className={`cursor-pointer p-2 rounded-lg ${clickedMenu === "OUTLET" ? "bg-white/20" : "bg-white/5"}`}
                                         onClick={() => clicked("OUTLET")}
                                     >
@@ -126,7 +126,7 @@ export default function NavbarLogOut() {
                         </section>
                         <section className="w-full flex md:justify-end justify-startwidth={1000} height={1000} md:pr-4 pl-4">
                             <Link
-                                href="auth/login"
+                                href="/auth/login"
                                 className={`flex items-center cursor-pointer p-2 rounded-lg ${clickedMenu === "LogIn" ? "bg-white/20" : "bg-white/5"}`}
                                 onClick={() => clicked("LogIn")}
                             >
