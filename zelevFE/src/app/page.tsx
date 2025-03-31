@@ -39,7 +39,7 @@ export default function Home() {
         <h1 className="md:hidden font-Quintessential text-5xl text-center pt-6">ZELÉV</h1>
         <h2 className="font-Quintessential text-center text-white/50 text-2xl p-4">El privilegio de lo exclusivo, ahora en tus manos.</h2>
         <aside className="w-full flex justify-center px-2 pt-4">
-          <div className="w-[90%] md:w-[80%] max-h-[512px] flex max-md:flex-col gap-4 md:gap-8">
+          <div className="w-[95%] md:w-[90%] max-h-[600px] justify-around flex max-md:flex-col gap-4 md:gap-8">
             <div className="w-full md:w-3/4">
               <ImageSlider slides={slides} />
             </div>

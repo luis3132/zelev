@@ -4,7 +4,7 @@ export default function AboutUs() {
     return (
         <main className="w-full flex items-center justify-center">
             <article className="md:max-w-[80%] max-w-[90%] text-center p-6">
-                <h1 className="text-center text-4xl pb-4 font-Quintessential">Sobre nosotros</h1>
+                <h1 className="text-center text-5xl pb-4 font-Quintessential font-bold">Sobre nosotros</h1>
                 <section className="flex flex-col md:flex-row items-center mb-8">
                     <figure className="md:w-1/3 md:mr-6 flex flex-col justify-center">
                         <Image
