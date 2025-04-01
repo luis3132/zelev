@@ -1,12 +1,15 @@
 "use client";
 
 import { Post } from "@/lib/scripts/fetch";
+import { token } from "@/lib/types/types";
 import Image from "next/image";
 import Link from "next/link";
 import { FormEvent } from "react";
 import Swal from "sweetalert2";
 
 export default function Login() {
+
+    const url = sessionStorage.getItem("currentPath") ? sessionStorage.getItem("currentPath") : "/";
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -19,12 +22,12 @@ export default function Login() {
             telefono: formData.get("telefono") as string,
             email: formData.get("email") as string,
             direccion: formData.get("direccion") as string,
-            password: formData.get("password") as string,
+            contrasena: formData.get("password") as string,
         }
-        
+
         const confirmPassword = formData.get("confirmPassword");
-        
-        if (jsonData.password !== confirmPassword) {
+
+        if (jsonData.contrasena !== confirmPassword) {
             Swal.fire({
                 icon: "warning",
                 title: "Error",
@@ -42,7 +45,33 @@ export default function Login() {
 
         const { data, status } = await Post("/auth/register", "", jsonData);
 
-        
+        if (status !== 200) {
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "Error al crear la cuenta, por favor intenta nuevamente",
+                confirmButtonText: "Aceptar",
+                confirmButtonColor: "#3085d6",
+                background: "#1A1A1A",
+                color: "#fff",
+            });
+            return;
+        }
+
+        const userData: token = data.data;
+
+        Swal.fire({
+            icon: "success",
+            title: "Registro exitoso",
+            text: "Tu cuenta ha sido creada con éxito",
+            confirmButtonText: "Aceptar",
+            confirmButtonColor: "#3085d6",
+            background: "#1A1A1A",
+            color: "#fff",
+        }).then(async () => {
+            document.cookie = `token=${userData.token};`;
+            window.location.href = url || "/";
+        });
 
     };
 
@@ -178,7 +207,6 @@ export default function Login() {
                                         Anterior
                                     </button>
                                     <button
-                                        type="submit"
                                         className="w-full max-w-[300px] bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 transition duration-200"
                                     >
                                         Registrarse

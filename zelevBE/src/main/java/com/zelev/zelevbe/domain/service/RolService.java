@@ -4,10 +4,12 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.zelev.zelevbe.domain.dto.RolCreateDTO;
 import com.zelev.zelevbe.domain.service.interfaces.IRolService;
+import com.zelev.zelevbe.persistence.entity.Usuario;
 import com.zelev.zelevbe.persistence.entity.Rol.Rol;
 import com.zelev.zelevbe.persistence.entity.Rol.RolUsuario;
 import com.zelev.zelevbe.persistence.entity.Rol.RolUsuarioPK;
@@ -30,6 +32,10 @@ public class RolService implements IRolService {
 
     @Autowired
     private RolUsrRepository rolUsrRepository;
+
+    @Autowired
+    @Lazy
+    private UsuarioService usuarioService;
 
     @Override
     public List<Rol> getAll() {
@@ -66,6 +72,20 @@ public class RolService implements IRolService {
 
         RolUsuario rolUsuario = new RolUsuario();
         rolUsuario.setId(rolUsuarioPK);
+
+        Optional<Usuario> usuario = usuarioService.findById(cedula);
+        if (usuario.isPresent()) {
+            rolUsuario.setUsuario(usuario.get());
+        } else {
+            return false;
+        }
+
+        Optional<Rol> rolTemp = rolRepository.findById(rol);
+        if (rolTemp.isPresent()) {
+            rolUsuario.setRol(rolTemp.get());
+        } else {
+            return false;
+        }
 
         RolUsuario temp = rolUsrRepository.save(rolUsuario);
         return temp != null;

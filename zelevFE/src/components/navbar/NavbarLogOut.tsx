@@ -7,13 +7,26 @@ export default function NavbarLogOut() {
     const [openMenus, setOpenMenus] = useState(false);
     const [clickedMenu, setClickedMenu] = useState("");
 
+    const getCurrentPath = () => {
+        if (typeof window !== "undefined") {
+            return window.location.pathname;
+        }
+        return "";
+    };
+
     const handleOpenMenus = () => {
         setOpenMenus(!openMenus);
-    }
+    };
 
     const clicked = (id: string) => {
         setClickedMenu(id);
         setOpenMenus(false);
+    };
+
+    const handleLogin = () => {
+        const currentPath = getCurrentPath();
+        sessionStorage.setItem("currentPath", currentPath);
+        clicked("LogIn");
     }
 
     return (
@@ -128,7 +141,7 @@ export default function NavbarLogOut() {
                             <Link
                                 href="/auth/login"
                                 className={`flex items-center cursor-pointer p-2 rounded-lg ${clickedMenu === "LogIn" ? "bg-white/20" : "bg-white/5"}`}
-                                onClick={() => clicked("LogIn")}
+                                onClick={handleLogin}
                             >
                                 <svg
                                     className="mr-1"

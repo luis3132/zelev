@@ -1,9 +1,18 @@
 package com.zelev.zelevbe.domain.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.zelev.zelevbe.constants.EstadoUsuario;
@@ -30,6 +39,7 @@ public class UsuarioService implements IUsuarioService {
     private UsuarioRepository usuarioRepository;
 
     @Autowired
+    @Lazy
     private RolService rolService;
 
     @Override
@@ -51,8 +61,38 @@ public class UsuarioService implements IUsuarioService {
     }
 
     @Override
+    public Optional<Usuario> findByEmail(String email) {
+        return usuarioRepository.findByEmail(email);
+    }
+
+    @Override
     public Usuario save(UsuarioCreateDTO usuarioCreateDTO) {
-        return usuarioRepository.save(convertDTOtoEntity(usuarioCreateDTO));
+         Usuario temp = usuarioRepository.save(convertDTOtoEntity(usuarioCreateDTO));
+
+        if (usuarioCreateDTO.getRoles() == null || usuarioCreateDTO.getRoles().isEmpty()) {
+            rolService.linkUsrRol(usuarioCreateDTO.getCedula(), 2);
+        } else {
+            usuarioCreateDTO.getRoles().stream().forEach(rol -> {
+                rolService.linkUsrRol(usuarioCreateDTO.getCedula(), rol);
+            });
+        }
+        return temp;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Usuario usuario = findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+
+        List<GrantedAuthority> authority = usuario.getRoles() != null ? 
+            usuario.getRoles().stream()
+                    .map(role -> new SimpleGrantedAuthority(role.getRol().getRol()))
+                .collect(Collectors.toList()) : 
+                List.of(new SimpleGrantedAuthority("USER"));
+
+        Set<GrantedAuthority> grantedAuthorities = Set.copyOf(authority);
+
+        return new User(usuario.getEmail(), usuario.getContrasena(), grantedAuthorities);
     }
 
     @Override
@@ -111,16 +151,13 @@ public class UsuarioService implements IUsuarioService {
         usuario.setNombres(usuarioCreateDTO.getNombres());
         usuario.setApellidos(usuarioCreateDTO.getApellidos());
         usuario.setEmail(usuarioCreateDTO.getEmail());
-        usuario.setConstrasena(usuarioCreateDTO.getConstrasena());
+        usuario.setContrasena(usuarioCreateDTO.getContrasena());
         usuario.setFechaCreacion(usuarioCreateDTO.getFechaCreacion());
         usuario.setTelefono(usuarioCreateDTO.getTelefono());
         usuario.setDireccion(usuarioCreateDTO.getDireccion());
         usuario.setFechaNacimiento(usuarioCreateDTO.getFechaNacimiento());
+        usuario.setFechaCreacion(Date.from(new Date().toInstant()));
         usuario.setEstado(EstadoUsuario.ACTIVO);
-
-        usuarioCreateDTO.getRoles().stream().forEach(rol -> {
-            rolService.linkUsrRol(usuario.getCedula(), rol);
-        });
 
         return usuario;
     }

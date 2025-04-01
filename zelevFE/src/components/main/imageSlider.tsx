@@ -39,7 +39,7 @@ export default function ImageSlider({ slides }: { slides: Slide[] }) {
             aria-label="Galería de imágenes"
             className="relative w-full mx-auto overflow-hidden rounded-2xl shadow-2xl shadow-white/20"
         >
-            <div className="relative h-56 md:h-[32rem]">
+            <div className="relative h-56 md:h-[600px]">
                 {slides.map((slide, index) => (
                     <figure
                         key={slide.id}

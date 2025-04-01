@@ -40,7 +40,7 @@ public class Usuario {
 
     @Column(name = "fecha_nacimiento")
     private Date fechaNacimiento;
-    private String constrasena;
+    private String contrasena;
 
     @Column(name = "fecha_creacion")
     private Date fechaCreacion;
