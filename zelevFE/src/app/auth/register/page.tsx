@@ -4,12 +4,18 @@ import { Post } from "@/lib/scripts/fetch";
 import { token } from "@/lib/types/types";
 import Image from "next/image";
 import Link from "next/link";
-import { FormEvent } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 
 export default function Login() {
 
-    const url = sessionStorage.getItem("currentPath") ? sessionStorage.getItem("currentPath") : "/";
+    const [url, setUrl] = useState("");
+
+    useEffect(() => {
+        if (window.location !== undefined) {
+            setUrl(sessionStorage.getItem("currentPath") ?? "/");
+        }
+    },[]);
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -59,6 +65,7 @@ export default function Login() {
         }
 
         const userData: token = data.data;
+        document.cookie = `token=${userData.token};`;
 
         Swal.fire({
             icon: "success",
@@ -69,7 +76,6 @@ export default function Login() {
             background: "#1A1A1A",
             color: "#fff",
         }).then(async () => {
-            document.cookie = `token=${userData.token};`;
             window.location.href = url || "/";
         });
 

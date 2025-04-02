@@ -31,8 +31,13 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
 
     public AuthResponse login(UsuarioLoginDTO usuarioLoginDTO) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(usuarioLoginDTO.getEmail(),
-                usuarioLoginDTO.getContrasena()));
+
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        usuarioLoginDTO.getEmail(),
+                        usuarioLoginDTO.getContrasena())
+                );
+
         UserDetails userDetails = usuarioService.loadUserByUsername(usuarioLoginDTO.getEmail());
 
         return AuthResponse.builder()

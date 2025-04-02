@@ -4,53 +4,58 @@ import { Post } from "@/lib/scripts/fetch";
 import { token } from "@/lib/types/types";
 import Image from "next/image";
 import Link from "next/link";
-import { FormEvent } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 
 export default function Login() {
 
-    const url = sessionStorage.getItem("currentPath") ? sessionStorage.getItem("currentPath") : "/";
-    
-        const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-            event.preventDefault();
-            const formData = new FormData(event.currentTarget);
-            const jsonData = {
-                email: formData.get("email") as string,
-                contrasena: formData.get("password") as string,
-            }
-    
-            const { data, status } = await Post("/auth/login", "", jsonData);
-            console.log(data, status);
-    
-            if (status !== 200) {
-                Swal.fire({
-                    icon: "error",
-                    title: "Error",
-                    text: "Error al iniciar seción, por favor intenta nuevamente",
-                    confirmButtonText: "Aceptar",
-                    confirmButtonColor: "#3085d6",
-                    background: "#1A1A1A",
-                    color: "#fff",
-                });
-                return;
-            }
-    
-            const userData: token = data.data;
-    
+    const [url, setUrl] = useState("");
+
+    useEffect(() => {
+        if (window.location !== undefined) {
+            setUrl(sessionStorage.getItem("currentPath") ?? "/");
+        }
+    }, []);
+
+    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        const formData = new FormData(event.currentTarget);
+        const jsonData = {
+            email: formData.get("email") as string,
+            contrasena: formData.get("password") as string,
+        }
+
+        const { data, status } = await Post("/auth/login", "", jsonData);
+
+        if (status !== 200) {
             Swal.fire({
-                icon: "success",
-                title: "Éxito",
-                text: "Inicio de sesión exitoso",
+                icon: "error",
+                title: "Error",
+                text: "Error al iniciar seción, por favor intenta nuevamente",
                 confirmButtonText: "Aceptar",
                 confirmButtonColor: "#3085d6",
                 background: "#1A1A1A",
                 color: "#fff",
-            }).then(async () => {
-                document.cookie = `token=${userData.token};`;
-                window.location.href = url || "/";
             });
-    
-        };
+            return;
+        }
+
+        const userData: token = data.data;
+
+        Swal.fire({
+            icon: "success",
+            title: "Éxito",
+            text: "Inicio de sesión exitoso",
+            confirmButtonText: "Aceptar",
+            confirmButtonColor: "#3085d6",
+            background: "#1A1A1A",
+            color: "#fff",
+        }).then(async () => {
+            document.cookie = `token=${userData.token};`;
+            window.location.href = url || "/";
+        });
+
+    };
 
     return (
         <>
