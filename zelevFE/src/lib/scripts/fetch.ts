@@ -20,13 +20,23 @@ export default async function Get(url: string, token: string, body?: object) {
 }
 
 export async function Post(url: string, token: string, body?: object) {
-    const options: RequestInit = {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
-        },
-    };
+    let options: RequestInit;
+    if (token === "") {
+        options = {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+        };
+    } else {
+        options = {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+            },
+        };
+    }
     if (body) {
         options.body = JSON.stringify(body);
     }
