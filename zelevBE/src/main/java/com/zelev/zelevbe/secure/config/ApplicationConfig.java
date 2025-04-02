@@ -46,9 +46,9 @@ public class ApplicationConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return email -> usuarioService.findByEmail(email)
+        return username -> usuarioService.findByUsername(username)
                 .map(usuario -> new User(
-                        usuario.getEmail(),
+                        usuario.getNombreUsuario(),
                         usuario.getContrasena(),
                         new ArrayList<>()))
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));

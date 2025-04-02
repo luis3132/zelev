@@ -16,8 +16,8 @@ public interface IUsuarioService {
     Usuario update(UsuarioUpdateDTO usuarioUpdateDTO);
     List<UsuarioListDTO> findAll();
     Optional<Usuario> findById(String id);
-    Optional<Usuario> findByEmail(String email);
+    Optional<Usuario> findByUsername(String username);
     Boolean delete(String id);
     List<Usuario> findByEstado(EstadoUsuario estado);
-    UserDetails loadUserByUsername(String email);
+    UserDetails loadUserByUsername(String username);
 }

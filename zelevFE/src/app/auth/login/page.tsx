@@ -21,7 +21,7 @@ export default function Login() {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
         const jsonData = {
-            email: formData.get("email") as string,
+            nombreUsuario: formData.get("username") as string,
             contrasena: formData.get("password") as string,
         }
 
@@ -83,11 +83,11 @@ export default function Login() {
                     <article className="w-full md:w-1/2 flex flex-col items-center justify-center rounded-4xl shadow-2xl shadow-white/10 pb-4">
                         <h2 className="font-Quintessential text-center text-white/80 text-2xl p-4">Iniciar sesión</h2>
                         <form className="flex flex-col items-center gap-4" onSubmit={handleSubmit}>
-                            <label htmlFor="email" className="sr-only">Correo electrónico</label>
+                            <label htmlFor="email" className="sr-only">Nombre de Usuario</label>
                             <input
-                                id="email"
-                                type="email"
-                                placeholder="Correo electrónico"
+                                id="username"
+                                type="username"
+                                placeholder="Nombre de Usuario"
                                 required
                                 className="w-full max-w-[300px] p-2 rounded-md border border-gray-300 focus:outline-none focus:ring focus:ring-blue-500"
                             />

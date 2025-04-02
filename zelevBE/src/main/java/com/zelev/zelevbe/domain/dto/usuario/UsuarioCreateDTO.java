@@ -21,6 +21,7 @@ public class UsuarioCreateDTO {
     private String cedula;
     private String nombres;
     private String apellidos;
+    private String nombreUsuario;
     private String email;
     private String telefono;
     private String direccion;

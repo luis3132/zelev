@@ -34,11 +34,11 @@ public class AuthService {
 
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        usuarioLoginDTO.getEmail(),
+                        usuarioLoginDTO.getNombreUsuario(),
                         usuarioLoginDTO.getContrasena())
                 );
 
-        UserDetails userDetails = usuarioService.loadUserByUsername(usuarioLoginDTO.getEmail());
+        UserDetails userDetails = usuarioService.loadUserByUsername(usuarioLoginDTO.getNombreUsuario());
 
         return AuthResponse.builder()
                 .token(jwtService.getToken(userDetails))
@@ -53,7 +53,7 @@ public class AuthService {
             return null;
         }
 
-        UserDetails userDetails = usuarioService.loadUserByUsername(usuario.getEmail());
+        UserDetails userDetails = usuarioService.loadUserByUsername(usuario.getNombreUsuario());
 
         return AuthResponse.builder()
                 .token(jwtService.getToken(userDetails))

@@ -4,7 +4,7 @@ import { Post } from "@/lib/scripts/fetch";
 import { token } from "@/lib/types/types";
 import Image from "next/image";
 import Link from "next/link";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, use, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 
 export default function Login() {
@@ -24,6 +24,7 @@ export default function Login() {
             cedula: formData.get("cedula") as string,
             nombres: formData.get("nombres") as string,
             apellidos: formData.get("apellidos") as string,
+            nombreUsuario: formData.get("username") as string,
             fechaNacimiento: formData.get("fechaNacimiento") as string,
             telefono: formData.get("telefono") as string,
             email: formData.get("email") as string,
@@ -165,6 +166,15 @@ export default function Login() {
                                 </button>
                             </div>
                             <div id="step-2" className="flex-col items-center gap-4 hidden">
+                                <label htmlFor="username" className="sr-only">Nombre de Usuario</label>
+                                <input
+                                    id="username"
+                                    name="username"
+                                    type="text"
+                                    placeholder="Nombre de Usuario"
+                                    required
+                                    className="w-full max-w-[300px] p-2 rounded-md border border-gray-300 focus:outline-none focus:ring focus:ring-blue-500"
+                                />
                                 <label htmlFor="email" className="sr-only">Correo electrónico</label>
                                 <input
                                     id="email"

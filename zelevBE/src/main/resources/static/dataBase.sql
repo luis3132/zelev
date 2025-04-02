@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS usuario (
 	cedula varchar(20) primary key not null,
 	nombres varchar(50) not null,
 	apellidos varchar(50),
+	nombre_usuario varchar(10) not null unique,
 	email varchar(100) not null unique,
 	telefono varchar(10),
 	direccion varchar(100),

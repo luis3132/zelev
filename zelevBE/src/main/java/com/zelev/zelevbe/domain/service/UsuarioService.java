@@ -61,8 +61,8 @@ public class UsuarioService implements IUsuarioService {
     }
 
     @Override
-    public Optional<Usuario> findByEmail(String email) {
-        return usuarioRepository.findByEmail(email);
+    public Optional<Usuario> findByUsername(String username) {
+        return usuarioRepository.findByUsername(username);
     }
 
     @Override
@@ -80,8 +80,8 @@ public class UsuarioService implements IUsuarioService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Usuario usuario = findByEmail(email)
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Usuario usuario = findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
 
         List<GrantedAuthority> authority = usuario.getRoles() != null ? 
@@ -92,7 +92,7 @@ public class UsuarioService implements IUsuarioService {
 
         Set<GrantedAuthority> grantedAuthorities = Set.copyOf(authority);
 
-        return new User(usuario.getEmail(), usuario.getContrasena(), grantedAuthorities);
+        return new User(usuario.getNombreUsuario(), usuario.getContrasena(), grantedAuthorities);
     }
 
     @Override
@@ -128,6 +128,7 @@ public class UsuarioService implements IUsuarioService {
         usuario.setDireccion(usuarioUpdateDTO.getDireccion());
         usuario.setFechaNacimiento(usuarioUpdateDTO.getFechaNacimiento());
         usuario.setEstado(usuarioUpdateDTO.getEstado());
+        usuario.setNombreUsuario(usuarioUpdateDTO.getNombreUsuario());
 
         if (usuarioUpdateDTO.getNuevosRoles() != null) {
             usuarioUpdateDTO.getNuevosRoles().stream().forEach(rol -> {
@@ -150,6 +151,7 @@ public class UsuarioService implements IUsuarioService {
         usuario.setCedula(usuarioCreateDTO.getCedula());
         usuario.setNombres(usuarioCreateDTO.getNombres());
         usuario.setApellidos(usuarioCreateDTO.getApellidos());
+        usuario.setNombreUsuario(usuarioCreateDTO.getNombreUsuario());
         usuario.setEmail(usuarioCreateDTO.getEmail());
         usuario.setContrasena(usuarioCreateDTO.getContrasena());
         usuario.setFechaCreacion(usuarioCreateDTO.getFechaCreacion());
@@ -168,6 +170,7 @@ public class UsuarioService implements IUsuarioService {
         usuarioListDTO.setCedula(usuario.getCedula());
         usuarioListDTO.setNombres(usuario.getNombres());
         usuarioListDTO.setApellidos(usuario.getApellidos());
+        usuarioListDTO.setNombreUsuario(usuario.getNombreUsuario());
         usuarioListDTO.setEmail(usuario.getEmail());
         usuarioListDTO.setTelefono(usuario.getTelefono());
         usuarioListDTO.setDireccion(usuario.getDireccion());

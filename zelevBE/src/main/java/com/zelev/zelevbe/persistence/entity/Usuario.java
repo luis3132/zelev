@@ -38,6 +38,9 @@ public class Usuario {
     private String telefono;
     private String direccion;
 
+    @Column(name = "nombre_usuario")
+    private String nombreUsuario;
+
     @Column(name = "fecha_nacimiento")
     private Date fechaNacimiento;
     private String contrasena;
@@ -51,4 +54,5 @@ public class Usuario {
     @OneToMany(mappedBy = "usuario")
     @JsonManagedReference("usuario-rol")
     private List<RolUsuario> roles;
+
 }
