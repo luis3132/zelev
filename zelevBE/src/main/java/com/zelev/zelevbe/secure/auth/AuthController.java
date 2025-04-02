@@ -43,7 +43,7 @@ public class AuthController {
         if (response == null) {
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok(authService.register(usuarioLoginDTO));
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/verify")

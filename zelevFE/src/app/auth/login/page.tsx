@@ -24,7 +24,7 @@ export default function Login() {
             nombreUsuario: formData.get("username") as string,
             contrasena: formData.get("password") as string,
         }
-
+        console.log(jsonData);
         const { data, status } = await Post("/auth/login", "", jsonData);
 
         if (status !== 200) {
@@ -41,6 +41,7 @@ export default function Login() {
         }
 
         const userData: token = data.data;
+        document.cookie = `token=${userData.token};`;
 
         Swal.fire({
             icon: "success",
@@ -51,7 +52,6 @@ export default function Login() {
             background: "#1A1A1A",
             color: "#fff",
         }).then(async () => {
-            document.cookie = `token=${userData.token};`;
             window.location.href = url || "/";
         });
 
