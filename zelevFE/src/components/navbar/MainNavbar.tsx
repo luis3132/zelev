@@ -6,6 +6,7 @@ import NavbarLogOut from "./NavbarLogOut";
 import { Post } from "@/lib/scripts/fetch";
 import Swal from "sweetalert2";
 import NavbarLogIn from "./NavbarLogIn";
+import EncodeUsr from "@/lib/scripts/encodeUser";
 
 export default function MainNavbar() {
     const [usuario, setUsuario] = useState<Usuario | null>(null);
@@ -30,7 +31,9 @@ export default function MainNavbar() {
                     window.location.href = "/auth/login";
                 });
             }
-            setUsuario(data.data);
+            const usr: Usuario = data.data;
+            setUsuario(usr);
+            sessionStorage.setItem("usuario", EncodeUsr(usr));
         }
         if (typeof window !== 'undefined') {
             const token = document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1];
@@ -38,7 +41,6 @@ export default function MainNavbar() {
                 fetchUsuario(token);
             }
         }
-
     }, []);
 
     return (

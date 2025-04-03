@@ -145,7 +145,7 @@ const NavbarLogIn: FC<NavbarLogInProps> = ({ usuario }) => {
                         </section>
                         <section className="w-full flex md:justify-end md:pr-4 pl-4">
                             <Link
-                                href="/perfil"
+                                href="/profile"
                                 className={`flex items-center cursor-pointer p-2 rounded-lg ${clickedMenu === "LogIn" ? "bg-white/20" : "bg-white/5"}`}
                                 onClick={handlePerfil}
                             >
