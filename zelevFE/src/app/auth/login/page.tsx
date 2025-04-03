@@ -41,17 +41,18 @@ export default function Login() {
         }
 
         const userData: token = data.data;
-        document.cookie = `token=${userData.token};`;
+        document.cookie = `token=${userData.token}; path=/;`;
 
         Swal.fire({
             icon: "success",
             title: "Éxito",
             text: "Inicio de sesión exitoso",
-            confirmButtonText: "Aceptar",
-            confirmButtonColor: "#3085d6",
+            timer: 1000,
+            timerProgressBar: true,
             background: "#1A1A1A",
             color: "#fff",
-        }).then(async () => {
+            showConfirmButton: false,
+        }).then(() => {
             window.location.href = url || "/";
         });
 
@@ -86,7 +87,8 @@ export default function Login() {
                             <label htmlFor="email" className="sr-only">Nombre de Usuario</label>
                             <input
                                 id="username"
-                                type="username"
+                                type="text"
+                                name="username"
                                 placeholder="Nombre de Usuario"
                                 required
                                 className="w-full max-w-[300px] p-2 rounded-md border border-gray-300 focus:outline-none focus:ring focus:ring-blue-500"
@@ -95,6 +97,7 @@ export default function Login() {
                             <input
                                 id="password"
                                 type="password"
+                                name="password"
                                 placeholder="Contraseña"
                                 required
                                 className="w-full max-w-[300px] p-2 rounded-md border border-gray-300 focus:outline-none focus:ring focus:ring-blue-500"

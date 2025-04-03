@@ -7,11 +7,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.zelev.zelevbe.domain.dto.usuario.UsuarioCreateDTO;
+import com.zelev.zelevbe.domain.dto.usuario.UsuarioListDTO;
 import com.zelev.zelevbe.domain.dto.usuario.UsuarioLoginDTO;
 import com.zelev.zelevbe.domain.service.UsuarioService;
 import com.zelev.zelevbe.persistence.entity.Usuario;
 import com.zelev.zelevbe.secure.jwt.JwtService;
 
+import io.jsonwebtoken.Claims;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -57,6 +59,28 @@ public class AuthService {
 
         return AuthResponse.builder()
                 .token(jwtService.getToken(userDetails))
+                .build();
+    }
+
+    public UsuarioListDTO verify(String token) {
+        String nombreUsuario = jwtService.getClaim(token, Claims::getSubject);
+        Usuario usuario = usuarioService.findByUsername(nombreUsuario).get();
+
+        if (usuario == null) {
+            return null;
+        }
+
+        return UsuarioListDTO.builder()
+                .cedula(usuario.getCedula())
+                .telefono(usuario.getTelefono())
+                .direccion(usuario.getDireccion())
+                .fechaNacimiento(usuario.getFechaNacimiento())
+                .nombres(usuario.getNombres())
+                .apellidos(usuario.getApellidos())
+                .nombreUsuario(usuario.getNombreUsuario())
+                .email(usuario.getEmail())
+                .roles(usuario.getRoles().stream().map(role -> role.getRol()).toList())
+                .estado(usuario.getEstado())
                 .build();
     }
 

@@ -32,7 +32,7 @@ export default function ImageSlider({ slides }: { slides: Slide[] }) {
         }, 5000);
 
         return () => clearInterval(interval); // Limpia el intervalo al desmontar el componente
-    }, [currentSlide]);
+    }, [currentSlide, nextSlide]);
 
     return (
         <section

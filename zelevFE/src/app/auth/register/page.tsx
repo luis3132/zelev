@@ -4,7 +4,7 @@ import { Post } from "@/lib/scripts/fetch";
 import { token } from "@/lib/types/types";
 import Image from "next/image";
 import Link from "next/link";
-import { FormEvent, use, useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 
 export default function Login() {
@@ -66,17 +66,18 @@ export default function Login() {
         }
 
         const userData: token = data.data;
-        document.cookie = `token=${userData.token};`;
+        document.cookie = `token=${userData.token}; path=/;`;
 
         Swal.fire({
             icon: "success",
             title: "Registro exitoso",
             text: "Tu cuenta ha sido creada con éxito",
-            confirmButtonText: "Aceptar",
-            confirmButtonColor: "#3085d6",
+            timer: 1000,
+            timerProgressBar: true,
             background: "#1A1A1A",
             color: "#fff",
-        }).then(async () => {
+            showConfirmButton: false,
+        }).then(() => {
             window.location.href = url || "/";
         });
 

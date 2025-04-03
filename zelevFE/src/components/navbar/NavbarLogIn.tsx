@@ -1,9 +1,15 @@
 "use client";
 
+import { Usuario } from "@/lib/types/types";
+import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { FC, useState } from "react";
 
-export default function NavbarLogOut() {
+interface NavbarLogInProps {
+    usuario: Usuario;
+}
+
+const NavbarLogIn: FC<NavbarLogInProps> = ({ usuario }) => {
     const [openMenus, setOpenMenus] = useState(false);
     const [clickedMenu, setClickedMenu] = useState("");
 
@@ -23,10 +29,10 @@ export default function NavbarLogOut() {
         setOpenMenus(false);
     };
 
-    const handleLogin = () => {
+    const handlePerfil = () => {
         const currentPath = getCurrentPath();
         sessionStorage.setItem("currentPath", currentPath);
-        clicked("LogIn");
+        clicked("Perfil");
     }
 
     return (
@@ -139,18 +145,19 @@ export default function NavbarLogOut() {
                         </section>
                         <section className="w-full flex md:justify-end md:pr-4 pl-4">
                             <Link
-                                href="/auth/login"
+                                href="/perfil"
                                 className={`flex items-center cursor-pointer p-2 rounded-lg ${clickedMenu === "LogIn" ? "bg-white/20" : "bg-white/5"}`}
-                                onClick={handleLogin}
+                                onClick={handlePerfil}
                             >
-                                <svg
-                                    className="mr-1"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="24"
-                                    height="24"
-                                    viewBox="0 0 24 24"
-                                ><path fill="currentColor" d="M12 21v-2h7V5h-7V3h7q.825 0 1.413.588T21 5v14q0 .825-.587 1.413T19 21zm-2-4l-1.375-1.45l2.55-2.55H3v-2h8.175l-2.55-2.55L10 7l5 5z" /></svg>
-                                LogIn
+                                <Image
+                                    src={usuario.imagen ?? "/logo/logo.png"}
+                                    alt="Foto del usuario"
+                                    width={10}
+                                    height={10}
+                                    className="w-4 h-4 rounded-full overflow-hidden"
+                                    priority
+                                />
+                                Perfil
                             </Link>
                         </section>
                     </div>
@@ -159,3 +166,5 @@ export default function NavbarLogOut() {
         </>
     )
 }
+
+export default NavbarLogIn;
