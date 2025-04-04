@@ -3,7 +3,7 @@ import { Usuario } from '../types/types';
 
 const EncodeUsr = (usuario: Usuario) => {
 
-    let cryp: string = JSON.stringify(usuario);
+    const cryp: string = JSON.stringify(usuario);
 
     const usuariosString = CryptoJS.AES.encrypt(cryp, process.env.NEXT_PUBLIC_SECRETKEY as string).toString();
 

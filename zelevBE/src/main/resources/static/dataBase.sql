@@ -17,6 +17,8 @@ CREATE TABLE IF NOT EXISTS usuario (
 	nombre_usuario varchar(10) not null unique,
 	email varchar(100) not null unique,
 	telefono varchar(10),
+	departamento varchar(20),
+	ciudad varchar(30),
 	direccion varchar(100),
 	contrasena varchar(500) not null,
 	fecha_nacimiento date not null,

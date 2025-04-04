@@ -1,7 +1,7 @@
 // components/ImageSlider.tsx
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Image from 'next/image';
 
 interface Slide {
@@ -14,9 +14,9 @@ interface Slide {
 export default function ImageSlider({ slides }: { slides: Slide[] }) {
     const [currentSlide, setCurrentSlide] = useState(0);
 
-    const nextSlide = () => {
+    const nextSlide = useCallback(() => {
         setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
-    };
+    }, [slides.length]);
 
     const prevSlide = () => {
         setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
@@ -32,7 +32,7 @@ export default function ImageSlider({ slides }: { slides: Slide[] }) {
         }, 5000);
 
         return () => clearInterval(interval); // Limpia el intervalo al desmontar el componente
-    }, [currentSlide, nextSlide]);
+    }, [nextSlide]);
 
     return (
         <section

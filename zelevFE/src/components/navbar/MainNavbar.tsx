@@ -21,12 +21,17 @@ export default function MainNavbar() {
                     icon: 'error',
                     title: 'Error',
                     text: 'La sesión ha expirado, por favor inicie sesión nuevamente.',
-                    confirmButtonText: "Aceptar",
-                    confirmButtonColor: "#3085d6",
+                    timer: 3000,
+                    timerProgressBar: true,
                     background: "#1A1A1A",
                     color: "#fff",
                 }).then(() => {
-                    sessionStorage.setItem("currentPath", window.location.pathname);
+                    if (window.location.pathname === "/profile") {
+                        sessionStorage.setItem("currentPath", "/");
+                    } else {
+                        sessionStorage.setItem("currentPath", window.location.pathname);
+                    }
+                    sessionStorage.removeItem("usuario");
                     document.cookie = "token=; path=/;";
                     window.location.href = "/auth/login";
                 });
@@ -39,6 +44,8 @@ export default function MainNavbar() {
             const token = document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1];
             if (token) {
                 fetchUsuario(token);
+            } else {
+                sessionStorage.removeItem("usuario");
             }
         }
     }, []);

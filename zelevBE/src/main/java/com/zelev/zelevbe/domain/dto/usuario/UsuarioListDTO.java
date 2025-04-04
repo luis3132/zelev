@@ -27,8 +27,12 @@ public class UsuarioListDTO {
     private String nombreUsuario;
     private String email;
     private String telefono;
+    private String departamento;
+    private String ciudad;
+    private Integer zipcode;
     private String direccion;
     private Date fechaNacimiento;
+    private String imagen;
     private EstadoUsuario estado;
     private List<Rol> roles;
 }
