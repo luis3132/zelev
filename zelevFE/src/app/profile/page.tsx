@@ -1,11 +1,13 @@
 "use client";
 
+import { Admin, CancelIcon, DeleteIcon, Edit, LogOut, SaveIcon } from '@/components/icons/icons';
 import Ciudades from '@/components/profile/ciudades';
 import Departamentos from '@/components/profile/departamentos';
 import DecodeUsr from '@/lib/scripts/decodeUser';
-import { Usuario, UsuarioUpdate } from '@/lib/types/types';
+import { Delete, Put, UploadPost } from '@/lib/scripts/fetch';
+import { Imagen, Usuario, UsuarioUpdate } from '@/lib/types/types';
 import Image from 'next/image';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 
 export default function Home() {
@@ -13,6 +15,8 @@ export default function Home() {
     const [usuario, setUsuario] = useState<Usuario | null>(null);
     const [usuarioEdit, setUsuarioEdit] = useState<UsuarioUpdate | null>(null);
     const [foto, setFoto] = useState<string>("/logo/largeLogo.webp");
+    const [token, setToken] = useState<string>("");
+    const [file, setFile] = useState<File | null>(null);
 
     useEffect(() => {
         if (typeof window !== undefined) {
@@ -32,11 +36,17 @@ export default function Home() {
                     window.location.href = "/auth/login";
                 });
             }
+            const tokenString = document.cookie.split("; ").find(row => row.startsWith("token="));
+            if (tokenString) {
+                const tokenValue = tokenString.split("=")[1];
+                setToken(tokenValue);
+            }
             const parsedUsuario = DecodeUsr(usuarioString ? usuarioString : "");
             if (parsedUsuario) {
                 setUsuario(parsedUsuario.usuario);
                 if (parsedUsuario.usuario) {
                     setUsuarioEdit({
+                        cedula: parsedUsuario.usuario.cedula,
                         nombres: parsedUsuario.usuario.nombres,
                         apellidos: parsedUsuario.usuario.apellidos,
                         email: parsedUsuario.usuario.email,
@@ -46,6 +56,7 @@ export default function Home() {
                         telefono: parsedUsuario.usuario.telefono,
                         zipcode: parsedUsuario.usuario.zipcode,
                         direccion: parsedUsuario.usuario.direccion,
+                        estado: parsedUsuario.usuario.estado,
                     } as UsuarioUpdate);
                 }
             }
@@ -53,9 +64,8 @@ export default function Home() {
     }, []);
 
     useEffect(() => {
-        console.log(usuario);
-        if (usuario && usuario.imagen !== "" && usuario.imagen !== null && usuario.imagen !== undefined) {
-            setFoto(usuario.imagen);
+        if (usuario && usuario.imagen && usuario.imagen.url !== "" && usuario.imagen.url !== null && usuario.imagen.url !== undefined) {
+            setFoto(usuario.imagen.url);
         }
     }, [usuario]);
 
@@ -68,6 +78,226 @@ export default function Home() {
             ...usuarioEdit,
             [e.target.name]: e.target.value
         } as UsuarioUpdate);
+    }
+
+    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files.length > 1) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Solo puedes subir una imagen.',
+                confirmButtonText: "Aceptar",
+                confirmButtonColor: "#3085d6",
+                background: "#1A1A1A",
+                color: "#fff",
+            });
+            return;
+        }
+        if (e.target.files && e.target.files[0]) {
+            setFile(e.target.files[0]);
+            setFoto(URL.createObjectURL(e.target.files[0]));
+        }
+    }
+
+    const handleLogOut = () => {
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "¡Podrás volver a acceder a tu cuenta mas tarde!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, cerrar sesión',
+            background: "#1A1A1A",
+            color: "#fff",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                sessionStorage.removeItem("usuario");
+                document.cookie = "token=; path=/;";
+                window.location.href = "/";
+            }
+        });
+    }
+
+    const loadImage = async () => {
+        if (file) {
+            const formData = new FormData();
+            formData.append("imagen", file);
+            formData.append("ruta", "profile");
+            formData.append("existe", usuario?.imagen ? usuario.imagen.idImagen.toString() : "false");
+            const { data, status } = await UploadPost("/api/imagen/upload", token, formData);
+            if (status !== 200) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'No se ha podido actualizar la imagen.',
+                    confirmButtonText: "Aceptar",
+                    confirmButtonColor: "#3085d6",
+                    background: "#1A1A1A",
+                    color: "#fff",
+                });
+                return;
+            }
+            return data.data as Imagen;
+        }
+    }
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        
+        // Verificar si hay cambios reales
+        const hasChanges = !(
+            usuario?.nombres === usuarioEdit?.nombres &&
+            usuario?.apellidos === usuarioEdit?.apellidos &&
+            usuario?.email === usuarioEdit?.email &&
+            usuario?.fechaNacimiento === usuarioEdit?.fechaNacimiento &&
+            usuario?.departamento === usuarioEdit?.departamento &&
+            usuario?.ciudad === usuarioEdit?.ciudad &&
+            usuario?.telefono === usuarioEdit?.telefono &&
+            usuario?.zipcode === usuarioEdit?.zipcode &&
+            usuario?.direccion === usuarioEdit?.direccion
+        );
+    
+        if (!hasChanges && !file) {
+            await Swal.fire({
+                icon: 'info',
+                title: 'Sin cambios',
+                text: 'No se han realizado cambios en el perfil.',
+                confirmButtonText: "Aceptar",
+                confirmButtonColor: "#3085d6",
+                background: "#1A1A1A",
+                color: "#fff",
+            });
+            return;
+        }
+    
+        // Validar código postal
+        if (usuarioEdit && !usuarioEdit.zipcode) {
+            await Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'El código postal no es válido.',
+                confirmButtonText: "Aceptar",
+                confirmButtonColor: "#3085d6",
+                background: "#1A1A1A",
+                color: "#fff",
+            });
+            return;
+        }
+    
+        let idImagen: number | null = null;
+    
+        // Procesar imagen si existe
+        if (file) {
+            try {
+                const data = await loadImage();
+                if (data) {
+                    idImagen = data.idImagen;
+                } else {
+                    await Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'No se ha podido cargar la imagen.',
+                        confirmButtonText: "Aceptar",
+                        confirmButtonColor: "#3085d6",
+                        background: "#1A1A1A",
+                        color: "#fff",
+                    });
+                    return;
+                }
+            } catch (error) {
+                await Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Error al cargar la imagen.',
+                    confirmButtonText: "Aceptar",
+                    confirmButtonColor: "#3085d6",
+                    background: "#1A1A1A",
+                    color: "#fff",
+                });
+                return;
+            }
+        }
+    
+        // Actualizar usuario
+        if (usuarioEdit) {
+            try {
+                const { status } = await Put("/api/usuario/update", token, {
+                    ...usuarioEdit,
+                    imagen: idImagen ?? usuario?.imagen?.idImagen ?? null,
+                });
+    
+                if (status !== 200) {
+                    throw new Error('Error en la actualización');
+                }
+    
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'Éxito',
+                    text: 'Perfil actualizado correctamente.',
+                    confirmButtonText: "Aceptar",
+                    confirmButtonColor: "#3085d6",
+                    background: "#1A1A1A",
+                    color: "#fff",
+                });
+                
+                window.location.reload();
+            } catch (error) {
+                await Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'No se ha podido actualizar el perfil.',
+                    confirmButtonText: "Aceptar",
+                    confirmButtonColor: "#3085d6",
+                    background: "#1A1A1A",
+                    color: "#fff",
+                });
+            }
+        }
+    };
+
+    const handleDelete = async () => {
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "¡No podrás recuperar tu cuenta después de esto!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, borrar cuenta',
+            background: "#1A1A1A",
+            color: "#fff",
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                const url = `/api/usuario/delete/${usuario?.cedula}`;
+                const { status } = await Delete(url, token);
+                if (status !== 200) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'No se ha podido eliminar la cuenta.',
+                        confirmButtonText: "Aceptar",
+                        confirmButtonColor: "#3085d6",
+                        background: "#1A1A1A",
+                        color: "#fff",
+                    });
+                    return;
+                }
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Éxito',
+                    text: 'Cuenta eliminada correctamente.',
+                    confirmButtonText: "Aceptar",
+                    confirmButtonColor: "#3085d6",
+                    background: "#1A1A1A",
+                    color: "#fff",
+                }).then(() => {
+                    sessionStorage.removeItem("usuario");
+                    document.cookie = "token=; path=/;";
+                    window.location.href = "/";
+                });
+            }
+        });
     }
 
     return (
@@ -214,24 +444,17 @@ export default function Home() {
                                     id="profileImage"
                                     type="file"
                                     accept="image/*"
-                                    onChange={(e) => {
-                                        if (e.target.files && e.target.files[0]) {
-                                            const reader = new FileReader();
-                                            reader.onload = (event) => {
-                                                if (event.target?.result) {
-                                                    console.log(event.target.result);
-                                                    setFoto(event.target.result as string);
-                                                }
-                                            };
-                                            reader.readAsDataURL(e.target.files[0]);
-                                        }
-                                    }}
+                                    onChange={(e) => handleFileChange(e)}
                                     className='p-2 border border-gray-400 rounded-lg bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500'
                                 />
                             </div>
                         </div>
                         <div className='w-full md:w-3/4 p-2'>
-                            <form className='flex flex-col gap-2 w-full'>
+                            <form
+                                id="formUpate"
+                                className='flex flex-col gap-2 w-full'
+                                onSubmit={(e) => handleSubmit(e)}
+                            >
                                 <div className='flex max-md:flex-col gap-2 w-full'>
                                     <div className='flex flex-col w-full'>
                                         <label htmlFor="name" className='font-medium text-gray-300'>Nombres:</label>
@@ -240,6 +463,8 @@ export default function Home() {
                                             name="nombres"
                                             type="text"
                                             value={usuarioEdit?.nombres ?? ""}
+                                            required
+                                            autoFocus
                                             onChange={(e) => handleChange(e)}
                                             className='p-2 border border-gray-400 rounded-lg bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500'
                                         />
@@ -250,6 +475,8 @@ export default function Home() {
                                             id="lastname"
                                             name="apellidos"
                                             type="text"
+                                            required
+                                            autoFocus
                                             value={usuarioEdit?.apellidos ?? ""}
                                             onChange={(e) => handleChange(e)}
                                             className='p-2 border border-gray-400 rounded-lg bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500'
@@ -263,6 +490,8 @@ export default function Home() {
                                             id="email"
                                             name="email"
                                             type="email"
+                                            required
+                                            autoFocus
                                             value={usuarioEdit?.email ?? ""}
                                             onChange={(e) => handleChange(e)}
                                             className='p-2 border border-gray-400 rounded-lg bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500'
@@ -274,6 +503,8 @@ export default function Home() {
                                             id="birthdate"
                                             name="fechaNacimiento"
                                             type="date"
+                                            required
+                                            autoFocus
                                             value={usuarioEdit?.fechaNacimiento.toString().split("T")[0] ?? ""}
                                             onChange={(e) => handleChange(e)}
                                             className='p-2 border border-gray-400 rounded-lg bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500'
@@ -286,6 +517,8 @@ export default function Home() {
                                         <select
                                             id="departament"
                                             name="departamento"
+                                            required
+                                            autoFocus
                                             value={usuarioEdit?.departamento}
                                             onChange={(e) => handleChange(e)}
                                             className='p-2 border border-gray-400 rounded-lg bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500'
@@ -298,6 +531,8 @@ export default function Home() {
                                         <select
                                             id="citie"
                                             name="ciudad"
+                                            required
+                                            autoFocus
                                             value={usuarioEdit?.ciudad}
                                             onChange={(e) => handleChange(e)}
                                             className='p-2 border border-gray-400 rounded-lg bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500'
@@ -313,6 +548,8 @@ export default function Home() {
                                             id="phone"
                                             name="telefono"
                                             type="tel"
+                                            required
+                                            autoFocus
                                             value={usuarioEdit?.telefono ?? ""}
                                             onChange={(e) => handleChange(e)}
                                             className='p-2 border border-gray-400 rounded-lg bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500'
@@ -324,6 +561,8 @@ export default function Home() {
                                             id="zipcode"
                                             name="zipcode"
                                             type="number"
+                                            required
+                                            autoFocus
                                             value={usuarioEdit?.zipcode ?? 0}
                                             onChange={(e) => handleChange(e)}
                                             className='p-2 border border-gray-400 rounded-lg bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500'
@@ -337,6 +576,8 @@ export default function Home() {
                                             id="adress"
                                             name="direccion"
                                             type="text"
+                                            required
+                                            autoFocus
                                             value={usuarioEdit?.direccion ?? ""}
                                             onChange={(e) => handleChange(e)}
                                             className='p-2 border border-gray-400 rounded-lg bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500'
@@ -347,13 +588,53 @@ export default function Home() {
                         </div>
                     </div>
                 )}
-                <div>
-                    <button onClick={handleEditToggle}>
-                        {isEditing ? 'Save Changes' : 'Edit Profile'}
-                    </button>
-                    <button >Change Password</button>
+                <div className='w-full flex md:justify-end pt-4'>
+                    <div className='w-full md:w-3/4 flex md:justify-end gap-4'>
+                        {usuario && usuario?.roles.length > 1 && (
+                            <button>
+                                <Admin />
+                                Administrar
+                            </button>
+                        )}
+                        {isEditing ? (
+                            <>
+                                <button className='bg-red-500/50 hover:bg-red-600/50 text-white font-bold py-2 gap-1 px-3 rounded-lg shadow-md shadow-red-500/50 transition duration-300 ease-in-out flex items-center justify-center'
+                                    onClick={handleDelete}
+                                >
+                                    <DeleteIcon />
+                                    Borrar Cuenta
+                                </button>
+                                <button className='bg-amber-300/50 hover:bg-amber-400/50 text-white font-bold py-2 gap-1 px-3 rounded-lg shadow-md shadow-amber-300/50 transition duration-300 ease-in-out flex items-center justify-center'
+                                    onClick={handleEditToggle}
+                                >
+                                    <CancelIcon />
+                                    Cancelar
+                                </button>
+                                <button className='bg-green-400/50 hover:bg-green-500/50 text-white font-bold py-2 gap-1 px-3 rounded-lg shadow-md shadow-green-400/50 transition duration-300 ease-in-out flex items-center justify-center'
+                                    form='formUpate'
+                                    type='submit'
+                                >
+                                    <SaveIcon />
+                                    Guardar
+                                </button>
+                            </>
+                        ) : (
+                            <button className='bg-amber-300/50 hover:bg-amber-400/50 text-white font-bold py-2 gap-1 px-3 rounded-lg shadow-md shadow-amber-300/50 transition duration-300 ease-in-out flex items-center justify-center'
+                                onClick={handleEditToggle}
+                            >
+                                <Edit />
+                                Editar
+                            </button>
+                        )}
+                        <button className='bg-red-500/50 hover:bg-red-600/50 text-white font-bold py-2 gap-1 px-3 rounded-lg shadow-md shadow-red-500/50 transition duration-300 ease-in-out flex items-center justify-center'
+                            onClick={handleLogOut}
+                        >
+                            <LogOut />
+                            LogOut
+                        </button>
+                    </div>
                 </div>
             </section>
-        </main>
+        </main >
     );
 };

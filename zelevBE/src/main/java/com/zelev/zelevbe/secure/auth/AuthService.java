@@ -1,11 +1,17 @@
 package com.zelev.zelevbe.secure.auth;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Base64;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.zelev.zelevbe.domain.dto.Imagen.ImagenProfileDTO;
 import com.zelev.zelevbe.domain.dto.usuario.UsuarioCreateDTO;
 import com.zelev.zelevbe.domain.dto.usuario.UsuarioListDTO;
 import com.zelev.zelevbe.domain.dto.usuario.UsuarioLoginDTO;
@@ -37,8 +43,7 @@ public class AuthService {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         usuarioLoginDTO.getNombreUsuario(),
-                        usuarioLoginDTO.getContrasena())
-                );
+                        usuarioLoginDTO.getContrasena()));
 
         UserDetails userDetails = usuarioService.loadUserByUsername(usuarioLoginDTO.getNombreUsuario());
 
@@ -70,6 +75,24 @@ public class AuthService {
             return null;
         }
 
+        String imagenBase64 = null;
+        ImagenProfileDTO imagen = null;
+        if (usuario.getImagen() != null) {
+            try {
+                Path filePath = Paths.get(usuario.getImagen().getUrl());
+                byte[] imageBytes = Files.readAllBytes(filePath);
+                imagenBase64 = usuario.getImagen() != null ? Base64.getEncoder().encodeToString(imageBytes) : null;
+            } catch (Exception e) {
+                System.err.println("No hay una imagen disponible para el usuario.");
+                imagenBase64 = "";
+            }
+            imagen = new ImagenProfileDTO();
+            imagen.setIdImagen(usuario.getImagen().getIdImagen());
+            imagen.setAlt(usuario.getImagen().getAlt());
+            imagen.setUrl(imagenBase64);
+            System.out.println("Imagen: " + imagenBase64);
+        }
+
         return UsuarioListDTO.builder()
                 .cedula(usuario.getCedula())
                 .telefono(usuario.getTelefono())
@@ -81,6 +104,10 @@ public class AuthService {
                 .email(usuario.getEmail())
                 .roles(usuario.getRoles().stream().map(role -> role.getRol()).toList())
                 .estado(usuario.getEstado())
+                .ciudad(usuario.getCiudad())
+                .zipcode(usuario.getZipcode())
+                .imagen(imagen)
+                .departamento(usuario.getDepartamento())
                 .build();
     }
 

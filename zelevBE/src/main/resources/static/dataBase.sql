@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS rol (
 
 CREATE TABLE IF NOT EXISTS imagen (
 	id_imagen int auto_increment primary key not null,
-	url varchar(50) not null,
+	url text not null,
 	alt varchar(200) not null
 );
 
@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS usuario (
 	telefono varchar(10),
 	departamento varchar(20),
 	ciudad varchar(30),
+	zipcode int,
 	direccion varchar(100),
 	contrasena varchar(500) not null,
 	fecha_nacimiento date not null,

@@ -3,8 +3,6 @@ package com.zelev.zelevbe.domain.dto.usuario;
 import java.util.Date;
 import java.util.List;
 
-import org.springframework.web.multipart.MultipartFile;
-
 import com.zelev.zelevbe.constants.EstadoUsuario;
 
 import lombok.AllArgsConstructor;
@@ -30,7 +28,7 @@ public class UsuarioUpdateDTO {
     private String ciudad;
     private Integer zipcode;
     private String direccion;
-    private MultipartFile imagen;
+    private Integer imagen;
     private Date fechaNacimiento;
     private EstadoUsuario estado;
     private List<Integer> NuevosRoles;

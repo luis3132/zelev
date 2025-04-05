@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.zelev.zelevbe.constants.EstadoUsuario;
+import com.zelev.zelevbe.domain.dto.Imagen.ImagenProfileDTO;
 import com.zelev.zelevbe.persistence.entity.Rol.Rol;
 
 import lombok.AllArgsConstructor;
@@ -32,7 +33,7 @@ public class UsuarioListDTO {
     private Integer zipcode;
     private String direccion;
     private Date fechaNacimiento;
-    private String imagen;
+    private ImagenProfileDTO imagen;
     private EstadoUsuario estado;
     private List<Rol> roles;
 }

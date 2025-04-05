@@ -3,7 +3,7 @@
 import { Usuario } from "@/lib/types/types";
 import Image from "next/image";
 import Link from "next/link";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 
 interface NavbarLogInProps {
     usuario: Usuario;
@@ -12,13 +12,33 @@ interface NavbarLogInProps {
 const NavbarLogIn: FC<NavbarLogInProps> = ({ usuario }) => {
     const [openMenus, setOpenMenus] = useState(false);
     const [clickedMenu, setClickedMenu] = useState("");
+    const [foto, setFoto] = useState<string>("/logo/logo.png");
 
-    const getCurrentPath = () => {
-        if (typeof window !== "undefined") {
-            return window.location.pathname;
+    useEffect(() => {
+        if(usuario.imagen && usuario.imagen.url !== null && usuario.imagen.url !== undefined && usuario.imagen.url !== "") {
+            setFoto(usuario.imagen.url);
         }
-        return "";
-    };
+        if (typeof window !== 'undefined') {
+            if (window.location.pathname === "/profile") {
+                setClickedMenu("Perfil");
+            }
+            if (window.location.pathname === "/categoria/hombre") {
+                setClickedMenu("HOMBRE");
+            }
+            if (window.location.pathname === "/categoria/mujer") {
+                setClickedMenu("MUJER");
+            }
+            if (window.location.pathname === "/categoria/nino") {
+                setClickedMenu("NINOS");
+            }
+            if (window.location.pathname === "/categoria/outlet") {
+                setClickedMenu("OUTLET");
+            }
+            if (window.location.pathname === "/") {
+                setClickedMenu("");
+            }
+        }
+    }, [usuario]);
 
     const handleOpenMenus = () => {
         setOpenMenus(!openMenus);
@@ -28,12 +48,6 @@ const NavbarLogIn: FC<NavbarLogInProps> = ({ usuario }) => {
         setClickedMenu(id);
         setOpenMenus(false);
     };
-
-    const handlePerfil = () => {
-        const currentPath = getCurrentPath();
-        sessionStorage.setItem("currentPath", currentPath);
-        clicked("Perfil");
-    }
 
     return (
         <>
@@ -146,11 +160,11 @@ const NavbarLogIn: FC<NavbarLogInProps> = ({ usuario }) => {
                         <section className="w-full flex md:justify-end md:pr-4 pl-4">
                             <Link
                                 href="/profile"
-                                className={`flex items-center cursor-pointer p-2 rounded-lg ${clickedMenu === "LogIn" ? "bg-white/20" : "bg-white/5"}`}
-                                onClick={handlePerfil}
+                                className={`flex items-center cursor-pointer p-2 rounded-lg ${clickedMenu === "Perfil" ? "bg-white/20" : "bg-white/5"}`}
+                                onClick={() => clicked("Perfil")}
                             >
                                 <Image
-                                    src={usuario.imagen ?? "/logo/logo.png"}
+                                    src={foto}
                                     alt="Foto del usuario"
                                     width={10}
                                     height={10}

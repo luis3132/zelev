@@ -1,11 +1,34 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function NavbarLogOut() {
     const [openMenus, setOpenMenus] = useState(false);
     const [clickedMenu, setClickedMenu] = useState("");
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            if (window.location.pathname === "/profile") {
+                setClickedMenu("Perfil");
+            }
+            if (window.location.pathname === "/categoria/hombre") {
+                setClickedMenu("HOMBRE");
+            }
+            if (window.location.pathname === "/categoria/mujer") {
+                setClickedMenu("MUJER");
+            }
+            if (window.location.pathname === "/categoria/nino") {
+                setClickedMenu("NINOS");
+            }
+            if (window.location.pathname === "/categoria/outlet") {
+                setClickedMenu("OUTLET");
+            }
+            if (window.location.pathname === "/") {
+                setClickedMenu("");
+            }
+        }
+    }, []);
 
     const getCurrentPath = () => {
         if (typeof window !== "undefined") {

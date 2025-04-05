@@ -26,6 +26,7 @@ export default function MainNavbar() {
                     background: "#1A1A1A",
                     color: "#fff",
                 }).then(() => {
+                    sessionStorage.removeItem("currentPath");
                     if (window.location.pathname === "/profile") {
                         sessionStorage.setItem("currentPath", "/");
                     } else {
@@ -37,6 +38,37 @@ export default function MainNavbar() {
                 });
             }
             const usr: Usuario = data.data;
+            if (!usr || usr.estado !== "ACTIVO") {
+                if (!usr) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'La sesión ha expirado, por favor inicie sesión nuevamente.',
+                        timer: 3000,
+                        timerProgressBar: true,
+                        background: "#1A1A1A",
+                        color: "#fff",
+                    }).then(() => {
+                        sessionStorage.removeItem("currentPath");
+                        document.cookie = "token=; path=/;";
+                        window.location.href = "/";
+                    });
+                    return;
+                }
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'El usuario se encuentra inactivo, por favor contacte al administrador.',
+                    timer: 3000,
+                    timerProgressBar: true,
+                    background: "#1A1A1A",
+                    color: "#fff",
+                }).then(() => {
+                    sessionStorage.removeItem("currentPath");
+                    document.cookie = "token=; path=/;";
+                    window.location.href = "/";
+                });
+            }
             setUsuario(usr);
             sessionStorage.setItem("usuario", EncodeUsr(usr));
         }

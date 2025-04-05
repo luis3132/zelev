@@ -1,12 +1,10 @@
 export interface token {
     token: string;
 }
-
 export interface Rol {
     id: number;
     rol: string;
 }
-
 export interface Usuario {
     cedula: string;
     nombres: string;
@@ -21,10 +19,9 @@ export interface Usuario {
     direccion: string;
     fechaNacimiento: Date;
     estado: string;
-    imagen: string;
+    imagen: Imagen;
     roles: Rol[];
 }
-
 export interface UsuarioUpdate {
     cedula: string;
     nombres: string;
@@ -36,9 +33,14 @@ export interface UsuarioUpdate {
     ciudad: string;
     zipcode: number;
     direccion: string;
-    imagen: FormData;
+    imagen: number;
     fechaNacimiento: Date;
     estado: string;
     NuevosRoles: number[];
     EliminarRoles: number[];
+}
+export interface Imagen {
+    idImagen: number;
+    url: string;
+    alt: string;
 }
