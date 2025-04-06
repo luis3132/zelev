@@ -61,13 +61,17 @@ public class ImagenController {
                 Integer id = Integer.parseInt(existe);
                 Imagen imagen = imagenService.findById(id).get();
                 destinationFile = Paths.get(imagen.getUrl());
-            } else {
-                String originalFilename = StringUtils.cleanPath(nullableFilename);
-                String extension = originalFilename.substring(originalFilename.lastIndexOf('.'));
-                String filename = UUID.randomUUID() + extension;
+                // Guardar archivo
+                Files.copy(file.getInputStream(), destinationFile, StandardCopyOption.REPLACE_EXISTING);
 
-                destinationFile = uploadPath.resolve(filename);
+                return ResponseEntity.ok(imagen);
             }
+            
+            String originalFilename = StringUtils.cleanPath(nullableFilename);
+            String extension = originalFilename.substring(originalFilename.lastIndexOf('.'));
+            String filename = UUID.randomUUID() + extension;
+
+            destinationFile = uploadPath.resolve(filename);
 
             // Guardar archivo
             Files.copy(file.getInputStream(), destinationFile, StandardCopyOption.REPLACE_EXISTING);
@@ -84,4 +88,17 @@ public class ImagenController {
         }
     }
 
+    @GetMapping(path = "/{id}")
+    public ResponseEntity<byte[]> getImage(@PathVariable("id") Integer id) {
+        try {
+            Imagen imagen = imagenService.findById(id).get();
+            Path path = Paths.get(imagen.getUrl());
+            byte[] imageBytes = Files.readAllBytes(path);
+            return ResponseEntity.ok()
+                    .contentType(MediaType.IMAGE_JPEG)
+                    .body(imageBytes);
+        } catch (IOException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

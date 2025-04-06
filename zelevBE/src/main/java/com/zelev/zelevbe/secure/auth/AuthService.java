@@ -1,10 +1,5 @@
 package com.zelev.zelevbe.secure.auth;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Base64;
-
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -75,22 +70,12 @@ public class AuthService {
             return null;
         }
 
-        String imagenBase64 = null;
         ImagenProfileDTO imagen = null;
         if (usuario.getImagen() != null) {
-            try {
-                Path filePath = Paths.get(usuario.getImagen().getUrl());
-                byte[] imageBytes = Files.readAllBytes(filePath);
-                imagenBase64 = usuario.getImagen() != null ? Base64.getEncoder().encodeToString(imageBytes) : null;
-            } catch (Exception e) {
-                System.err.println("No hay una imagen disponible para el usuario.");
-                imagenBase64 = "";
-            }
             imagen = new ImagenProfileDTO();
+            imagen.setUrl(usuario.getImagen().getUrl());
             imagen.setIdImagen(usuario.getImagen().getIdImagen());
             imagen.setAlt(usuario.getImagen().getAlt());
-            imagen.setUrl(imagenBase64);
-            System.out.println("Imagen: " + imagenBase64);
         }
 
         return UsuarioListDTO.builder()

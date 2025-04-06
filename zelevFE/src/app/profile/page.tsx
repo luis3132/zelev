@@ -4,10 +4,10 @@ import { Admin, CancelIcon, DeleteIcon, Edit, LogOut, SaveIcon } from '@/compone
 import Ciudades from '@/components/profile/ciudades';
 import Departamentos from '@/components/profile/departamentos';
 import DecodeUsr from '@/lib/scripts/decodeUser';
-import { Delete, Put, UploadPost } from '@/lib/scripts/fetch';
+import { Delete, Put, UploadPost, Get } from '@/lib/scripts/fetch';
 import { Imagen, Usuario, UsuarioUpdate } from '@/lib/types/types';
 import Image from 'next/image';
-import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 
 export default function Home() {
@@ -64,10 +64,37 @@ export default function Home() {
     }, []);
 
     useEffect(() => {
-        if (usuario && usuario.imagen && usuario.imagen.url !== "" && usuario.imagen.url !== null && usuario.imagen.url !== undefined) {
-            setFoto(usuario.imagen.url);
+        const fetchImagen = async () => {
+            try {
+                const { data, status } = await Get(`/api/imagen/${usuario?.imagen.idImagen}`, token, undefined, true);
+
+                if (status === 200 && data instanceof Blob) {
+                    // Crear URL para el Blob
+                    const imageUrl = URL.createObjectURL(data);
+
+                    // Liberar la URL anterior si existe
+                    if (foto) {
+                        URL.revokeObjectURL(foto);
+                    }
+
+                    setFoto(imageUrl);
+                }
+            } catch (error) {
+                console.error("Error cargando imagen:", error);
+                setFoto("/logo/logo.png");
+            }
         }
-    }, [usuario]);
+
+        if (usuario?.imagen?.idImagen) {
+            fetchImagen();
+        }
+
+        return () => {
+            if (foto) {
+                URL.revokeObjectURL(foto);
+            }
+        };
+    }, [token, usuario]);
 
     const handleEditToggle = () => {
         setIsEditing(!isEditing);
@@ -144,7 +171,7 @@ export default function Home() {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        
+
         // Verificar si hay cambios reales
         const hasChanges = !(
             usuario?.nombres === usuarioEdit?.nombres &&
@@ -157,7 +184,7 @@ export default function Home() {
             usuario?.zipcode === usuarioEdit?.zipcode &&
             usuario?.direccion === usuarioEdit?.direccion
         );
-    
+
         if (!hasChanges && !file) {
             await Swal.fire({
                 icon: 'info',
@@ -170,7 +197,7 @@ export default function Home() {
             });
             return;
         }
-    
+
         // Validar código postal
         if (usuarioEdit && !usuarioEdit.zipcode) {
             await Swal.fire({
@@ -184,9 +211,9 @@ export default function Home() {
             });
             return;
         }
-    
+
         let idImagen: number | null = null;
-    
+
         // Procesar imagen si existe
         if (file) {
             try {
@@ -206,6 +233,7 @@ export default function Home() {
                     return;
                 }
             } catch (error) {
+                console.error("Error cargando imagen:", error);
                 await Swal.fire({
                     icon: 'error',
                     title: 'Error',
@@ -218,7 +246,7 @@ export default function Home() {
                 return;
             }
         }
-    
+
         // Actualizar usuario
         if (usuarioEdit) {
             try {
@@ -226,11 +254,11 @@ export default function Home() {
                     ...usuarioEdit,
                     imagen: idImagen ?? usuario?.imagen?.idImagen ?? null,
                 });
-    
+
                 if (status !== 200) {
                     throw new Error('Error en la actualización');
                 }
-    
+
                 await Swal.fire({
                     icon: 'success',
                     title: 'Éxito',
@@ -240,9 +268,10 @@ export default function Home() {
                     background: "#1A1A1A",
                     color: "#fff",
                 });
-                
+
                 window.location.reload();
             } catch (error) {
+                console.error("Error actualizando perfil:", error);
                 await Swal.fire({
                     icon: 'error',
                     title: 'Error',

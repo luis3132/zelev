@@ -1,5 +1,6 @@
 "use client";
 
+import { Get } from "@/lib/scripts/fetch";
 import { Usuario } from "@/lib/types/types";
 import Image from "next/image";
 import Link from "next/link";
@@ -13,12 +14,15 @@ const NavbarLogIn: FC<NavbarLogInProps> = ({ usuario }) => {
     const [openMenus, setOpenMenus] = useState(false);
     const [clickedMenu, setClickedMenu] = useState("");
     const [foto, setFoto] = useState<string>("/logo/logo.png");
+    const [token, setToken] = useState<string>("");
 
     useEffect(() => {
-        if(usuario.imagen && usuario.imagen.url !== null && usuario.imagen.url !== undefined && usuario.imagen.url !== "") {
-            setFoto(usuario.imagen.url);
-        }
         if (typeof window !== 'undefined') {
+            const tokenString = document.cookie.split("; ").find(row => row.startsWith("token="));
+            if (tokenString) {
+                const tokenValue = tokenString.split("=")[1];
+                setToken(tokenValue);
+            }
             if (window.location.pathname === "/profile") {
                 setClickedMenu("Perfil");
             }
@@ -38,7 +42,40 @@ const NavbarLogIn: FC<NavbarLogInProps> = ({ usuario }) => {
                 setClickedMenu("");
             }
         }
-    }, [usuario]);
+    }, []);
+
+    useEffect(() => {
+        const fetchImagen = async () => {
+            try {
+                const { data, status } = await Get(`/api/imagen/${usuario?.imagen.idImagen}`, token, undefined, true);
+                
+                if (status === 200 && data instanceof Blob) {
+                    // Crear URL para el Blob
+                    const imageUrl = URL.createObjectURL(data);
+                    
+                    // Liberar la URL anterior si existe
+                    if (foto) {
+                        URL.revokeObjectURL(foto);
+                    }
+                    
+                    setFoto(imageUrl);
+                }
+            } catch (error) {
+                console.error("Error cargando imagen:", error);
+                setFoto("/logo/logo.png");
+            }
+        }
+
+        if (usuario?.imagen?.idImagen) {
+            fetchImagen();
+        }
+
+        return () => {
+            if (foto) {
+                URL.revokeObjectURL(foto);
+            }
+        };
+    }, [token, usuario]);
 
     const handleOpenMenus = () => {
         setOpenMenus(!openMenus);
