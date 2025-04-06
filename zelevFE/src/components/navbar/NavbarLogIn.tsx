@@ -1,14 +1,28 @@
 "use client";
 
+import { Get } from "@/lib/scripts/fetch";
+import { Usuario } from "@/lib/types/types";
+import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 
-export default function NavbarLogOut() {
+interface NavbarLogInProps {
+    usuario: Usuario;
+}
+
+const NavbarLogIn: FC<NavbarLogInProps> = ({ usuario }) => {
     const [openMenus, setOpenMenus] = useState(false);
     const [clickedMenu, setClickedMenu] = useState("");
+    const [foto, setFoto] = useState<string>("/logo/logo.png");
+    const [token, setToken] = useState<string>("");
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
+            const tokenString = document.cookie.split("; ").find(row => row.startsWith("token="));
+            if (tokenString) {
+                const tokenValue = tokenString.split("=")[1];
+                setToken(tokenValue);
+            }
             if (window.location.pathname === "/profile") {
                 setClickedMenu("Perfil");
             }
@@ -30,12 +44,38 @@ export default function NavbarLogOut() {
         }
     }, []);
 
-    const getCurrentPath = () => {
-        if (typeof window !== "undefined") {
-            return window.location.pathname;
+    useEffect(() => {
+        const fetchImagen = async () => {
+            try {
+                const { data, status } = await Get(`/api/imagen/${usuario?.imagen.idImagen}`, token, undefined, true);
+                
+                if (status === 200 && data instanceof Blob) {
+                    // Crear URL para el Blob
+                    const imageUrl = URL.createObjectURL(data);
+                    
+                    // Liberar la URL anterior si existe
+                    if (foto) {
+                        URL.revokeObjectURL(foto);
+                    }
+                    
+                    setFoto(imageUrl);
+                }
+            } catch (error) {
+                console.error("Error cargando imagen:", error);
+                setFoto("/logo/logo.png");
+            }
         }
-        return "";
-    };
+
+        if (usuario?.imagen?.idImagen) {
+            fetchImagen();
+        }
+
+        return () => {
+            if (foto) {
+                URL.revokeObjectURL(foto);
+            }
+        };
+    }, [token, usuario]);
 
     const handleOpenMenus = () => {
         setOpenMenus(!openMenus);
@@ -45,12 +85,6 @@ export default function NavbarLogOut() {
         setClickedMenu(id);
         setOpenMenus(false);
     };
-
-    const handleLogin = () => {
-        const currentPath = getCurrentPath();
-        sessionStorage.setItem("currentPath", currentPath);
-        clicked("LogIn");
-    }
 
     return (
         <>
@@ -162,18 +196,19 @@ export default function NavbarLogOut() {
                         </section>
                         <section className="w-full flex md:justify-end md:pr-4 pl-4">
                             <Link
-                                href="/auth/login"
-                                className={`flex items-center cursor-pointer p-2 rounded-lg ${clickedMenu === "LogIn" ? "bg-white/20" : "bg-white/5"}`}
-                                onClick={handleLogin}
+                                href="/profile"
+                                className={`flex items-center cursor-pointer p-2 rounded-lg ${clickedMenu === "Perfil" ? "bg-white/20" : "bg-white/5"}`}
+                                onClick={() => clicked("Perfil")}
                             >
-                                <svg
-                                    className="mr-1"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="24"
-                                    height="24"
-                                    viewBox="0 0 24 24"
-                                ><path fill="currentColor" d="M12 21v-2h7V5h-7V3h7q.825 0 1.413.588T21 5v14q0 .825-.587 1.413T19 21zm-2-4l-1.375-1.45l2.55-2.55H3v-2h8.175l-2.55-2.55L10 7l5 5z" /></svg>
-                                LogIn
+                                <Image
+                                    src={foto}
+                                    alt="Foto del usuario"
+                                    width={10}
+                                    height={10}
+                                    className="w-4 h-4 rounded-full overflow-hidden"
+                                    priority
+                                />
+                                Perfil
                             </Link>
                         </section>
                     </div>
@@ -182,3 +217,5 @@ export default function NavbarLogOut() {
         </>
     )
 }
+
+export default NavbarLogIn;

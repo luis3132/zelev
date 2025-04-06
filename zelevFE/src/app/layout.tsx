@@ -21,7 +21,6 @@ export default function RootLayout({
         className={`antialiased h-dvh overflow-scroll bg-black/90 flex flex-col`}
       >
         {children}
-        <div className="min-h-24 md:min-h-5"></div>
       </body>
     </html>
   );

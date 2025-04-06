@@ -1,4 +1,4 @@
-import NavbarLogOut from "@/components/navbar/NavbarLogOut";
+import MainNavbar from "@/components/navbar/MainNavbar";
 
 
 export default function AboutUsLayout({
@@ -8,7 +8,7 @@ export default function AboutUsLayout({
 }>) {
     return (
         <>
-            <NavbarLogOut />
+            <MainNavbar />
             <div className="w-full h-dvh md:pt-20">
                 {children}
             </div>

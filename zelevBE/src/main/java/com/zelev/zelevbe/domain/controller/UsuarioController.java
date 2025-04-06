@@ -13,13 +13,12 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
-
-
-
 
 /**
  * 
@@ -29,23 +28,33 @@ import org.springframework.web.bind.annotation.PutMapping;
 @RestController
 @RequestMapping("/api/usuario")
 public class UsuarioController {
-    
+
     @Autowired
     private UsuarioService usuarioService;
 
     @GetMapping("/list")
+    @Secured("ADMIN")
     public ResponseEntity<List<UsuarioListDTO>> listUsuarios() {
         return ResponseEntity.ok(usuarioService.findAll());
     }
 
     @GetMapping("/list/{estado}")
+    @Secured("ADMIN")
     public ResponseEntity<List<Usuario>> listUsuariosByEstado(@PathVariable("estado") EstadoUsuario estado) {
         return ResponseEntity.ok(usuarioService.findByEstado(estado));
     }
-    
+
     @PutMapping("/update")
-    public ResponseEntity<Usuario> updateUsr(@RequestBody UsuarioUpdateDTO usuario) {
+    public ResponseEntity<UsuarioListDTO> updateUsr(@RequestBody UsuarioUpdateDTO usuario) {
         return ResponseEntity.ok(usuarioService.update(usuario));
     }
-    
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteUsr(@PathVariable("id") String cedula) {
+        if (usuarioService.delete(cedula)) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
 }
