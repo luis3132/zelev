@@ -13,7 +13,7 @@ import com.zelev.zelevbe.persistence.entity.Usuario;
 
 public interface IUsuarioService {
     Usuario save(UsuarioCreateDTO usuarioCreateDTO);
-    Usuario update(UsuarioUpdateDTO usuarioUpdateDTO);
+    UsuarioListDTO update(UsuarioUpdateDTO usuarioUpdateDTO);
     List<UsuarioListDTO> findAll();
     Optional<Usuario> findById(String id);
     Optional<Usuario> findByUsername(String username);

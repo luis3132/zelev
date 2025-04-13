@@ -22,6 +22,7 @@ import com.zelev.zelevbe.domain.dto.usuario.UsuarioUpdateDTO;
 import com.zelev.zelevbe.domain.service.interfaces.IUsuarioService;
 import com.zelev.zelevbe.persistence.entity.Usuario;
 import com.zelev.zelevbe.persistence.entity.Rol.Rol;
+import com.zelev.zelevbe.persistence.entity.imagen.Imagen;
 import com.zelev.zelevbe.persistence.repository.UsuarioRepository;
 
 import jakarta.transaction.Transactional;
@@ -41,6 +42,10 @@ public class UsuarioService implements IUsuarioService {
     @Autowired
     @Lazy
     private RolService rolService;
+
+    @Autowired
+    @Lazy
+    private ImagenService imagenService;
 
     @Override
     public List<UsuarioListDTO> findAll() {
@@ -107,12 +112,13 @@ public class UsuarioService implements IUsuarioService {
     }
 
     @Override
-    public Usuario update(UsuarioUpdateDTO usuarioUpdateDTO) {
+    public UsuarioListDTO update(UsuarioUpdateDTO usuarioUpdateDTO) {
         Optional<Usuario> usuario = usuarioRepository.findById(usuarioUpdateDTO.getCedula());
         if (usuario.isPresent()) {
             Usuario usuarioEntity = convertDTOtoEntity(usuario.get(), usuarioUpdateDTO);
-
-            return usuarioRepository.save(usuarioEntity);
+            usuarioRepository.save(usuarioEntity);
+            UsuarioListDTO usuarioListDTO = convertEntitytoDTOlist(usuarioEntity);
+            return usuarioListDTO;
         }
         return null;
     }
@@ -127,8 +133,16 @@ public class UsuarioService implements IUsuarioService {
         usuario.setTelefono(usuarioUpdateDTO.getTelefono());
         usuario.setDireccion(usuarioUpdateDTO.getDireccion());
         usuario.setFechaNacimiento(usuarioUpdateDTO.getFechaNacimiento());
-        usuario.setEstado(usuarioUpdateDTO.getEstado());
-        usuario.setNombreUsuario(usuarioUpdateDTO.getNombreUsuario());
+        usuario.setDepartamento(usuarioUpdateDTO.getDepartamento());
+        usuario.setCiudad(usuarioUpdateDTO.getCiudad());
+        usuario.setZipcode(usuarioUpdateDTO.getZipcode());
+        
+        Optional<Imagen> imagen = imagenService.findById(usuarioUpdateDTO.getImagen());
+        if (imagen.isPresent()) {
+            usuario.setImagen(imagen.get());
+        } else {
+            usuario.setImagen(null);
+        }
 
         if (usuarioUpdateDTO.getNuevosRoles() != null) {
             usuarioUpdateDTO.getNuevosRoles().stream().forEach(rol -> {

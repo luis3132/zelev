@@ -77,3 +77,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Upload ###
+uploads/

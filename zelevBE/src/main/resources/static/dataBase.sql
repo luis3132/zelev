@@ -4,6 +4,12 @@ CREATE TABLE IF NOT EXISTS rol (
 	rol varchar(10) not null
 );
 
+CREATE TABLE IF NOT EXISTS imagen (
+	id_imagen int auto_increment primary key not null,
+	url text not null,
+	alt varchar(200) not null
+);
+
 CREATE TABLE IF NOT EXISTS usuario (
 	cedula varchar(20) primary key not null,
 	nombres varchar(50) not null,
@@ -11,11 +17,16 @@ CREATE TABLE IF NOT EXISTS usuario (
 	nombre_usuario varchar(10) not null unique,
 	email varchar(100) not null unique,
 	telefono varchar(10),
+	departamento varchar(20),
+	ciudad varchar(30),
+	zipcode int,
 	direccion varchar(100),
 	contrasena varchar(500) not null,
 	fecha_nacimiento date not null,
 	fecha_creacion timestamp DEFAULT CURRENT_TIMESTAMP(),
-	estado enum('ACTIVO', 'BLOQUEADO', 'ELIMINADO', 'INACTIVO') not null
+	estado enum('ACTIVO', 'BLOQUEADO', 'ELIMINADO', 'INACTIVO') not null,
+	imagen int,
+	CONSTRAINT usuario_imagen_FK FOREIGN KEY (imagen) REFERENCES imagen (id_imagen)
 );
 
 CREATE TABLE IF NOT EXISTS categoria (
@@ -33,7 +44,7 @@ CREATE TABLE IF NOT EXISTS articulo (
 );
 
 CREATE TABLE IF NOT EXISTS unidad (
-	upc varchar(12) primary key not null,
+	upc bigint primary key not null,
 	label varchar(30) not null,
 	precio varchar(20) not null,
 	articulo int not null,
@@ -42,6 +53,16 @@ CREATE TABLE IF NOT EXISTS unidad (
 	estado enum('NOSTOCK', 'STOCK', 'SOLICITADO'),
 	descripcion varchar(200),
 	CONSTRAINT unidad_articulo_FK FOREIGN KEY (articulo) REFERENCES articulo (id_articulo) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS img_art_uni (
+	id_img_art_uni int auto_increment primary key,
+	imagen int not null,
+	articulo int not null,
+	unidad bigint,
+	CONSTRAINT img_art_uni_imagen_FK FOREIGN KEY (imagen) REFERENCES imagen (id_imagen) ON DELETE CASCADE,
+	CONSTRAINT img_art_uni_articulo_FK FOREIGN KEY (articulo) REFERENCES articulo (id_articulo) ON DELETE CASCADE,
+	CONSTRAINT img_art_uni_unidad_FK FOREIGN KEY (unidad) REFERENCES unidad (upc) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS pedido (
@@ -72,7 +93,7 @@ CREATE TABLE IF NOT  EXISTS arti_cate (
 
 CREATE TABLE IF NOT EXISTS pedi_unid (
 	pedido int not null,
-	unidad varchar(12) not null,
+	unidad bigint not null,
 	PRIMARY KEY (pedido, unidad),
 	CONSTRAINT peun_pedido_FK FOREIGN KEY (pedido) REFERENCES pedido (id_pedido) ON DELETE CASCADE,
 	CONSTRAINT peun_unidad_FK FOREIGN KEY (unidad) REFERENCES unidad (upc) ON DELETE CASCADE

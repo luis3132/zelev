@@ -9,11 +9,15 @@ import Swal from "sweetalert2";
 
 export default function Login() {
 
-    const [url, setUrl] = useState("");
+    const [url, setUrl] = useState("/");
 
     useEffect(() => {
         if (window.location !== undefined) {
-            setUrl(sessionStorage.getItem("currentPath") ?? "/");
+            const urlTemp = sessionStorage.getItem("currentPath");
+            if (urlTemp && urlTemp !== "/profile") {
+                setUrl(urlTemp ?? "/");
+                return;
+            }
         }
     }, []);
 
@@ -41,17 +45,18 @@ export default function Login() {
         }
 
         const userData: token = data.data;
-        document.cookie = `token=${userData.token};`;
+        document.cookie = `token=${userData.token}; path=/;`;
 
         Swal.fire({
             icon: "success",
             title: "Éxito",
             text: "Inicio de sesión exitoso",
-            confirmButtonText: "Aceptar",
-            confirmButtonColor: "#3085d6",
+            timer: 1000,
+            timerProgressBar: true,
             background: "#1A1A1A",
             color: "#fff",
-        }).then(async () => {
+            showConfirmButton: false,
+        }).then(() => {
             window.location.href = url || "/";
         });
 
@@ -60,7 +65,7 @@ export default function Login() {
     return (
         <>
             <div className="fixed top-0 left-0 z-50 hover:font-bold p-4 md:p-8">
-                <Link href="/" className="flex items-center justify-center gap-2">
+                <Link href={url} className="flex items-center justify-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="m7.825 13l5.6 5.6L12 20l-8-8l8-8l1.425 1.4l-5.6 5.6H20v2z" /></svg>
                     <h1>Inicio</h1>
                 </Link>
@@ -86,7 +91,8 @@ export default function Login() {
                             <label htmlFor="email" className="sr-only">Nombre de Usuario</label>
                             <input
                                 id="username"
-                                type="username"
+                                type="text"
+                                name="username"
                                 placeholder="Nombre de Usuario"
                                 required
                                 className="w-full max-w-[300px] p-2 rounded-md border border-gray-300 focus:outline-none focus:ring focus:ring-blue-500"
@@ -95,6 +101,7 @@ export default function Login() {
                             <input
                                 id="password"
                                 type="password"
+                                name="password"
                                 placeholder="Contraseña"
                                 required
                                 className="w-full max-w-[300px] p-2 rounded-md border border-gray-300 focus:outline-none focus:ring focus:ring-blue-500"

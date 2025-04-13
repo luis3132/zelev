@@ -3,13 +3,13 @@
 import AboutUs from "@/components/main/aboutUs";
 import ImageSlider from "@/components/main/imageSlider";
 import Tecnologies from "@/components/main/tecnologies";
-import NavbarLogOut from "@/components/navbar/NavbarLogOut";
+import MainNavbar from "@/components/navbar/MainNavbar";
 
 export default function Home() {
   const slides = [
     {
       id: 1,
-      src: '/bolsos/bolsos.webp', // Asegúrate de tener estas imágenes en tu carpeta public/images
+      src: '/bolsos/bolsos.webp',
       alt: 'Descripción de la primera imagen',
       caption: 'Título de la imagen 1'
     },
@@ -35,7 +35,7 @@ export default function Home() {
   return (
     <>
       <main className="w-full md:pt-20">
-        <NavbarLogOut />
+        <MainNavbar />
         <h1 className="md:hidden font-Quintessential text-5xl text-center pt-6">ZELÉV</h1>
         <h2 className="font-Quintessential text-center text-white/50 text-2xl p-4">El privilegio de lo exclusivo, ahora en tus manos.</h2>
         <aside className="w-full flex justify-center px-2 pt-4">

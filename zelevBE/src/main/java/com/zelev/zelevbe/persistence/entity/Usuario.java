@@ -6,13 +6,16 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.zelev.zelevbe.constants.EstadoUsuario;
 import com.zelev.zelevbe.persistence.entity.Rol.RolUsuario;
+import com.zelev.zelevbe.persistence.entity.imagen.Imagen;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -36,6 +39,9 @@ public class Usuario {
     private String apellidos;
     private String email;
     private String telefono;
+    private String departamento;
+    private String ciudad;
+    private Integer zipcode;
     private String direccion;
 
     @Column(name = "nombre_usuario")
@@ -54,5 +60,9 @@ public class Usuario {
     @OneToMany(mappedBy = "usuario")
     @JsonManagedReference("usuario-rol")
     private List<RolUsuario> roles;
+
+    @OneToOne
+    @JoinColumn(name = "imagen")
+    private Imagen imagen;
 
 }
