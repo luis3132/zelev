@@ -1,14 +1,17 @@
 "use client";
 
+import NavbarAdmin from "@/components/navbar/NavbarAdmin";
+import EncodeUsr from "@/lib/scripts/encodeUser";
+import { Post } from "@/lib/scripts/fetch";
 import { Usuario } from "@/lib/types/types";
 import { useEffect, useState } from "react";
-import NavbarLogOut from "./NavbarLogOut";
-import { Post } from "@/lib/scripts/fetch";
 import Swal from "sweetalert2";
-import NavbarLogIn from "./NavbarLogIn";
-import EncodeUsr from "@/lib/scripts/encodeUser";
 
-export default function MainNavbar() {
+export default function AdminLayout({
+    children,
+}: Readonly<{
+    children: React.ReactNode;
+}>) {
     const [usuario, setUsuario] = useState<Usuario | null>(null);
 
     useEffect(() => {
@@ -71,6 +74,21 @@ export default function MainNavbar() {
             }
             setUsuario(usr);
             sessionStorage.setItem("usuario", EncodeUsr(usr));
+            if (usr.roles.length === 1 && usr.roles[0].rol !== "ADMIN") {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'El usuario no tiene permisos para acceder a esta sección.',
+                    timer: 1000,
+                    timerProgressBar: true,
+                    showConfirmButton: false,
+                    background: "#1A1A1A",
+                    color: "#fff",
+                }).then(() => {
+                    sessionStorage.removeItem("currentPath");
+                    window.location.href = "/";
+                });
+            }
         }
         if (typeof window !== 'undefined') {
             const token = document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1];
@@ -81,20 +99,12 @@ export default function MainNavbar() {
             }
         }
     }, []);
-
-    useEffect(() => {
-        if (!usuario) {
-            return;
-        }
-        if (usuario && usuario.roles.length === 1 && usuario.roles[0].rol === "ADMIN") {
-            window.location.href = "/admin";
-        }
-    }, [usuario]);
-
     return (
         <>
-            {!usuario && <NavbarLogOut />}
-            {usuario && <NavbarLogIn usuario={usuario} />}
+            {usuario && <NavbarAdmin usuario={usuario} />}
+            <div className="w-full h-dvh md:pt-20">
+                {children}
+            </div>
         </>
     );
 }

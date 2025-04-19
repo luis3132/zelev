@@ -7,11 +7,11 @@ import Link from "next/link";
 import { FC, useEffect, useRef, useState } from "react";
 import { MenuIcon } from "../icons/icons";
 
-interface NavbarLogInProps {
+interface NavbarAdminProps {
     usuario: Usuario;
 }
 
-const NavbarLogIn: FC<NavbarLogInProps> = ({ usuario }) => {
+const NavbarAdmin: FC<NavbarAdminProps> = ({ usuario }) => {
     const [openMenus, setOpenMenus] = useState(false);
     const [clickedMenu, setClickedMenu] = useState("");
     const [foto, setFoto] = useState<string>("/logo/logo.png");
@@ -25,20 +25,20 @@ const NavbarLogIn: FC<NavbarLogInProps> = ({ usuario }) => {
                 const tokenValue = tokenString.split("=")[1];
                 setToken(tokenValue);
             }
-            if (window.location.pathname === "/profile") {
+            if (window.location.pathname === "/admin/profile") {
                 setClickedMenu("Perfil");
             }
-            if (window.location.pathname === "/categoria/hombre") {
-                setClickedMenu("HOMBRE");
+            if (window.location.pathname === "/admin/pedidos") {
+                setClickedMenu("PEDIDOS");
             }
-            if (window.location.pathname === "/categoria/mujer") {
-                setClickedMenu("MUJER");
+            if (window.location.pathname === "/admin/inventario") {
+                setClickedMenu("INVENTARIO");
             }
-            if (window.location.pathname === "/categoria/nino") {
-                setClickedMenu("NINOS");
+            if (window.location.pathname === "/admin/categoria") {
+                setClickedMenu("CATEGORIA");
             }
-            if (window.location.pathname === "/categoria/outlet") {
-                setClickedMenu("OUTLET");
+            if (window.location.pathname === "/admin/usuarios") {
+                setClickedMenu("USUARIOS");
             }
             if (window.location.pathname === "/") {
                 setClickedMenu("");
@@ -85,83 +85,85 @@ const NavbarLogIn: FC<NavbarLogInProps> = ({ usuario }) => {
         <>
             <div className="w-full pt-2 px-2 fixed z-50 md:h-32 md:top-0 bottom-0 left-0 max-md:pb-2">
                 <nav className={`flex flex-col items-end duration-500 transition-all bg-white/25 shadow-lg backdrop-blur-xs 
-                    rounded-2xl shadow-white-10 w-full ${openMenus ? "max-md:h-28" : "max-md:h-16"} overflow-hidden`}>
-                    <ul className={`w-full flex list-none justify-around text-lg md:hidden overflow-hidden transition-all duration-300 
+                    rounded-2xl shadow-white-10 w-full ${openMenus ? "max-md:h-32" : "max-md:h-16"} overflow-hidden`}>
+                    <ul className={`w-full flex list-none justify-around text-lg md:hidden overflow-hidden overflow-x-scroll gap-2 px-2 transition-all duration-300 
                         ${openMenus ? "pt-4 pb-1" : "h-0"}`}>
                         <li>
                             <Link
-                                href="/categoria/hombre"
-                                className={`cursor-pointer p-2 rounded-lg ${clickedMenu === "HOMBRE" ? "bg-white/20" : "bg-white/5"}`}
-                                onClick={() => clicked("HOMBRE")}
+                                href="/admin/pedidos"
+                                className={`cursor-pointer p-2 rounded-lg ${clickedMenu === "PEDIDOS" ? "bg-white/20" : "bg-white/5"}`}
+                                onClick={() => clicked("PEDIDOS")}
                             >
-                                HOMBRE
+                                PEDIDOS
                             </Link>
                         </li>
                         <li>
                             <Link
-                                href="/categoria/mujer"
-                                className={`cursor-pointer p-2 rounded-lg ${clickedMenu === "MUJER" ? "bg-white/20" : "bg-white/5"}`}
-                                onClick={() => clicked("MUJER")}
+                                href="/admin/inventario"
+                                className={`cursor-pointer p-2 rounded-lg ${clickedMenu === "INVENTARIO" ? "bg-white/20" : "bg-white/5"}`}
+                                onClick={() => clicked("INVENTARIO")}
                             >
-                                MUJER
+                                INVENTARIO
                             </Link>
                         </li>
                         <li>
                             <Link
-                                href="/categoria/nino"
-                                className={`cursor-pointer p-2 rounded-lg ${clickedMenu === "NINOS" ? "bg-white/20" : "bg-white/5"}`}
-                                onClick={() => clicked("NINOS")}
+                                href="/admin/categoria"
+                                className={`cursor-pointer p-2 rounded-lg ${clickedMenu === "CATEGORIA" ? "bg-white/20" : "bg-white/5"}`}
+                                onClick={() => clicked("CATEGORIA")}
                             >
-                                NIÑOS
+                                CATEGORIA
                             </Link>
                         </li>
-                        <li>
-                            <Link
-                                href="/categoria/outlet"
-                                className={`cursor-pointer p-2 rounded-lg ${clickedMenu === "OUTLET" ? "bg-white/20" : "bg-white/5"}`}
-                                onClick={() => clicked("OUTLET")}
-                            >
-                                OUTLET
-                            </Link>
-                        </li>
+                        {usuario.roles.find((rol) => rol.rol === "ADMIN") && (
+                            <li>
+                                <Link
+                                    href="/admin/usuarios"
+                                    className={`cursor-pointer p-2 rounded-lg ${clickedMenu === "USUARIOS" ? "bg-white/20" : "bg-white/5"}`}
+                                    onClick={() => clicked("USUARIOS")}
+                                >
+                                    USUARIOS
+                                </Link>
+                            </li>
+                        )}
                     </ul>
                     <div className="w-full flex max-md:flex-row-reverse items-center justify-between min-h-16 overflow-auto">
                         <section className="w-full max-md:flex max-md:justify-end">
                             <ul className="flex list-none gap-4 pl-4 mr-4 text-lg max-md:hidden">
                                 <li>
                                     <Link
-                                        href="/categoria/hombre"
-                                        className={`cursor-pointer p-2 rounded-lg ${clickedMenu === "HOMBRE" ? "bg-white/20" : "bg-white/5"}`}
-                                        onClick={() => clicked("HOMBRE")}
+                                        href="/admin/pedidos"
+                                        className={`cursor-pointer p-2 rounded-lg ${clickedMenu === "PEDIDOS" ? "bg-white/20" : "bg-white/5"}`}
+                                        onClick={() => clicked("PEDIDOS")}
                                     >
-                                        HOMBRE
+                                        PEDIDOS
                                     </Link>
                                 </li>
                                 <li>
                                     <Link
-                                        href="/categoria/mujer"
-                                        className={`cursor-pointer p-2 rounded-lg ${clickedMenu === "MUJER" ? "bg-white/20" : "bg-white/5"}`}
-                                        onClick={() => clicked("MUJER")}
+                                        href="/admin/inventario"
+                                        className={`cursor-pointer p-2 rounded-lg ${clickedMenu === "INVENTARIO" ? "bg-white/20" : "bg-white/5"}`}
+                                        onClick={() => clicked("INVENTARIO")}
                                     >
-                                        MUJER
+                                        INVENTARIO
                                     </Link>
                                 </li>
                                 <li>
                                     <Link
-                                        href="/categoria/nino"
-                                        className={`cursor-pointer p-2 rounded-lg ${clickedMenu === "NINOS" ? "bg-white/20" : "bg-white/5"}`}
-                                        onClick={() => clicked("NINOS")}
+                                        href="/admin/categoria"
+                                        className={`cursor-pointer p-2 rounded-lg ${clickedMenu === "CATEGORIA" ? "bg-white/20" : "bg-white/5"}`}
+                                        onClick={() => clicked("CATEGORIA")}
                                     >
-                                        NIÑOS
+                                        CATEGORIA
                                     </Link>
                                 </li>
                                 <li>
                                     <Link
-                                        href="/categoria/outlet"
-                                        className={`cursor-pointer p-2 rounded-lg ${clickedMenu === "OUTLET" ? "bg-white/20" : "bg-white/5"}`}
-                                        onClick={() => clicked("OUTLET")}
+                                        href="/admin/usuarios"
+                                        className={`cursor-pointer p-2 rounded-lg ${clickedMenu === "USUARIOS" ? "bg-white/20" : "bg-white/5"}`}
+                                        onClick={() => clicked("USUARIOS")}
                                     >
-                                        OUTLET
+                                        USUARIOS
                                     </Link>
                                 </li>
                             </ul>
@@ -176,7 +178,7 @@ const NavbarLogIn: FC<NavbarLogInProps> = ({ usuario }) => {
                         <section className="w-min">
                             <Link
                                 className="w-full flex justify-center"
-                                href="/"
+                                href="/admin"
                                 onClick={() => clicked("")}
                             >
                                 <h1 className="font-Quintessential text-4xl w-min">ZELÉV</h1>
@@ -184,7 +186,7 @@ const NavbarLogIn: FC<NavbarLogInProps> = ({ usuario }) => {
                         </section>
                         <section className="w-full flex md:justify-end md:pr-4 pl-4">
                             <Link
-                                href="/profile"
+                                href="/admin/profile"
                                 className={`flex items-center cursor-pointer p-2 rounded-lg ${clickedMenu === "Perfil" ? "bg-white/20" : "bg-white/5"}`}
                                 onClick={() => clicked("Perfil")}
                             >
@@ -206,4 +208,4 @@ const NavbarLogIn: FC<NavbarLogInProps> = ({ usuario }) => {
     )
 }
 
-export default NavbarLogIn;
+export default NavbarAdmin;

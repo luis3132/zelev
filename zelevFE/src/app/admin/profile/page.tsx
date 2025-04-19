@@ -617,11 +617,11 @@ export default function Home() {
                     <div className='w-full md:w-3/4 md:flex md:justify-end gap-4'>
                         {usuario && usuario?.roles.length > 1 && (
                             <Link
-                                href={"/admin"}
+                                href={"/"}
                                 className='bg-cyan-300/50 hover:bg-cyan-400/50 text-white font-bold py-2 gap-1 px-3 mb-3 rounded-lg max-md:w-full shadow-md shadow-cyan-300/50 transition duration-300 ease-in-out flex items-center justify-center'
                             >
                                 <Admin />
-                                Administrar
+                                Cliente
                             </Link>
                         )}
                         {isEditing ? (

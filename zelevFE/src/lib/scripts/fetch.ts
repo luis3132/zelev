@@ -30,7 +30,7 @@ export async function Get(url: string, token: string, body?: object, isBinary: b
 }
 
 export async function Post(url: string, token: string, body: object) {
-    let options: RequestInit = {
+    const options: RequestInit = {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -49,7 +49,7 @@ export async function Post(url: string, token: string, body: object) {
 }
 
 export async function UploadPost(url: string, token: string, body: FormData) {
-    let options: RequestInit = {
+    const options: RequestInit = {
         method: "POST",
         headers: {
             ...(token !== "" && { "Authorization": `Bearer ${token}` }),
