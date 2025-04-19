@@ -2,15 +2,13 @@ export async function Get(url: string, token: string, body?: object, isBinary: b
     const options: RequestInit = {
         method: "GET",
         headers: {
-            ...(token && { "Authorization": `Bearer ${token}` }),
+            ...(token !== "" && { "Authorization": `Bearer ${token}` }),
             ...(!isBinary && { "Content-Type": "application/json" }),
         },
         ...(body && { body: JSON.stringify(body) })
     };
-
     try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}${url}`, options);
-        
         if (!response.ok) {
             return { data: null, status: response.status, error: 'Error en la respuesta del servidor' };
         }
@@ -31,26 +29,32 @@ export async function Get(url: string, token: string, body?: object, isBinary: b
     }
 }
 
-export async function Post(url: string, token: string, body?: object) {
-    let options: RequestInit;
-    if (token === "") {
-        options = {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-        };
-    } else {
-        options = {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`,
-            },
-        };
+export async function Post(url: string, token: string, body: object) {
+    let options: RequestInit = {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            ...(token !== "" && { "Authorization": `Bearer ${token}` }),
+        },
+        body: JSON.stringify(body),
+    };
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}${url}`, options);
+        const data = await response.json();
+        return { data: { data }, status: response.status };
+    } catch (error) {
+        console.error(error);
+        return { data: { error: "Error al traer los datos" }, status: 500 };
     }
-    if (body) {
-        options.body = JSON.stringify(body);
+}
+
+export async function UploadPost(url: string, token: string, body: FormData) {
+    let options: RequestInit = {
+        method: "POST",
+        headers: {
+            ...(token !== "" && { "Authorization": `Bearer ${token}` }),
+        },
+        body: body,
     }
     try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}${url}`, options);
@@ -62,44 +66,15 @@ export async function Post(url: string, token: string, body?: object) {
     }
 }
 
-export async function UploadPost(url: string, token: string, body?: FormData) {
-    let options: RequestInit;
-    if (token === "") {
-        options = {
-            method: "POST",
-        };
-    } else {
-        options = {
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-            },
-        };
-    }
-    if (body) {
-        options.body = body;
-    }
-    try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}${url}`, options);
-        const data = await response.json();
-        return { data: { data }, status: response.status };
-    } catch (error) {
-        console.error(error);
-        return { data: { error: "Error al traer los datos" }, status: 500 };
-    }
-}
-
-export async function Put(url: string, token: string, body?: object) {
+export async function Put(url: string, token: string, body: object) {
     const options: RequestInit = {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`,
         },
+        body: JSON.stringify(body),
     };
-    if (body) {
-        options.body = JSON.stringify(body);
-    }
     try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}${url}`, options);
         const data = await response.json();
@@ -117,10 +92,8 @@ export async function Delete(url: string, token: string, body?: object) {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`,
         },
+        ...(body && { body: JSON.stringify(body) })
     };
-    if (body) {
-        options.body = JSON.stringify(body);
-    }
     try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}${url}`, options);
         const data = await response.json();

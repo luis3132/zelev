@@ -31,7 +31,8 @@ public class ImagenController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, path = "/upload")
     public ResponseEntity<Imagen> uploadImage(@RequestParam("imagen") MultipartFile file,
             @RequestParam("ruta") String ruta,
-            @RequestParam("existe") String existe) {
+            @RequestParam("existe") String existe,
+            @RequestParam("alt") String alt) {
         try {
 
             // Validar que el archivo no esté vacío
@@ -64,6 +65,13 @@ public class ImagenController {
                 // Guardar archivo
                 Files.copy(file.getInputStream(), destinationFile, StandardCopyOption.REPLACE_EXISTING);
 
+                if (alt.equals(imagen.getAlt())) {
+                    return ResponseEntity.ok(imagen);
+                }
+
+                // Actualizar el alt
+                imagen.setAlt(alt);
+                imagenService.update(imagen);
                 return ResponseEntity.ok(imagen);
             }
             
@@ -78,7 +86,7 @@ public class ImagenController {
 
             ImagenCreateDTO imagenDto = new ImagenCreateDTO();
             imagenDto.setUrl(destinationFile.toString());
-            imagenDto.setAlt("Imagen de usuario");
+            imagenDto.setAlt(alt);
 
             // Guardar en la base de datos
 

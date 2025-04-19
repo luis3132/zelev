@@ -85,7 +85,8 @@ export default function MainNavbar() {
     return (
         <>
             {!usuario && <NavbarLogOut />}
-            {usuario && <NavbarLogIn usuario={usuario} />}
+            {usuario && usuario.roles[0].rol !== "ADMIN" && <NavbarLogIn usuario={usuario} />}
+            {usuario && usuario.roles.length === 1 && usuario.roles[0].rol === "ADMIN" && <NavbarLogIn usuario={usuario} />}
         </>
     );
 }
