@@ -18,7 +18,7 @@ export default function RootLayout({
         <link rel="icon" href="/logo/logo.png" />
       </head>
       <body
-        className={`antialiased h-dvh overflow-scroll bg-black/90 flex flex-col`}
+        className={`antialiased max-h-dvh overflow-scroll bg-black/90 flex flex-col`}
       >
         {children}
       </body>

@@ -118,10 +118,17 @@ export default function Login() {
                                 <input
                                     id="cedula"
                                     name="cedula"
-                                    type="number"
+                                    type="text"
+                                    inputMode="numeric"
+                                    pattern="[0-9]*"
                                     placeholder="Cédula"
                                     required
+                                    maxLength={20}
                                     className="w-full max-w-[300px] p-2 rounded-md border border-gray-300 focus:outline-none focus:ring focus:ring-blue-500"
+                                    onInput={(e) => {
+                                        const input = e.target as HTMLInputElement;
+                                        input.value = input.value.replace(/[^0-9]/g, ""); // Ensure only numeric input
+                                    }}
                                 />
                                 <label htmlFor="nombres" className="sr-only">Nombres</label>
                                 <input
@@ -130,7 +137,14 @@ export default function Login() {
                                     type="text"
                                     placeholder="Nombres"
                                     required
+                                    maxLength={50}
                                     className="w-full max-w-[300px] p-2 rounded-md border border-gray-300 focus:outline-none focus:ring focus:ring-blue-500"
+                                    onInput={(e) => {
+                                        const input = e.target as HTMLInputElement;
+                                        if (input.value.length > 50) {
+                                            input.value = input.value.slice(0, 50);
+                                        }
+                                    }}
                                 />
                                 <label htmlFor="apellidos" className="sr-only">Apellidos</label>
                                 <input
@@ -139,7 +153,14 @@ export default function Login() {
                                     type="text"
                                     placeholder="Apellidos"
                                     required
+                                    maxLength={50}
                                     className="w-full max-w-[300px] p-2 rounded-md border border-gray-300 focus:outline-none focus:ring focus:ring-blue-500"
+                                    onInput={(e) => {
+                                        const input = e.target as HTMLInputElement;
+                                        if (input.value.length > 50) {
+                                            input.value = input.value.slice(0, 50);
+                                        }
+                                    }}
                                 />
                                 <label htmlFor="fechaNacimiento" className="sr-only">Fecha de Nacimiento</label>
                                 <input
@@ -157,7 +178,14 @@ export default function Login() {
                                     type="tel"
                                     placeholder="Número Telefónico"
                                     required
+                                    maxLength={10}
                                     className="w-full max-w-[300px] p-2 rounded-md border border-gray-300 focus:outline-none focus:ring focus:ring-blue-500"
+                                    onInput={(e) => {
+                                        const input = e.target as HTMLInputElement;
+                                        if (input.value.length > 10) {
+                                            input.value = input.value.slice(0, 10);
+                                        }
+                                    }}
                                 />
                                 <button
                                     type="button"
@@ -178,7 +206,14 @@ export default function Login() {
                                     type="text"
                                     placeholder="Nombre de Usuario"
                                     required
+                                    maxLength={10}
                                     className="w-full max-w-[300px] p-2 rounded-md border border-gray-300 focus:outline-none focus:ring focus:ring-blue-500"
+                                    onInput={(e) => {
+                                        const input = e.target as HTMLInputElement;
+                                        if (input.value.length > 10) {
+                                            input.value = input.value.slice(0, 10);
+                                        }
+                                    }}
                                 />
                                 <label htmlFor="email" className="sr-only">Correo electrónico</label>
                                 <input
@@ -187,7 +222,14 @@ export default function Login() {
                                     type="email"
                                     placeholder="Correo electrónico"
                                     required
+                                    maxLength={50}
                                     className="w-full max-w-[300px] p-2 rounded-md border border-gray-300 focus:outline-none focus:ring focus:ring-blue-500"
+                                    onInput={(e) => {
+                                        const input = e.target as HTMLInputElement;
+                                        if (input.value.length > 50) {
+                                            input.value = input.value.slice(0, 50);
+                                        }
+                                    }}
                                 />
                                 <label htmlFor="direccion" className="sr-only">Dirección</label>
                                 <input
@@ -196,7 +238,14 @@ export default function Login() {
                                     type="text"
                                     placeholder="Dirección"
                                     required
+                                    maxLength={100}
                                     className="w-full max-w-[300px] p-2 rounded-md border border-gray-300 focus:outline-none focus:ring focus:ring-blue-500"
+                                    onInput={(e) => {
+                                        const input = e.target as HTMLInputElement;
+                                        if (input.value.length > 100) {
+                                            input.value = input.value.slice(0, 100);
+                                        }
+                                    }}
                                 />
                                 <label htmlFor="password" className="sr-only">Contraseña</label>
                                 <input
@@ -205,6 +254,7 @@ export default function Login() {
                                     type="password"
                                     placeholder="Contraseña"
                                     required
+                                    minLength={5}
                                     className="w-full max-w-[300px] p-2 rounded-md border border-gray-300 focus:outline-none focus:ring focus:ring-blue-500"
                                 />
                                 <label htmlFor="confirmPassword" className="sr-only">Confirmar Contraseña</label>
@@ -214,6 +264,7 @@ export default function Login() {
                                     type="password"
                                     placeholder="Confirmar Contraseña"
                                     required
+                                    minLength={5}
                                     className="w-full max-w-[300px] p-2 rounded-md border border-gray-300 focus:outline-none focus:ring focus:ring-blue-500"
                                 />
                                 <div className="flex items-center gap-4 w-full">

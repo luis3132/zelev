@@ -55,7 +55,7 @@ export default function NavbarLogOut() {
 
     return (
         <>
-            <div className="w-full pt-2 px-2 fixed z-50 md:h-32 md:top-0 bottom-0 left-0 max-md:pb-2">
+            <div className="w-full pt-2 px-2 fixed z-50 md:h-24 md:top-0 bottom-0 left-0 max-md:pb-2">
                 <nav className={`flex flex-col items-end duration-500 transition-all bg-white/25 shadow-lg backdrop-blur-xs 
                     rounded-2xl shadow-white-10 w-full ${openMenus ? "max-md:h-28" : "max-md:h-16"} overflow-hidden`}>
                     <ul className={`w-full flex list-none justify-around text-lg md:hidden overflow-hidden transition-all duration-300 

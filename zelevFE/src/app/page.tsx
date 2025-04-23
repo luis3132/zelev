@@ -52,7 +52,6 @@ export default function Home() {
               </div>
             </div>
           </div>
-          
         </aside>
       </main>
       <section className="pt-4">
