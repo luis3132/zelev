@@ -16,7 +16,6 @@ export async function Get(url: string, token: string, body?: object, isBinary: b
         if (isBinary) {
             // Para respuestas binarias (imágenes, archivos)
             const blob = await response.blob();
-            console.log('Blob:', blob);
             return { data: blob, status: response.status };
         } else {
             // Para respuestas JSON
@@ -38,13 +37,19 @@ export async function Post(url: string, token: string, body: object) {
         },
         body: JSON.stringify(body),
     };
+    let response;
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}${url}`, options);
-        const data = await response.json();
-        return { data: { data }, status: response.status };
+        response = await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}${url}`, options);
     } catch (error) {
         console.error(error);
-        return { data: { error: "Error al traer los datos" }, status: 500 };
+        return { data: "Error al traer los datos", status: 500 };
+    }
+    try {
+        const data = await response.json();
+        return { data: data, status: response.status };
+    } catch (error) {
+        console.warn('json error: ', error);
+        return { data: { error: "Respuesta no es un objeto tipo JSON" }, status: response.status };
     }
 }
 
@@ -59,7 +64,7 @@ export async function UploadPost(url: string, token: string, body: FormData) {
     try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}${url}`, options);
         const data = await response.json();
-        return { data: { data }, status: response.status };
+        return { data: data, status: response.status };
     } catch (error) {
         console.error(error);
         return { data: { error: "Error al traer los datos" }, status: 500 };
@@ -75,13 +80,19 @@ export async function Put(url: string, token: string, body: object) {
         },
         body: JSON.stringify(body),
     };
+    let response;
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}${url}`, options);
-        const data = await response.json();
-        return { data: { data }, status: response.status };
+        response = await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}${url}`, options);
     } catch (error) {
         console.error(error);
         return { data: { error: "Error al traer los datos" }, status: 500 };
+    }
+    try {
+        const data = await response.json();
+        return { data: data, status: response.status };
+    } catch (error) {
+        console.warn('json error: ', error);
+        return { data: { error: "Respuesta no es un objeto tipo JSON" }, status: response.status };
     }
 }
 
@@ -97,7 +108,7 @@ export async function Delete(url: string, token: string, body?: object) {
     try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}${url}`, options);
         const data = await response.json();
-        return { data: { data }, status: response.status };
+        return { data: data, status: response.status };
     } catch (error) {
         console.error(error);
         return { data: { error: "Error al traer los datos" }, status: 500 };

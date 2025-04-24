@@ -25,19 +25,19 @@ const NavbarAdmin: FC<NavbarAdminProps> = ({ usuario }) => {
                 const tokenValue = tokenString.split("=")[1];
                 setToken(tokenValue);
             }
-            if (window.location.pathname === "/admin/profile") {
+            if (window.location.pathname.startsWith("/admin/profile")) {
                 setClickedMenu("Perfil");
             }
-            if (window.location.pathname === "/admin/pedidos") {
+            if (window.location.pathname.startsWith("/admin/pedidos")) {
                 setClickedMenu("PEDIDOS");
             }
-            if (window.location.pathname === "/admin/inventario") {
+            if (window.location.pathname.startsWith("/admin/inventario")) {
                 setClickedMenu("INVENTARIO");
             }
-            if (window.location.pathname === "/admin/categoria") {
+            if (window.location.pathname.startsWith("/admin/categoria")) {
                 setClickedMenu("CATEGORIA");
             }
-            if (window.location.pathname === "/admin/usuarios") {
+            if (window.location.pathname.startsWith("/admin/usuarios")) {
                 setClickedMenu("USUARIOS");
             }
             if (window.location.pathname === "/") {

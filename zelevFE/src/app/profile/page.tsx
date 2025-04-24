@@ -161,7 +161,7 @@ export default function Home() {
                 });
                 return;
             }
-            return data.data as Imagen;
+            return data as Imagen;
         }
     }
 

@@ -44,3 +44,12 @@ export interface Imagen {
     url: string;
     alt: string;
 }
+export interface Categoria {
+    idCategoria: number;
+    categoria: string;
+    subcategoria: string;
+}
+export interface CategoriaCreate {
+    categoria: string;
+    subCategoria: string;
+}

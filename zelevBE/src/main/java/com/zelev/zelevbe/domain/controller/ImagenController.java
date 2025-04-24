@@ -18,6 +18,11 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 
+/**
+ * 
+ * @author Luis Andres Gonzalez Corzo
+ */
+
 @RestController
 @RequestMapping("/api/imagen")
 public class ImagenController {

@@ -22,8 +22,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 /**
  * 
  * @author Luis Andres Gonzalez Corzo
- * 
- * Controller for Rol
  */
 
 @RestController

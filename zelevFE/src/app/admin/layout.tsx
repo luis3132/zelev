@@ -40,7 +40,7 @@ export default function AdminLayout({
                     window.location.href = "/auth/login";
                 });
             }
-            const usr: Usuario = data.data;
+            const usr: Usuario = data;
             if (!usr || usr.estado !== "ACTIVO") {
                 if (!usr) {
                     Swal.fire({
@@ -96,13 +96,26 @@ export default function AdminLayout({
                 fetchUsuario(token);
             } else {
                 sessionStorage.removeItem("usuario");
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'El usuario no tiene permisos para acceder a esta sección.',
+                    timer: 1000,
+                    timerProgressBar: true,
+                    showConfirmButton: false,
+                    background: "#1A1A1A",
+                    color: "#fff",
+                }).then(() => {
+                    sessionStorage.removeItem("currentPath");
+                    window.location.href = "/";
+                });
             }
         }
     }, []);
     return (
         <>
             {usuario && <NavbarAdmin usuario={usuario} />}
-            <div className="w-full h-dvh md:pt-20">
+            <div className="w-full md:pt-24">
                 {children}
             </div>
         </>

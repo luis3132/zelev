@@ -37,7 +37,7 @@ export default function MainNavbar() {
                     window.location.href = "/auth/login";
                 });
             }
-            const usr: Usuario = data.data;
+            const usr: Usuario = data;
             if (!usr || usr.estado !== "ACTIVO") {
                 if (!usr) {
                     Swal.fire({

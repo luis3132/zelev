@@ -44,7 +44,7 @@ export default function Login() {
             return;
         }
 
-        const userData: token = data.data;
+        const userData: token = data;
         document.cookie = `token=${userData.token}; path=/;`;
 
         Swal.fire({
