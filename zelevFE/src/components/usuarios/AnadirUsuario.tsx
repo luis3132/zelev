@@ -105,7 +105,7 @@ const AnadirUsuario: FC<AnadirUsuarioProps> = ({ closeModal }) => {
     return (
         <>
             <section className={`fixed top-0 left-0 w-full h-full backdrop-blur-sm flex justify-center items-center z-20 ${show ? "opacity-100" : "opacity-0"} transition-opacity duration-300`}>
-                <form onSubmit={handleSubmit} className="md:mt-40 mt-20 h-full">
+                <form onSubmit={handleSubmit} className="md:mt-40 mt-20 h-full flex justify-center items-center">
                     <div className="bg-black p-5 rounded-lg shadow-lg w-96 overflow-y-scroll max-h-[80%]">
                         <h2 className="text-xl font-bold mb-4">Añadir Usuario</h2>
                         <div className="mb-2">

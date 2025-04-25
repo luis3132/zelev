@@ -11,6 +11,7 @@ import com.zelev.zelevbe.domain.service.UsuarioService;
 import com.zelev.zelevbe.persistence.entity.Usuario;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -52,6 +53,17 @@ public class UsuarioController {
     @Secured("ADMIN")
     public ResponseEntity<List<Usuario>> listUsuariosByEstado(@PathVariable("estado") EstadoUsuario estado) {
         return ResponseEntity.ok(usuarioService.findByEstado(estado));
+    }
+
+    @GetMapping("/{cedula}")
+    @Secured("ADMIN")
+    public ResponseEntity<UsuarioListDTO> getUsuario(@PathVariable("cedula") String cedula) {
+        Optional<Usuario> usuario = usuarioService.findById(cedula);
+        if (usuario.isPresent()) {
+            UsuarioListDTO usuarioDTO = usuarioService.convertEntitytoDTOlist(usuario.get());
+            return ResponseEntity.ok(usuarioDTO);
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @PostMapping("/new")

@@ -42,7 +42,7 @@ export async function Post(url: string, token: string, body: object) {
         response = await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}${url}`, options);
     } catch (error) {
         console.error(error);
-        return { data: "Error al traer los datos", status: 500 };
+        return { data: "Error al Enviar los datos", status: 500 };
     }
     try {
         const data = await response.json();
@@ -67,7 +67,7 @@ export async function UploadPost(url: string, token: string, body: FormData) {
         return { data: data, status: response.status };
     } catch (error) {
         console.error(error);
-        return { data: { error: "Error al traer los datos" }, status: 500 };
+        return { data: { error: "Error al Enviar los datos" }, status: 500 };
     }
 }
 
@@ -85,7 +85,7 @@ export async function Put(url: string, token: string, body: object) {
         response = await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}${url}`, options);
     } catch (error) {
         console.error(error);
-        return { data: { error: "Error al traer los datos" }, status: 500 };
+        return { data: { error: "Error al actualizar los datos" }, status: 500 };
     }
     try {
         const data = await response.json();
@@ -105,12 +105,18 @@ export async function Delete(url: string, token: string, body?: object) {
         },
         ...(body && { body: JSON.stringify(body) })
     };
+    let response;
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}${url}`, options);
+        response = await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}${url}`, options);
+    } catch (error) {
+        console.error(error);
+        return { data: { error: "Error al Eliminar los datos" }, status: 500 };
+    }
+    try {
         const data = await response.json();
         return { data: data, status: response.status };
     } catch (error) {
-        console.error(error);
-        return { data: { error: "Error al traer los datos" }, status: 500 };
+        console.warn('json error: ', error);
+        return { data: { error: "Respuesta no es un objeto tipo JSON" }, status: response.status };
     }
 }

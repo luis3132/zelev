@@ -50,6 +50,18 @@ public class CategoriaService implements ICategoriaService {
         Optional<Categoria> existingCategoria = categoriaRepository.findById(categoria.getIdCategoria());
         if (existingCategoria.isPresent()) {
             Categoria updatedCategoria = existingCategoria.get();
+
+            if (categoria.getSubcategoria() == "" || categoria.getSubcategoria() == null) {
+                List<Categoria> subcategorias = categoriaRepository.findAllBySubcategoria(updatedCategoria.getCategoria());
+                List<Categoria> subcategoriasToUpdate = subcategorias.stream()
+                        .map(subcategoria -> {
+                            subcategoria.setCategoria(categoria.getCategoria());
+                            return subcategoria;
+                        })
+                        .toList();
+                categoriaRepository.saveAll(subcategoriasToUpdate);
+            }
+
             updatedCategoria.setCategoria(categoria.getCategoria());
             updatedCategoria.setSubcategoria(categoria.getSubcategoria());
             return categoriaRepository.save(updatedCategoria);

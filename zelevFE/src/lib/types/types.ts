@@ -36,6 +36,7 @@ export interface UsuarioUpdate {
     imagen: number;
     fechaNacimiento: Date;
     estado: string;
+    roles: Rol[];
     NuevosRoles: number[];
     EliminarRoles: number[];
 }
