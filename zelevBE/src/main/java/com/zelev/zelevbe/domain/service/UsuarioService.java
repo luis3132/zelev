@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.zelev.zelevbe.constants.EstadoUsuario;
+import com.zelev.zelevbe.domain.dto.Imagen.ImagenProfileDTO;
 import com.zelev.zelevbe.domain.dto.usuario.UsuarioCreateDTO;
 import com.zelev.zelevbe.domain.dto.usuario.UsuarioListDTO;
 import com.zelev.zelevbe.domain.dto.usuario.UsuarioUpdateDTO;
@@ -173,6 +174,9 @@ public class UsuarioService implements IUsuarioService {
         usuario.setDireccion(usuarioCreateDTO.getDireccion());
         usuario.setFechaNacimiento(usuarioCreateDTO.getFechaNacimiento());
         usuario.setFechaCreacion(Date.from(new Date().toInstant()));
+        usuario.setZipcode(usuarioCreateDTO.getZipcode());
+        usuario.setDepartamento(usuarioCreateDTO.getDepartamento());
+        usuario.setCiudad(usuarioCreateDTO.getCiudad());
         usuario.setEstado(EstadoUsuario.ACTIVO);
 
         return usuario;
@@ -188,8 +192,20 @@ public class UsuarioService implements IUsuarioService {
         usuarioListDTO.setEmail(usuario.getEmail());
         usuarioListDTO.setTelefono(usuario.getTelefono());
         usuarioListDTO.setDireccion(usuario.getDireccion());
+        usuarioListDTO.setDepartamento(usuario.getDepartamento());
+        usuarioListDTO.setCiudad(usuario.getCiudad());
+        usuarioListDTO.setZipcode(usuario.getZipcode());
         usuarioListDTO.setFechaNacimiento(usuario.getFechaNacimiento());
         usuarioListDTO.setEstado(usuario.getEstado());
+        
+        ImagenProfileDTO imagenProfileDTO = new ImagenProfileDTO();
+        if (usuario.getImagen() != null) {
+            imagenProfileDTO.setIdImagen(usuario.getImagen().getIdImagen());
+            imagenProfileDTO.setUrl(usuario.getImagen().getUrl());
+            imagenProfileDTO.setAlt(usuario.getImagen().getAlt());
+            
+            usuarioListDTO.setImagen(imagenProfileDTO);
+        }
 
         List<Rol> roles = usuario.getRoles().stream().map(rol -> {
             Rol rolDTO = rol.getRol();

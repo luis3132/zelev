@@ -122,6 +122,7 @@ export default function Login() {
                                     inputMode="numeric"
                                     pattern="[0-9]*"
                                     placeholder="Cédula"
+                                    autoFocus
                                     required
                                     maxLength={20}
                                     className="w-full max-w-[300px] p-2 rounded-md border border-gray-300 focus:outline-none focus:ring focus:ring-blue-500"

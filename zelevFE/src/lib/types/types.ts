@@ -2,7 +2,7 @@ export interface token {
     token: string;
 }
 export interface Rol {
-    id: number;
+    idRol: number;
     rol: string;
 }
 export interface Usuario {

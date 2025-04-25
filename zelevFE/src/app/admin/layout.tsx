@@ -115,7 +115,7 @@ export default function AdminLayout({
     return (
         <>
             {usuario && <NavbarAdmin usuario={usuario} />}
-            <div className="w-full md:pt-24">
+            <div className="w-full h-full md:pt-24">
                 {children}
             </div>
         </>

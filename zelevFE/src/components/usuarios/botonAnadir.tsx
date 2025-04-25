@@ -1,12 +1,9 @@
-import { FC, useState } from "react";
+import { useState } from "react";
 import { Anadir } from "../icons/icons";
-import AnadirCategoria from "./AnadirCategoria";
+import AnadirUsuario from "./AnadirUsuario";
 
-interface BotonAnadirProps {
-    categoria: boolean;
-}
 
-const BotonAnadir: FC<BotonAnadirProps> = ({ categoria }) => {
+const BotonAnadir = () => {
     const [open, setOpen] = useState(false);
 
     const handleClick = () => {
@@ -20,9 +17,9 @@ const BotonAnadir: FC<BotonAnadirProps> = ({ categoria }) => {
                 onClick={handleClick}
             >
                 <Anadir />
-                {categoria ? "Añadir Categoria" : "Añadir Subcategoria"}
+                Añadir Usuario
             </button>
-            {open && <AnadirCategoria categoria={categoria} closeModal={handleClick} />}
+            {open && (<AnadirUsuario closeModal={handleClick} />)}
         </>
     )
 }
