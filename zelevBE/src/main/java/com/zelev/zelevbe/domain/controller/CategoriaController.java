@@ -30,8 +30,13 @@ public class CategoriaController {
     @Autowired
     private CategoriaService categoriaService;
 
+    @GetMapping("/list")
+    public ResponseEntity<List<Categoria>> listAllCategoria() {
+        return ResponseEntity.ok(categoriaService.findAll());
+    }
+
     @GetMapping("/list/{categoria}")
-    public ResponseEntity<List<Categoria>> findAll(@PathVariable("categoria") String categoria) {
+    public ResponseEntity<List<Categoria>> findAllBySubcategoria(@PathVariable("categoria") String categoria) {
         return ResponseEntity.ok(categoriaService.findAllBySubcategoria(categoria));
     }
 

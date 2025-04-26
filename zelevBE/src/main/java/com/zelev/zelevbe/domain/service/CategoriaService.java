@@ -26,6 +26,11 @@ public class CategoriaService implements ICategoriaService {
     private CategoriaRepository categoriaRepository;
 
     @Override
+    public List<Categoria> findAll() {
+        return categoriaRepository.findAll();
+    }
+
+    @Override
     public List<Categoria> findAllBySubcategoria(String categoria) {
         return categoriaRepository.findAllBySubcategoria(categoria);
     }

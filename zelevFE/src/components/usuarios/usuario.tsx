@@ -39,7 +39,7 @@ const UsuarioCard: FC<UsuarioCardProps> = ({ usuario, token }) => {
     }, [usuario, token]);
 
     return (
-        <div className="w-64 h-56 flex flex-col rounded-lg p-2 shadow-xl shadow-white/15 items-center">
+        <div className="w-64 h-56 flex flex-col rounded-lg p-2 bg-gray-800 hover:bg-gray-700/50 items-center">
             <div className="max-h-[125px] h-[125px] justify-center items-center flex overflow-hidden">
                 <Image
                     src={foto}

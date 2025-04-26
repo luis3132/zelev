@@ -12,6 +12,7 @@ import com.zelev.zelevbe.persistence.entity.Categoria.Categoria;
  */
 
 public interface ICategoriaService {
+    List<Categoria> findAll();
     List<Categoria> findAllBySubcategoria(String categoria);
     List<Categoria> findAllByCategoria();
     Optional<Categoria> findById(Integer id);
