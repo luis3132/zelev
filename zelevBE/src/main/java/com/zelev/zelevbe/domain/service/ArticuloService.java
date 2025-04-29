@@ -14,6 +14,7 @@ import com.zelev.zelevbe.constants.EstadoUnidad;
 import com.zelev.zelevbe.domain.dto.articulo.ArticuloCreateDTO;
 import com.zelev.zelevbe.domain.dto.articulo.ArticuloListDTO;
 import com.zelev.zelevbe.domain.dto.articulo.UnidadCreateDTO;
+import com.zelev.zelevbe.domain.dto.articulo.UnidadUpdateDTO;
 import com.zelev.zelevbe.domain.service.interfaces.IArticuloService;
 import com.zelev.zelevbe.persistence.entity.Articulo;
 import com.zelev.zelevbe.persistence.entity.Unidad;
@@ -105,8 +106,8 @@ public class ArticuloService implements IArticuloService {
     }
 
     @Override
-    public Unidad updateUnidad(Unidad unidad) {
-        return unidadRepository.save(unidad);
+    public Unidad updateUnidad(UnidadUpdateDTO unidad) {
+        return unidadRepository.save(mapUnidad(unidad));
     }
 
     @Override
@@ -137,6 +138,7 @@ public class ArticuloService implements IArticuloService {
         articuloListDTO.setDescripcion(articulo.getDescripcion());
         articuloListDTO.setImpuesto(articulo.getImpuesto());
         articuloListDTO.setEstado(articulo.getEstado().toString());
+        articuloListDTO.setImagenes(articulo.getImagenes());
 
         List<Categoria> categorias = articulo.getCategorias().stream()
                 .map(artiCate -> artiCate.getCategoria())
@@ -167,6 +169,25 @@ public class ArticuloService implements IArticuloService {
 
         unidadEntity.setCantidad(unidad.getCantidad());
         unidadEntity.setEstado(EstadoUnidad.STOCK);
+        return unidadEntity;
+    }
+
+    private Unidad mapUnidad(UnidadUpdateDTO unidad) {
+        Unidad unidadEntity = new Unidad();
+        unidadEntity.setUpc(unidad.getUpc());
+        unidadEntity.setUpc(unidad.getUpc());
+        unidadEntity.setLabel(unidad.getLabel());
+        unidadEntity.setPrecio(unidad.getPrecio());
+        unidadEntity.setCantidad(unidad.getCantidad());
+
+        Optional<Articulo> articulo = findByIdArticulo(unidad.getArticulo());
+        if (articulo.isPresent()) {
+            unidadEntity.setArticulo(articulo.get());
+        } else {
+            throw new RuntimeException("Articulo not found");
+        }
+        unidadEntity.setEstado(EstadoUnidad.valueOf(unidad.getEstado()));
+
         return unidadEntity;
     }
 

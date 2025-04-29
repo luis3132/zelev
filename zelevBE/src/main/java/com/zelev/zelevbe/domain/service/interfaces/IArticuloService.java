@@ -6,6 +6,7 @@ import java.util.Optional;
 import com.zelev.zelevbe.domain.dto.articulo.ArticuloCreateDTO;
 import com.zelev.zelevbe.domain.dto.articulo.ArticuloListDTO;
 import com.zelev.zelevbe.domain.dto.articulo.UnidadCreateDTO;
+import com.zelev.zelevbe.domain.dto.articulo.UnidadUpdateDTO;
 import com.zelev.zelevbe.persistence.entity.Articulo;
 import com.zelev.zelevbe.persistence.entity.Unidad;
 
@@ -22,6 +23,6 @@ public interface IArticuloService {
     Boolean deleteArticulo(Integer id);
     Optional<Unidad> findByIdUnidad(Long id);
     Unidad saveUnidad(UnidadCreateDTO unidad);
-    Unidad updateUnidad(Unidad unidad);
+    Unidad updateUnidad(UnidadUpdateDTO unidad);
     Boolean deleteUnidad(Long id);
 }

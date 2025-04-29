@@ -71,6 +71,12 @@ export interface UnidadCreate {
     estado: string;
     descripcion: string;
 }
+export interface ImgArtUni {
+    idImgArtUni: number;
+    articulo: Articulo;
+    unidad: Unidad;
+    imagen: Imagen;
+}
 export interface Articulo {
     idArticulo: number;
     nombre: string;
@@ -79,7 +85,7 @@ export interface Articulo {
     estado: string;
     categorias: Categoria[];
     unidades: Unidad[];
-    imagenes: Imagen[];
+    imagenes: ImgArtUni[];
 }
 export interface ArticuloCreate {
     nombre: string;

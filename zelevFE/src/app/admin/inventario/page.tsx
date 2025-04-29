@@ -5,7 +5,7 @@ import FiltersComponent from "@/components/main/filters";
 import useReload from "@/lib/hooks/reload";
 import { Get } from "@/lib/scripts/fetch";
 import { Articulo, Categoria } from "@/lib/types/types";
-import { useEffect, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 
 export default function Home() {
     const [token, setToken] = useState<string>("");
@@ -15,6 +15,7 @@ export default function Home() {
     const { ReloadContext, loading, loadingUpdate, reload, update } = useReload();
     const [hasMore, setHasMore] = useState<boolean>(true);
     const observerTarget = useRef(null);
+    const [nombreQuery, setNombreQuery] = useState<string>("");
     const [expandedCategories, setExpandedCategories] = useState<Record<number, boolean>>({});
     const [selectedCategories, setSelectedCategories] = useState<Record<number, boolean>>({});
 
@@ -90,14 +91,27 @@ export default function Home() {
             .filter(([_, value]) => value)
             .map(([key, _]) => parseInt(key));
         if (idCategoria.length === 0) {
-            return true;
+            if (nombreQuery === "") {
+                return true;
+            }
+            const nombreMatch = articulo.nombre.toLowerCase().includes(nombreQuery.toLowerCase());
+            return nombreMatch;
         }
-        return articulo.categorias.some((categoria) => {
+        if (nombreQuery === "") {
+            return articulo.categorias.some((categoria) => {
+                return idCategoria.includes(categoria.idCategoria);
+            });
+        }
+        const nombreMatch = articulo.nombre.toLowerCase().includes(nombreQuery.toLowerCase());
+        const categoriaMatch = articulo.categorias.some((categoria) => {
             return idCategoria.includes(categoria.idCategoria);
         });
+        return nombreMatch && categoriaMatch;
     });
 
-    console.log("articulos filtrados", articulosFiltrados);
+    const handleNombreQueryChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setNombreQuery(e.target.value);
+    };
 
     const toggleCategory = (categoryId: number) => {
         setExpandedCategories(prev => ({
@@ -118,9 +132,18 @@ export default function Home() {
                 <FiltersComponent toggleCategory={toggleCategory} handleSelectCategory={handleSelectCategory} expandedCategories={expandedCategories} selectedCategories={selectedCategories} categoriasPadre={categoriasPadre} categories={categories} showAnadir={true} />
 
                 <main className="md:w-4/5 w-full max-h-full overflow-y-scroll p-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="mb-4">
+                        <input
+                            type="text"
+                            placeholder="Buscar por nombre"
+                            className="w-full p-2 border border-gray-300 rounded"
+                            onChange={(e) => handleNombreQueryChange(e)}
+                            value={nombreQuery}
+                        />
+                    </div>
+                    <div className="grid grid-cols-1 gap-4">
                         {articulosFiltrados.map((articulo) => (
-                            <Inventario key={articulo.idArticulo} articulo={articulo} />
+                            <Inventario key={articulo.idArticulo} articulo={articulo} token={token} />
                         ))}
                     </div>
                     <div ref={observerTarget} className="h-10 my-4">

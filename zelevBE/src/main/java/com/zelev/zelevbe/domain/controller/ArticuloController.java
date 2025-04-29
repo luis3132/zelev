@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.zelev.zelevbe.domain.dto.articulo.ArticuloCreateDTO;
 import com.zelev.zelevbe.domain.dto.articulo.ArticuloListDTO;
 import com.zelev.zelevbe.domain.dto.articulo.UnidadCreateDTO;
+import com.zelev.zelevbe.domain.dto.articulo.UnidadUpdateDTO;
 import com.zelev.zelevbe.domain.service.ArticuloService;
 import com.zelev.zelevbe.persistence.entity.Articulo;
 import com.zelev.zelevbe.persistence.entity.Unidad;
@@ -86,7 +87,7 @@ public class ArticuloController {
     
     @PutMapping("/unidad/{id}")
     @Secured("ADMIN")
-    public ResponseEntity<Unidad> updateUnidad(@RequestBody Unidad unidad) {
+    public ResponseEntity<Unidad> updateUnidad(@RequestBody UnidadUpdateDTO unidad) {
         return ResponseEntity.ok(articuloService.updateUnidad(unidad));
     }
 

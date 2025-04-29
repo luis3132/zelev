@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.zelev.zelevbe.persistence.entity.Unidad;
 import com.zelev.zelevbe.persistence.entity.Categoria.Categoria;
-import com.zelev.zelevbe.persistence.entity.imagen.Imagen;
+import com.zelev.zelevbe.persistence.entity.imagen.ImgArtUni;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,6 +25,6 @@ public class ArticuloListDTO {
     private Double impuesto;
     private String estado;
     private List<Categoria> categorias;
-    private List<Imagen> imagenes;
+    private List<ImgArtUni> imagenes;
     private List<Unidad> unidades;
 }

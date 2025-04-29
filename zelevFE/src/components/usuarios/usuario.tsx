@@ -43,7 +43,7 @@ const UsuarioCard: FC<UsuarioCardProps> = ({ usuario, token }) => {
             <div className="max-h-[125px] h-[125px] justify-center items-center flex overflow-hidden">
                 <Image
                     src={foto}
-                    alt="Imagen"
+                    alt={usuario.imagen.alt}
                     width={110}
                     height={110}
                     className="h-min object-cover rounded-2xl"

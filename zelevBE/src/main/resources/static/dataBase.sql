@@ -55,13 +55,13 @@ CREATE TABLE IF NOT EXISTS unidad (
 	CONSTRAINT unidad_articulo_FK FOREIGN KEY (articulo) REFERENCES articulo (id_articulo) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS img_art_uni (,
+CREATE TABLE IF NOT EXISTS img_art_uni (
 	id_img_art_uni int auto_increment primary key,
 	imagen int not null,
 	articulo int not null,
 	unidad bigint,
 	CONSTRAINT img_art_uni_imagen_FK FOREIGN KEY (imagen) REFERENCES imagen (id_imagen) ON DELETE CASCADE,
-	CONSTRAINT img_art_uni_articulo_FK FOREIGN KEY (articulo) REFERENCES articulo (id_articMorral Rosario de cuero para mujer corte hexagonalulo) ON DELETE CASCADE,
+	CONSTRAINT img_art_uni_articulo_FK FOREIGN KEY (articulo) REFERENCES articulo (id_articulo) ON DELETE CASCADE,
 	CONSTRAINT img_art_uni_unidad_FK FOREIGN KEY (unidad) REFERENCES unidad (upc) ON DELETE CASCADE
 );
 
