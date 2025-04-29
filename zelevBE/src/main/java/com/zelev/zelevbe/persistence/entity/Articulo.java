@@ -4,10 +4,13 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.zelev.zelevbe.constants.EstadoArticulo;
+import com.zelev.zelevbe.persistence.entity.Categoria.ArtiCate;
 import com.zelev.zelevbe.persistence.entity.imagen.ImgArtUni;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -37,7 +40,13 @@ public class Articulo {
     private String nombre;
     private String descripcion;
     private Double impuesto;
+
+    @Enumerated(EnumType.STRING)
     private EstadoArticulo estado;
+
+    @OneToMany(mappedBy = "articulo")
+    @JsonManagedReference("articulo-categoria")
+    private List<ArtiCate> categorias;
 
     @OneToMany(mappedBy = "articulo")
     @JsonManagedReference("articulo-imagen")

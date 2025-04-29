@@ -132,7 +132,12 @@ export default function Home() {
         e.preventDefault();
 
         const { cedula, NuevosRoles, EliminarRoles, estado } = usuarioEdit || {};
-        const usuarioEdit2 = { cedula, NuevosRoles, EliminarRoles, estado };
+        const usuarioEdit2 = { 
+            cedula: cedula, 
+            NuevosRoles: NuevosRoles, 
+            EliminarRoles: EliminarRoles, 
+            estado: estado,
+        } as UsuarioUpdate;
 
         if (usuarioEdit) {
             const { status } = await Put(`/api/usuario/update`, token, usuarioEdit2);

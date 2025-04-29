@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.zelev.zelevbe.domain.dto.articulo.ArticuloCreateDTO;
+import com.zelev.zelevbe.domain.dto.articulo.ArticuloListDTO;
 import com.zelev.zelevbe.domain.dto.articulo.UnidadCreateDTO;
 import com.zelev.zelevbe.persistence.entity.Articulo;
 import com.zelev.zelevbe.persistence.entity.Unidad;
@@ -14,7 +15,7 @@ import com.zelev.zelevbe.persistence.entity.Unidad;
  */
 
 public interface IArticuloService {
-    List<Articulo> findAllArticulos();
+    List<ArticuloListDTO> findAllArticulos(Integer page, Integer size);
     Optional<Articulo> findByIdArticulo(Integer id);
     Articulo saveArticulo(ArticuloCreateDTO articulo);
     Articulo updateArticulo(Articulo articulo);

@@ -7,6 +7,8 @@ import com.zelev.zelevbe.constants.EstadoUnidad;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -36,7 +38,9 @@ public class Unidad {
     @Column(name = "fecha_creacion")
     private Date fechaCreacion;
 
+    @Enumerated(EnumType.STRING)
     private EstadoUnidad estado;
+    
     private String descripcion;
 
     @ManyToOne

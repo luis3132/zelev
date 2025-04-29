@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.zelev.zelevbe.domain.dto.articulo.ArticuloCreateDTO;
+import com.zelev.zelevbe.domain.dto.articulo.ArticuloListDTO;
 import com.zelev.zelevbe.domain.dto.articulo.UnidadCreateDTO;
 import com.zelev.zelevbe.domain.service.ArticuloService;
 import com.zelev.zelevbe.persistence.entity.Articulo;
@@ -38,9 +39,15 @@ public class ArticuloController {
     @Autowired
     private ArticuloService articuloService;
 
-    @GetMapping("/articulo/list")
-    public ResponseEntity<List<Articulo>> listAllArticulo() {
-        return ResponseEntity.ok(articuloService.findAllArticulos());
+    @GetMapping("/articulo/list/{page}/{size}")
+    public ResponseEntity<List<ArticuloListDTO>> listAllArticulo(@PathVariable("page") Integer page, @PathVariable("size") Integer size) {
+        if (page == null || size == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        if (page < 0 || size <= 0) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(articuloService.findAllArticulos(page, size));
     }
     
     @GetMapping("/articulo/{id}")

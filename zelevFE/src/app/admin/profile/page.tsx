@@ -4,11 +4,12 @@ import { Admin, CancelIcon, DeleteIcon, Edit, LogOut, SaveIcon } from '@/compone
 import Ciudades from '@/components/profile/ciudades';
 import Departamentos from '@/components/profile/departamentos';
 import DecodeUsr from '@/lib/scripts/decodeUser';
-import { Delete, Put, UploadPost, Get } from '@/lib/scripts/fetch';
-import { Imagen, Usuario, UsuarioUpdate } from '@/lib/types/types';
+import { Delete, Put, Get } from '@/lib/scripts/fetch';
+import FormImagen from '@/lib/scripts/formImage';
+import { Usuario, UsuarioUpdate } from '@/lib/types/types';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
 import Swal from 'sweetalert2';
 
 export default function Home() {
@@ -141,31 +142,7 @@ export default function Home() {
         });
     }
 
-    const loadImage = async () => {
-        if (file) {
-            const formData = new FormData();
-            formData.append("imagen", file);
-            formData.append("ruta", "profile");
-            formData.append("existe", usuario?.imagen ? usuario.imagen.idImagen.toString() : "false");
-            formData.append("alt", "Imagen de perfil de " + usuario?.nombres);
-            const { data, status } = await UploadPost("/api/imagen/upload", token, formData);
-            if (status !== 200) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'No se ha podido actualizar la imagen.',
-                    confirmButtonText: "Aceptar",
-                    confirmButtonColor: "#3085d6",
-                    background: "#1A1A1A",
-                    color: "#fff",
-                });
-                return;
-            }
-            return data.data as Imagen;
-        }
-    }
-
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         // Verificar si hay cambios reales
@@ -213,14 +190,14 @@ export default function Home() {
         // Procesar imagen si existe
         if (file) {
             try {
-                const data = await loadImage();
-                if (data) {
+                const {data, status} = await FormImagen(file, usuario?.imagen ? usuario.imagen.idImagen.toString() : "false", "Imagen de perfil de " + usuario?.nombres, token);
+                if (status === 200) {
                     idImagen = data.idImagen;
                 } else {
                     await Swal.fire({
                         icon: 'error',
                         title: 'Error',
-                        text: 'No se ha podido cargar la imagen.',
+                        text: 'No se ha podido actualizar la imagen.',
                         confirmButtonText: "Aceptar",
                         confirmButtonColor: "#3085d6",
                         background: "#1A1A1A",

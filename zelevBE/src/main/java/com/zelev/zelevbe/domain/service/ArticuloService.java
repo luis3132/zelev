@@ -4,15 +4,21 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.zelev.zelevbe.constants.EstadoArticulo;
 import com.zelev.zelevbe.constants.EstadoUnidad;
 import com.zelev.zelevbe.domain.dto.articulo.ArticuloCreateDTO;
+import com.zelev.zelevbe.domain.dto.articulo.ArticuloListDTO;
 import com.zelev.zelevbe.domain.dto.articulo.UnidadCreateDTO;
 import com.zelev.zelevbe.domain.service.interfaces.IArticuloService;
 import com.zelev.zelevbe.persistence.entity.Articulo;
 import com.zelev.zelevbe.persistence.entity.Unidad;
+import com.zelev.zelevbe.persistence.entity.Categoria.ArtiCatePK;
+import com.zelev.zelevbe.persistence.entity.Categoria.Categoria;
 import com.zelev.zelevbe.persistence.repository.ArticuloRepository;
 import com.zelev.zelevbe.persistence.repository.UnidadRepository;
 
@@ -33,9 +39,18 @@ public class ArticuloService implements IArticuloService {
     @Autowired
     private UnidadRepository unidadRepository;
 
+    @Autowired
+    @Lazy
+    private CategoriaService categoriaService;
+
     @Override
-    public List<Articulo> findAllArticulos() {
-        return articuloRepository.findAll();
+    public List<ArticuloListDTO> findAllArticulos(Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size);
+        List<Articulo> articulos = articuloRepository.findAll(pageable).getContent();
+
+        return articulos.stream()
+                .map(this::mapArticuloList)
+                .toList();
     }
 
     @Override
@@ -49,6 +64,14 @@ public class ArticuloService implements IArticuloService {
 
         articulo.getUnidades().forEach(unidad -> {
             saveUnidad(unidad);
+        });
+
+        articulo.getCategorias().forEach(categoria -> {
+            ArtiCatePK artiCatePK = new ArtiCatePK();
+            artiCatePK.setArticulo(temp.getIdArticulo());
+            artiCatePK.setCategoria(categoria);
+            
+            categoriaService.saveArtiCate(artiCatePK);
         });
 
         return temp;
@@ -105,6 +128,28 @@ public class ArticuloService implements IArticuloService {
         articuloEntity.setImpuesto(articulo.getImpuesto());
         articuloEntity.setEstado(EstadoArticulo.ACTIVO);
         return articuloEntity;
+    }
+
+    private ArticuloListDTO mapArticuloList(Articulo articulo) {
+        ArticuloListDTO articuloListDTO = new ArticuloListDTO();
+        articuloListDTO.setIdArticulo(articulo.getIdArticulo());
+        articuloListDTO.setNombre(articulo.getNombre());
+        articuloListDTO.setDescripcion(articulo.getDescripcion());
+        articuloListDTO.setImpuesto(articulo.getImpuesto());
+        articuloListDTO.setEstado(articulo.getEstado().toString());
+
+        List<Categoria> categorias = articulo.getCategorias().stream()
+                .map(artiCate -> artiCate.getCategoria())
+                .toList();
+
+        articuloListDTO.setCategorias(categorias);
+
+        List<Unidad> unidades = articulo.getUnidades().stream()
+                .filter(unidad -> unidad.getEstado() == EstadoUnidad.STOCK)
+                .toList();
+        articuloListDTO.setUnidades(unidades);
+
+        return articuloListDTO;
     }
 
     private Unidad mapUnidad(UnidadCreateDTO unidad) {

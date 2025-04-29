@@ -4,11 +4,16 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.zelev.zelevbe.domain.dto.CategoriaCreateDTO;
 import com.zelev.zelevbe.domain.service.interfaces.ICategoriaService;
+import com.zelev.zelevbe.persistence.entity.Articulo;
+import com.zelev.zelevbe.persistence.entity.Categoria.ArtiCate;
+import com.zelev.zelevbe.persistence.entity.Categoria.ArtiCatePK;
 import com.zelev.zelevbe.persistence.entity.Categoria.Categoria;
+import com.zelev.zelevbe.persistence.repository.Categoria.ArtiCateRepository;
 import com.zelev.zelevbe.persistence.repository.Categoria.CategoriaRepository;
 
 import jakarta.transaction.Transactional;
@@ -24,6 +29,13 @@ public class CategoriaService implements ICategoriaService {
     
     @Autowired
     private CategoriaRepository categoriaRepository;
+
+    @Autowired
+    private ArtiCateRepository artiCateRepository;
+
+    @Autowired
+    @Lazy
+    private ArticuloService articuloService;
 
     @Override
     public List<Categoria> findAll() {
@@ -79,6 +91,39 @@ public class CategoriaService implements ICategoriaService {
         Optional<Categoria> categoria = categoriaRepository.findById(id);
         if (categoria.isPresent()) {
             categoriaRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public Optional<ArtiCate> findByIdArtiCate(ArtiCatePK id) {
+        return artiCateRepository.findById(id);
+    }
+
+    @Override
+    public ArtiCate saveArtiCate(ArtiCatePK id) {
+        ArtiCate artiCate = new ArtiCate();
+        artiCate.setId(id);
+
+        Optional<Categoria> categoria = categoriaRepository.findById(id.getCategoria());
+        if (!categoria.isPresent()) {
+            return null;
+        }
+        Optional<Articulo> articulo = articuloService.findByIdArticulo(id.getArticulo());
+        if (!articulo.isPresent()) {
+            return null;
+        }
+        artiCate.setArticulo(articulo.get());
+        artiCate.setCategoria(categoria.get());
+        return artiCateRepository.save(artiCate);
+    }
+
+    @Override
+    public Boolean deleteByIdArtiCate(ArtiCatePK id) {
+        Optional<ArtiCate> artiCate = artiCateRepository.findById(id);
+        if (artiCate.isPresent()) {
+            artiCateRepository.deleteById(id);
             return true;
         }
         return false;

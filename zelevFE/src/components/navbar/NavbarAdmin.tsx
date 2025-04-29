@@ -1,29 +1,119 @@
 "use client";
 
-import { Get } from "@/lib/scripts/fetch";
+import { Get, Post } from "@/lib/scripts/fetch";
 import { Usuario } from "@/lib/types/types";
 import Image from "next/image";
 import Link from "next/link";
-import { FC, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MenuIcon } from "../icons/icons";
+import Swal from "sweetalert2";
+import EncodeUsr from "@/lib/scripts/encodeUser";
 
-interface NavbarAdminProps {
-    usuario: Usuario;
-}
-
-const NavbarAdmin: FC<NavbarAdminProps> = ({ usuario }) => {
+const NavbarAdmin = () => {
     const [openMenus, setOpenMenus] = useState(false);
     const [clickedMenu, setClickedMenu] = useState("");
     const [foto, setFoto] = useState<string>("/logo/logo.png");
     const [token, setToken] = useState<string>("");
     const fotoRef = useRef("");
+    const [usuario, setUsuario] = useState<Usuario | null>(null);
+
+    const fetchUsuario = async (token: string) => {
+        const { data, status } = await Post("/auth/verify", "", {
+            token: token
+        })
+        if (status === 403) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'La sesión ha expirado, por favor inicie sesión nuevamente.',
+                timer: 3000,
+                timerProgressBar: true,
+                background: "#1A1A1A",
+                color: "#fff",
+            }).then(() => {
+                sessionStorage.removeItem("currentPath");
+                if (window.location.pathname === "/profile") {
+                    sessionStorage.setItem("currentPath", "/");
+                } else {
+                    sessionStorage.setItem("currentPath", window.location.pathname);
+                }
+                sessionStorage.removeItem("usuario");
+                document.cookie = "token=; path=/;";
+                window.location.href = "/auth/login";
+            });
+        }
+        const usr: Usuario = data;
+        if (!usr || usr.estado !== "ACTIVO") {
+            if (!usr) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'La sesión ha expirado, por favor inicie sesión nuevamente.',
+                    timer: 3000,
+                    timerProgressBar: true,
+                    background: "#1A1A1A",
+                    color: "#fff",
+                }).then(() => {
+                    sessionStorage.removeItem("currentPath");
+                    document.cookie = "token=; path=/;";
+                    window.location.href = "/";
+                });
+                return;
+            }
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'El usuario se encuentra inactivo, por favor contacte al administrador.',
+                timer: 3000,
+                timerProgressBar: true,
+                background: "#1A1A1A",
+                color: "#fff",
+            }).then(() => {
+                sessionStorage.removeItem("currentPath");
+                document.cookie = "token=; path=/;";
+                window.location.href = "/";
+            });
+        }
+        setUsuario(usr);
+        sessionStorage.setItem("usuario", EncodeUsr(usr));
+        if (usr.roles.length === 1 && usr.roles[0].rol !== "ADMIN") {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'El usuario no tiene permisos para acceder a esta sección.',
+                timer: 1000,
+                timerProgressBar: true,
+                showConfirmButton: false,
+                background: "#1A1A1A",
+                color: "#fff",
+            }).then(() => {
+                sessionStorage.removeItem("currentPath");
+                window.location.href = "/";
+            });
+        }
+    }
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
-            const tokenString = document.cookie.split("; ").find(row => row.startsWith("token="));
-            if (tokenString) {
-                const tokenValue = tokenString.split("=")[1];
-                setToken(tokenValue);
+            const token = document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1];
+            if (token) {
+                fetchUsuario(token);
+                setToken(token);
+            } else {
+                sessionStorage.removeItem("usuario");
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'El usuario no tiene permisos para acceder a esta sección.',
+                    timer: 1000,
+                    timerProgressBar: true,
+                    showConfirmButton: false,
+                    background: "#1A1A1A",
+                    color: "#fff",
+                }).then(() => {
+                    sessionStorage.removeItem("currentPath");
+                    window.location.href = "/";
+                });
             }
             if (window.location.pathname.startsWith("/admin/profile")) {
                 setClickedMenu("Perfil");
@@ -79,6 +169,30 @@ const NavbarAdmin: FC<NavbarAdminProps> = ({ usuario }) => {
     const clicked = (id: string) => {
         setClickedMenu(id);
         setOpenMenus(false);
+        const tempToken = document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1];
+        if (tempToken) {
+            fetchUsuario(tempToken);
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'La sesión ha expirado, por favor inicie sesión nuevamente.',
+                timer: 3000,
+                timerProgressBar: true,
+                background: "#1A1A1A",
+                color: "#fff",
+            }).then(() => {
+                sessionStorage.removeItem("currentPath");
+                if (window.location.pathname === "/profile") {
+                    sessionStorage.setItem("currentPath", "/");
+                } else {
+                    sessionStorage.setItem("currentPath", window.location.pathname);
+                }
+                sessionStorage.removeItem("usuario");
+                document.cookie = "token=; path=/;";
+                window.location.href = "/auth/login";
+            });
+        }
     };
 
     return (
@@ -115,7 +229,7 @@ const NavbarAdmin: FC<NavbarAdminProps> = ({ usuario }) => {
                                 CATEGORIA
                             </Link>
                         </li>
-                        {usuario.roles.find((rol) => rol.rol === "ADMIN") && (
+                        {usuario?.roles.find((rol) => rol.rol === "ADMIN") && (
                             <li>
                                 <Link
                                     href="/admin/usuarios"

@@ -9,9 +9,10 @@ interface FiltersComponentProps {
     selectedCategories: Record<number, boolean>;
     categoriasPadre: Categoria[];
     categories: Categoria[];
+    showAnadir: boolean;
 }
 
-const FiltersComponent: FC<FiltersComponentProps> = ({ categoriasPadre, categories, expandedCategories, handleSelectCategory, selectedCategories, toggleCategory, }) => {
+const FiltersComponent: FC<FiltersComponentProps> = ({ categoriasPadre, categories, expandedCategories, handleSelectCategory, selectedCategories, toggleCategory, showAnadir }) => {
 
     const [showFilters, setShowFilters] = useState(false);
 
@@ -39,13 +40,15 @@ const FiltersComponent: FC<FiltersComponentProps> = ({ categoriasPadre, categori
             <aside className="md:w-1/5 md:h-full p-4 md:border-r max-md:border-b border-gray-300 max-md:flex justify-between items-center max-h-full overflow-y-scroll">
                 <section className="flex w-full items-center justify-between md:mb-4">
                     <h2 className="font-bold text-lg">Filtros</h2>
-                    <button
-                        className="flex items-center justify-center bg-green-600 text-white px-2 py-1 rounded gap-2"
-                        onClick={() => alert("Añadir algo")}
-                    >
-                        <Anadir />
-                        Añadir
-                    </button>
+                    {showAnadir && (
+                        <button
+                            className="flex items-center justify-center bg-green-600 text-white px-2 py-1 rounded gap-2"
+                            onClick={() => alert("Añadir algo")}
+                        >
+                            <Anadir />
+                            Añadir
+                        </button>
+                    )}
                     <button
                         className="md:hidden flex items-center justify-center bg-blue-500 text-white px-2 py-2 rounded gap-2"
                         onClick={toggleFilters}
@@ -54,7 +57,7 @@ const FiltersComponent: FC<FiltersComponentProps> = ({ categoriasPadre, categori
                         <FilterIcon />
                     </button>
                 </section>
-                <main className={`max-md:fixed max-md:top-0 max-md:w-full max-md:h-dvh max-md:pb-16 transition-all duration-300 ${showFilters ? "max-md:left-0" : "max-md:left-full"} max-md:bg-black/50 backdrop-blur-sm max-md:p-4 max-md:overflow-y-scroll`}>
+                <main className={`max-md:fixed max-md:top-0 max-md:w-full max-md:h-dvh max-md:pb-16 transition-all duration-300 ${showFilters ? "max-md:left-0" : "max-md:left-full"} max-md:bg-black/50 backdrop-blur-xs max-md:p-4 max-md:overflow-y-scroll`}>
                     <div className="mb-6">
                         <h3 className="font-semibold text-md mb-2">Categorías</h3>
                         <button
@@ -67,7 +70,7 @@ const FiltersComponent: FC<FiltersComponentProps> = ({ categoriasPadre, categori
                             {categoriasPadre.map(category => (
                                 <li key={category.idCategoria} className={`${color(expandedCategories[category.idCategoria], selectedCategories[category.idCategoria])} rounded-2xl gap-1`}>
                                     <div
-                                        className="flex items-center justify-between px-4 bg-black/70 py-2 cursor-pointer rounded-2xl w-full"
+                                        className="flex items-center justify-between px-4 bg-black/60 py-2 cursor-pointer rounded-2xl w-full"
                                         onClick={() => toggleCategory(category.idCategoria)}
                                     >
                                         <div className="flex items-center">

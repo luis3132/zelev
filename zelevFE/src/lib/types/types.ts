@@ -54,3 +54,38 @@ export interface CategoriaCreate {
     categoria: string;
     subCategoria: string;
 }
+export interface Unidad {
+    upc: number;
+    label: string;
+    precio: string;
+    cantidad: number;
+    fechaCreacion: Date;
+    estado: string;
+    descripcion: string;
+}
+export interface UnidadCreate {
+    upc: number;
+    label: string;
+    precio: string;
+    cantidad: number;
+    estado: string;
+    descripcion: string;
+}
+export interface Articulo {
+    idArticulo: number;
+    nombre: string;
+    descripcion: string;
+    impuesto: number;
+    estado: string;
+    categorias: Categoria[];
+    unidades: Unidad[];
+    imagenes: Imagen[];
+}
+export interface ArticuloCreate {
+    nombre: string;
+    descripcion: string;
+    impuesto: number;
+    estado: string;
+    categorias: number[];
+    unidades: UnidadCreate[];
+}

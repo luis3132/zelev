@@ -1,5 +1,8 @@
 package com.zelev.zelevbe.persistence.entity.Categoria;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.zelev.zelevbe.persistence.entity.Articulo;
+
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -29,5 +32,11 @@ public class ArtiCate {
     @MapsId("categoria")
     @JoinColumn(name = "categoria", referencedColumnName = "id_categoria")
     private Categoria categoria;
+
+    @ManyToOne
+    @MapsId("articulo")
+    @JoinColumn(name = "articulo", referencedColumnName = "id_articulo")
+    @JsonBackReference("articulo-categoria")
+    private Articulo articulo;
 
 }

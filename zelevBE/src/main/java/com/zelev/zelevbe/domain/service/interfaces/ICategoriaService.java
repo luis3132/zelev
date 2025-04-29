@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import com.zelev.zelevbe.domain.dto.CategoriaCreateDTO;
+import com.zelev.zelevbe.persistence.entity.Categoria.ArtiCate;
+import com.zelev.zelevbe.persistence.entity.Categoria.ArtiCatePK;
 import com.zelev.zelevbe.persistence.entity.Categoria.Categoria;
 
 /**
@@ -19,8 +21,7 @@ public interface ICategoriaService {
     Categoria save(CategoriaCreateDTO categoria);
     Categoria update(Categoria categoria);
     Boolean deleteById(Integer id);
-    // List<ArtiCate> findAllArtiCate();
-    // ArtiCate findByIdArtiCate(ArtiCatePK id);
-    // ArtiCate saveArtiCate(ArtiCate artiCate);
-    // void deleteByIdArtiCate(ArtiCatePK id);
+    Optional<ArtiCate> findByIdArtiCate(ArtiCatePK id);
+    ArtiCate saveArtiCate(ArtiCatePK id);
+    Boolean deleteByIdArtiCate(ArtiCatePK id);
 }
