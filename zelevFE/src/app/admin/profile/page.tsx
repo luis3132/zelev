@@ -521,7 +521,7 @@ export default function Home() {
                                             name="departamento"
                                             required
                                             autoFocus
-                                            value={usuarioEdit?.departamento}
+                                            value={usuarioEdit?.departamento || ""}
                                             onChange={(e) => handleChange(e)}
                                             className='p-2 border border-gray-400 rounded-lg bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500'
                                         >
@@ -535,7 +535,7 @@ export default function Home() {
                                             name="ciudad"
                                             required
                                             autoFocus
-                                            value={usuarioEdit?.ciudad}
+                                            value={usuarioEdit?.ciudad || ""}
                                             onChange={(e) => handleChange(e)}
                                             className='p-2 border border-gray-400 rounded-lg bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500'
                                         >

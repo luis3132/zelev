@@ -11,10 +11,11 @@ import org.springframework.stereotype.Service;
 
 import com.zelev.zelevbe.constants.EstadoArticulo;
 import com.zelev.zelevbe.constants.EstadoUnidad;
+import com.zelev.zelevbe.domain.dto.Imagen.ImgArtUniCreateDTO;
 import com.zelev.zelevbe.domain.dto.articulo.ArticuloCreateDTO;
 import com.zelev.zelevbe.domain.dto.articulo.ArticuloListDTO;
+import com.zelev.zelevbe.domain.dto.articulo.ArticuloUpdateDTO;
 import com.zelev.zelevbe.domain.dto.articulo.UnidadCreateDTO;
-import com.zelev.zelevbe.domain.dto.articulo.UnidadUpdateDTO;
 import com.zelev.zelevbe.domain.service.interfaces.IArticuloService;
 import com.zelev.zelevbe.persistence.entity.Articulo;
 import com.zelev.zelevbe.persistence.entity.Unidad;
@@ -33,7 +34,7 @@ import jakarta.transaction.Transactional;
 @Service
 @Transactional
 public class ArticuloService implements IArticuloService {
-    
+
     @Autowired
     private ArticuloRepository articuloRepository;
 
@@ -44,10 +45,24 @@ public class ArticuloService implements IArticuloService {
     @Lazy
     private CategoriaService categoriaService;
 
+    @Autowired
+    @Lazy
+    private ImagenService imagenService;
+
     @Override
     public List<ArticuloListDTO> findAllArticulos(Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size);
         List<Articulo> articulos = articuloRepository.findAll(pageable).getContent();
+
+        return articulos.stream()
+                .map(this::mapArticuloList)
+                .toList();
+    }
+
+    @Override
+    public List<ArticuloListDTO> findAllArticulosByCategorie(Integer id, Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size);
+        List<Articulo> articulos = articuloRepository.findByCategoria(id, pageable).getContent();
 
         return articulos.stream()
                 .map(this::mapArticuloList)
@@ -71,7 +86,7 @@ public class ArticuloService implements IArticuloService {
             ArtiCatePK artiCatePK = new ArtiCatePK();
             artiCatePK.setArticulo(temp.getIdArticulo());
             artiCatePK.setCategoria(categoria);
-            
+
             categoriaService.saveArtiCate(artiCatePK);
         });
 
@@ -79,8 +94,17 @@ public class ArticuloService implements IArticuloService {
     }
 
     @Override
-    public Articulo updateArticulo(Articulo articulo) {
-        return articuloRepository.save(articulo);
+    public Articulo updateArticulo(ArticuloUpdateDTO articulo) {
+        Articulo temp = articuloRepository.save(mapArticulo(articulo));
+
+        if (articulo.getImagen() != null) {
+            ImgArtUniCreateDTO imgArtUni = articulo.getImagen();
+            imgArtUni.setArticulo(temp.getIdArticulo());
+
+            imagenService.saveImgArtUni(imgArtUni);
+        }
+
+        return temp;
     }
 
     @Override
@@ -102,12 +126,24 @@ public class ArticuloService implements IArticuloService {
 
     @Override
     public Unidad saveUnidad(UnidadCreateDTO unidad) {
-        return unidadRepository.save(mapUnidad(unidad));
+        return unidadRepository.save(mapUnidad(unidad, null));
     }
 
     @Override
-    public Unidad updateUnidad(UnidadUpdateDTO unidad) {
-        return unidadRepository.save(mapUnidad(unidad));
+    public Unidad updateUnidad(UnidadCreateDTO unidad) {
+        Unidad unidadEntity = findByIdUnidad(unidad.getUpc())
+                .orElseThrow(() -> new RuntimeException("Unidad not found"));
+        Unidad temp = unidadRepository.save(mapUnidad(unidad, unidadEntity));
+
+        if (unidad.getImagen() != null) {
+            ImgArtUniCreateDTO imgArtUni = unidad.getImagen();
+            imgArtUni.setUnidad(temp.getUpc());
+            imgArtUni.setArticulo(temp.getArticulo().getIdArticulo());
+
+            imagenService.saveImgArtUni(imgArtUni);
+        }
+
+        return temp;
     }
 
     @Override
@@ -131,7 +167,49 @@ public class ArticuloService implements IArticuloService {
         return articuloEntity;
     }
 
-    private ArticuloListDTO mapArticuloList(Articulo articulo) {
+    private Articulo mapArticulo(ArticuloUpdateDTO articulo) {
+        Articulo articuloEntity = new Articulo();
+        articuloEntity.setIdArticulo(articulo.getIdArticulo());
+        articuloEntity.setNombre(articulo.getNombre());
+        articuloEntity.setDescripcion(articulo.getDescripcion());
+        articuloEntity.setImpuesto(articulo.getImpuesto());
+        articuloEntity.setEstado(articulo.getEstado());
+
+        if (articulo.getCategoriasNuevas() != null) {
+            articulo.getCategoriasNuevas().forEach(categoria -> {
+                ArtiCatePK artiCatePK = new ArtiCatePK();
+                artiCatePK.setArticulo(articulo.getIdArticulo());
+                artiCatePK.setCategoria(categoria);
+
+                categoriaService.saveArtiCate(artiCatePK);
+            });
+        }
+
+        if (articulo.getCategoriasEliminar() != null) {
+            articulo.getCategoriasEliminar().forEach(categoria -> {
+                ArtiCatePK artiCatePK = new ArtiCatePK();
+                artiCatePK.setArticulo(articulo.getIdArticulo());
+                artiCatePK.setCategoria(categoria);
+
+                categoriaService.deleteByIdArtiCate(artiCatePK);
+            });
+        }
+
+        if (articulo.getUnidades() != null) {
+            articulo.getUnidades().forEach(unidad -> {
+                if (unidad.getUpc() != null) {
+                    Optional<Unidad> unidadEntity = findByIdUnidad(unidad.getUpc());
+                    if (!unidadEntity.isPresent()) {
+                        saveUnidad(unidad);
+                    }
+                }
+            });
+        }
+
+        return articuloEntity;
+    }
+
+    public ArticuloListDTO mapArticuloList(Articulo articulo) {
         ArticuloListDTO articuloListDTO = new ArticuloListDTO();
         articuloListDTO.setIdArticulo(articulo.getIdArticulo());
         articuloListDTO.setNombre(articulo.getNombre());
@@ -154,11 +232,13 @@ public class ArticuloService implements IArticuloService {
         return articuloListDTO;
     }
 
-    private Unidad mapUnidad(UnidadCreateDTO unidad) {
-        Unidad unidadEntity = new Unidad();
+    private Unidad mapUnidad(UnidadCreateDTO unidad, Unidad init) {
+        Unidad unidadEntity = init != null ? init : new Unidad();
         unidadEntity.setUpc(unidad.getUpc());
         unidadEntity.setLabel(unidad.getLabel());
         unidadEntity.setPrecio(unidad.getPrecio());
+        unidadEntity.setCantidad(unidad.getCantidad());
+        unidadEntity.setDescripcion(unidad.getDescripcion());
 
         Optional<Articulo> articulo = findByIdArticulo(unidad.getArticulo());
         if (articulo.isPresent()) {
@@ -167,26 +247,7 @@ public class ArticuloService implements IArticuloService {
             throw new RuntimeException("Articulo not found");
         }
 
-        unidadEntity.setCantidad(unidad.getCantidad());
-        unidadEntity.setEstado(EstadoUnidad.STOCK);
-        return unidadEntity;
-    }
-
-    private Unidad mapUnidad(UnidadUpdateDTO unidad) {
-        Unidad unidadEntity = new Unidad();
-        unidadEntity.setUpc(unidad.getUpc());
-        unidadEntity.setUpc(unidad.getUpc());
-        unidadEntity.setLabel(unidad.getLabel());
-        unidadEntity.setPrecio(unidad.getPrecio());
-        unidadEntity.setCantidad(unidad.getCantidad());
-
-        Optional<Articulo> articulo = findByIdArticulo(unidad.getArticulo());
-        if (articulo.isPresent()) {
-            unidadEntity.setArticulo(articulo.get());
-        } else {
-            throw new RuntimeException("Articulo not found");
-        }
-        unidadEntity.setEstado(EstadoUnidad.valueOf(unidad.getEstado()));
+        unidadEntity.setEstado(unidad.getEstado());
 
         return unidadEntity;
     }

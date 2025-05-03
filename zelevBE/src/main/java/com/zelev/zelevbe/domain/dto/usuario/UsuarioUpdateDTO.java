@@ -31,6 +31,6 @@ public class UsuarioUpdateDTO {
     private Integer imagen;
     private Date fechaNacimiento;
     private EstadoUsuario estado;
-    private List<Integer> NuevosRoles;
-    private List<Integer> EliminarRoles;
+    private List<Integer> nuevosRoles;
+    private List<Integer> eliminarRoles;
 }

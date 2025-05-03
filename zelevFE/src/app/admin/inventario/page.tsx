@@ -90,6 +90,9 @@ export default function Home() {
         const idCategoria = Object.entries(selectedCategories)
             .filter(([_, value]) => value)
             .map(([key, _]) => parseInt(key));
+        const categoriaSelect = articulo.categorias.filter((categoria) => {
+            return idCategoria.includes(categoria.idCategoria);
+        });
         if (idCategoria.length === 0) {
             if (nombreQuery === "") {
                 return true;
@@ -99,12 +102,16 @@ export default function Home() {
         }
         if (nombreQuery === "") {
             return articulo.categorias.some((categoria) => {
-                return idCategoria.includes(categoria.idCategoria);
+                return categoriaSelect.some((cat) => {
+                    return cat.idCategoria === categoria.idCategoria || cat.subcategoria === categoria.subcategoria || cat.categoria === categoria.categoria;
+                });
             });
         }
         const nombreMatch = articulo.nombre.toLowerCase().includes(nombreQuery.toLowerCase());
         const categoriaMatch = articulo.categorias.some((categoria) => {
-            return idCategoria.includes(categoria.idCategoria);
+            return categoriaSelect.some((cat) => {
+                return cat.idCategoria === categoria.idCategoria || cat.subcategoria === categoria.subcategoria || cat.categoria === categoria.categoria;
+            });
         });
         return nombreMatch && categoriaMatch;
     });

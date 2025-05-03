@@ -41,6 +41,12 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/api/articulo/{id}").permitAll()
+                        .requestMatchers("/api/articulo/list/**").permitAll()
+                        .requestMatchers("/api/articulo/{categoria}/**").permitAll()
+                        .requestMatchers("/api/categoria/list/**").permitAll()
+                        .requestMatchers("/api/categoria/list").permitAll()
+                        .requestMatchers("/api/imagen/{id}").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session
                         -> session

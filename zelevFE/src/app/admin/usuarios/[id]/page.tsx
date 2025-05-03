@@ -1,7 +1,7 @@
 "use client";
 
 import { CancelIcon, DeleteIcon, Edit, SaveIcon } from '@/components/icons/icons';
-import { Delete, Put, Get } from '@/lib/scripts/fetch';
+import { Put, Get } from '@/lib/scripts/fetch';
 import { Rol, Usuario, UsuarioUpdate } from '@/lib/types/types';
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
@@ -17,15 +17,21 @@ export default function Home() {
     const [foto, setFoto] = useState<string>("/logo/largeLogo.webp");
     const [token, setToken] = useState<string>("");
     const fotoRef = useRef("");
-    console.log(usuarioEdit);
 
     useEffect(() => {
         const fetchUsuario = async () => {
             try {
                 const { data, status } = await Get(`/api/usuario/${id.id}`, token);
                 if (status === 200) {
-                    setUsuario(data);
-                    setUsuarioEdit(data);
+                    const usr = data as Usuario;
+                    setUsuario(usr);
+                    const edit = {
+                        ...usr,
+                        imagen: usr.imagen.idImagen,
+                        nuevosRoles: [],
+                        eliminarRoles: []
+                    }
+                    setUsuarioEdit(edit);
                 } else {
                     throw new Error('Error al cargar el usuario');
                 }
@@ -108,10 +114,10 @@ export default function Home() {
                 return {
                     ...prevState,
                     roles: roles.filter(rol => selectedValues.includes(rol.idRol)),
-                    NuevosRoles: selectedValues
+                    nuevosRoles: selectedValues
                         .filter(id => !currentRoleIds.includes(id))
                         .map(Number),
-                    EliminarRoles: currentRoleIds
+                    eliminarRoles: currentRoleIds
                         .filter(id => !selectedValues.includes(id))
                         .map(Number)
                 } as UsuarioUpdate;
@@ -125,22 +131,40 @@ export default function Home() {
     }
 
     const deleteImage = async () => {
-
+        let usr = usuarioEdit as UsuarioUpdate;
+        usr.imagen = 0;
+        const { status} = await Put(`/api/usuario/update`, token, usr);
+        if (status === 200) {
+            setFoto("/logo/logo.png");
+            Swal.fire({
+                icon: 'success',
+                title: 'Éxito',
+                text: 'Imagen eliminada correctamente',
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Aceptar',
+                background: "#1A1A1A",
+                color: "#fff",
+            });
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Error al eliminar la imagen',
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Aceptar',
+                background: "#1A1A1A",
+                color: "#fff",
+            });
+        }
     }
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        const { cedula, NuevosRoles, EliminarRoles, estado } = usuarioEdit || {};
-        const usuarioEdit2 = { 
-            cedula: cedula, 
-            NuevosRoles: NuevosRoles, 
-            EliminarRoles: EliminarRoles, 
-            estado: estado,
-        } as UsuarioUpdate;
-
         if (usuarioEdit) {
-            const { status } = await Put(`/api/usuario/update`, token, usuarioEdit2);
+            const { status } = await Put(`/api/usuario/update`, token, usuarioEdit);
             if (status === 200) {
                 Swal.fire({
                     icon: 'success',

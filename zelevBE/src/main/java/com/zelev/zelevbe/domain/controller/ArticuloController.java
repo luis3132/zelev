@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.zelev.zelevbe.domain.dto.articulo.ArticuloCreateDTO;
 import com.zelev.zelevbe.domain.dto.articulo.ArticuloListDTO;
+import com.zelev.zelevbe.domain.dto.articulo.ArticuloUpdateDTO;
 import com.zelev.zelevbe.domain.dto.articulo.UnidadCreateDTO;
-import com.zelev.zelevbe.domain.dto.articulo.UnidadUpdateDTO;
 import com.zelev.zelevbe.domain.service.ArticuloService;
 import com.zelev.zelevbe.persistence.entity.Articulo;
 import com.zelev.zelevbe.persistence.entity.Unidad;
@@ -23,10 +23,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
-
-
-
-
 
 /**
  * 
@@ -50,49 +46,60 @@ public class ArticuloController {
         }
         return ResponseEntity.ok(articuloService.findAllArticulos(page, size));
     }
+
+    @GetMapping("/articulo/{categoria}/list/{page}/{size}")
+    public ResponseEntity<List<ArticuloListDTO>> listAllArticuloByCategorie(@PathVariable("categoria") Integer categoria, @PathVariable("page") Integer page, @PathVariable("size") Integer size) {
+        if (page == null || size == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        if (page < 0 || size <= 0) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(articuloService.findAllArticulosByCategorie(categoria, page, size));
+    }
     
     @GetMapping("/articulo/{id}")
-    public ResponseEntity<Articulo> findArticulo(@PathVariable("id") Integer id) {
+    public ResponseEntity<ArticuloListDTO> findArticulo(@PathVariable("id") Integer id) {
         Optional<Articulo> articulo = articuloService.findByIdArticulo(id);
         if (articulo.isPresent()) {
-            return ResponseEntity.ok(articulo.get());
+            return ResponseEntity.ok(articuloService.mapArticuloList(articulo.get()));
         } else {
             return ResponseEntity.notFound().build();
         }
     }
     
     @PostMapping("/articulo/new")
-    @Secured("ADMIN")
+    @Secured({"ADMIN", "INVENTARIO"})
     public ResponseEntity<Articulo> createArticulo(@RequestBody ArticuloCreateDTO articuloCreateDTO) {
         return ResponseEntity.ok(articuloService.saveArticulo(articuloCreateDTO));
     }
 
     @PostMapping("/articulo/update")
-    @Secured("ADMIN")
-    public ResponseEntity<Articulo> updateArticulo(@RequestBody Articulo articulo) {
+    @Secured({"ADMIN", "INVENTARIO"})
+    public ResponseEntity<Articulo> updateArticulo(@RequestBody ArticuloUpdateDTO articulo) {
         return ResponseEntity.ok(articuloService.updateArticulo(articulo));
     }
     
     @PostMapping("/articulo/delete/{id}")
-    @Secured("ADMIN")
+    @Secured({"ADMIN", "INVENTARIO"})
     public ResponseEntity<Boolean> deleteArticulo(@PathVariable("id") Integer id) {
         return ResponseEntity.ok(articuloService.deleteArticulo(id));
     }
 
     @PostMapping("/unidad/new")
-    @Secured("ADMIN")
+    @Secured({"ADMIN", "INVENTARIO"})
     public ResponseEntity<Unidad> createUnidad(@RequestBody UnidadCreateDTO unidad) {
         return ResponseEntity.ok(articuloService.saveUnidad(unidad));
     }
     
     @PutMapping("/unidad/{id}")
-    @Secured("ADMIN")
-    public ResponseEntity<Unidad> updateUnidad(@RequestBody UnidadUpdateDTO unidad) {
+    @Secured({"ADMIN", "INVENTARIO"})
+    public ResponseEntity<Unidad> updateUnidad(@RequestBody UnidadCreateDTO unidad) {
         return ResponseEntity.ok(articuloService.updateUnidad(unidad));
     }
 
     @DeleteMapping("/unidad/delete/{id}")
-    @Secured("ADMIN")
+    @Secured({"ADMIN", "INVENTARIO"})
     public ResponseEntity<Boolean> deleteUnidad(@PathVariable("id") Long id) {
         return ResponseEntity.ok(articuloService.deleteUnidad(id));
     }

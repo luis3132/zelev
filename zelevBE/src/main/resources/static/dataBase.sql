@@ -102,6 +102,8 @@ CREATE TABLE IF NOT EXISTS pedi_unid (
 
 INSERT INTO zelev.rol (rol) VALUES ('ADMIN');
 INSERT INTO zelev.rol (rol) VALUES ('USER');
+INSERT INTO zelev.rol (rol) VALUES ('INVENTARIO');
+INSERT INTO zelev.rol (rol) VALUES ('PEDIDOS');
 
 INSERT INTO zelev.usuario (cedula, nombres, apellidos, nombre_usuario, email, telefono, direccion, contrasena, fecha_nacimiento, fecha_creacion, estado, imagen, departamento, ciudad, zipcode)
 VALUES('123456', 'admin', 'admin', 'admin123', 'admin@admin.com', '123456', 'admin', '$2a$10$OCVOIHsI50HnS9wAjhKm3eMZl41J3afszGWA6A5YTc7IGR44Zioru', '2025-01-01', CURRENT_TIMESTAMP, "ACTIVO", null, null, null, null);

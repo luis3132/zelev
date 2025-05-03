@@ -41,6 +41,11 @@ const Inventario: FC<InventarioProps> = ({ articulo, token }) => {
         };
     }, [articulo.imagenes, token]);
 
+    const total = articulo.unidades.reduce((acc, unidad) => {
+        const unidadTotal = unidad.cantidad === undefined ? 0 : unidad.cantidad;
+        return acc + unidadTotal;
+    }, 0);
+
     return (
         <article className="border rounded-lg p-4 shadow-md flex flex-col md:flex-row hover:bg-black ">
             <main className="w-[200px] max-md:w-full flex justify-center items-center max-md:mb-2">
@@ -55,6 +60,10 @@ const Inventario: FC<InventarioProps> = ({ articulo, token }) => {
             <aside className="w-full">
                 <h2 className="font-bold text-lg mb-2">{articulo.nombre}</h2>
                 <p className="text-sm text-gray-600 mb-4">{articulo.descripcion}</p>
+                <div className="flex justify-end items-center mb-4 gap-2 text-white">
+                    <span className="font-semibold">Total:</span>
+                    <span className="font-bold">{total}</span>
+                </div>
                 <div className="flex justify-end">
                     <Link href={`/admin/inventario/${articulo.idArticulo}`} className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded">Más información</Link>
                 </div>

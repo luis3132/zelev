@@ -37,7 +37,7 @@ const FiltersComponent: FC<FiltersComponentProps> = ({ categoriasPadre, categori
 
     return (
         <>
-            <aside className="md:w-1/5 md:h-full p-4 md:border-r max-md:border-b border-gray-300 max-md:flex justify-between items-center max-h-full overflow-y-scroll">
+            <aside className="md:w-1/5 md:h-full p-4 md:border-r md:sticky md:top-20 max-md:border-b border-gray-300 max-md:flex justify-between items-center max-h-full overflow-y-scroll">
                 <section className="flex w-full items-center justify-between md:mb-4">
                     <h2 className="font-bold text-lg">Filtros</h2>
                     {showAnadir && (

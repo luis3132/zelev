@@ -1,6 +1,8 @@
 package com.zelev.zelevbe.domain.dto.articulo;
 
-import com.zelev.zelevbe.constants.EstadoUnidad;
+import java.util.List;
+
+import com.zelev.zelevbe.constants.EstadoArticulo;
 import com.zelev.zelevbe.domain.dto.Imagen.ImgArtUniCreateDTO;
 
 import lombok.AllArgsConstructor;
@@ -15,13 +17,14 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UnidadCreateDTO {
-    private Long upc;
-    private String label;
-    private String precio;
-    private Integer articulo;
-    private Integer cantidad;
-    private EstadoUnidad estado;
+public class ArticuloUpdateDTO {
+    private Integer idArticulo;
+    private String nombre;
     private String descripcion;
+    private Double impuesto;
+    private EstadoArticulo estado;
+    private List<Integer> categoriasNuevas;
+    private List<Integer> categoriasEliminar;
     private ImgArtUniCreateDTO imagen;
+    private List<UnidadCreateDTO> unidades;
 }

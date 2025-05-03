@@ -1,7 +1,6 @@
 package com.zelev.zelevbe.persistence.entity.imagen;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.zelev.zelevbe.persistence.entity.Articulo;
 import com.zelev.zelevbe.persistence.entity.Unidad;
 
@@ -43,8 +42,7 @@ public class ImgArtUni {
     @JsonBackReference("articulo-imagen")
     private Articulo articulo;
 
-    @ManyToOne
-    @JoinColumn(name = "unidad", referencedColumnName = "upc")
-    @JsonIgnore
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "unidad", referencedColumnName = "upc", nullable = true)
     private Unidad unidad;
 }

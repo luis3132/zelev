@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,6 +47,7 @@ public class CategoriaController {
     }
 
     @PostMapping("/new")
+    @Secured({"ADMIN", "INVENTARIO"})
     public ResponseEntity<String> createCategoria(@RequestBody CategoriaCreateDTO categoria) {
         Categoria newCategoria = categoriaService.save(categoria);
         if (newCategoria != null) {
@@ -56,6 +58,7 @@ public class CategoriaController {
     }
 
     @PutMapping("/update")
+    @Secured({"ADMIN", "INVENTARIO"})
     public ResponseEntity<String> updateCategoria(@RequestBody Categoria categoria) {
         Categoria updatedCategoria = categoriaService.update(categoria);
         if (updatedCategoria != null) {
@@ -66,6 +69,7 @@ public class CategoriaController {
     }
 
     @DeleteMapping("/delete/{id}")
+    @Secured({"ADMIN", "INVENTARIO"})
     public ResponseEntity<String> deleteCategoria(@PathVariable("id") Integer id) {
         Boolean deleted = categoriaService.deleteById(id);
         if (deleted) {

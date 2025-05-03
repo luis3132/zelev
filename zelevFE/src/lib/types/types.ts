@@ -37,8 +37,8 @@ export interface UsuarioUpdate {
     fechaNacimiento: Date;
     estado: string;
     roles: Rol[];
-    NuevosRoles: number[];
-    EliminarRoles: number[];
+    nuevosRoles: number[];
+    eliminarRoles: number[];
 }
 export interface Imagen {
     idImagen: number;
@@ -70,12 +70,19 @@ export interface UnidadCreate {
     cantidad: number;
     estado: string;
     descripcion: string;
+    articulo: number;
+    imagen: ImgArtUniCreate | undefined;
 }
 export interface ImgArtUni {
     idImgArtUni: number;
     articulo: Articulo;
     unidad: Unidad;
     imagen: Imagen;
+}
+export interface ImgArtUniCreate {
+    articulo: number;
+    unidad: number | null;
+    imagen: number;
 }
 export interface Articulo {
     idArticulo: number;
@@ -94,4 +101,15 @@ export interface ArticuloCreate {
     estado: string;
     categorias: number[];
     unidades: UnidadCreate[];
+}
+export interface ArticuloUpdate {
+    idArticulo: number;
+    nombre: string;
+    descripcion: string;
+    impuesto: number;
+    estado: string;
+    categoriasNuevas: number[];
+    categoriasEliminar: number[];
+    unidades: UnidadCreate[];
+    imagen: ImgArtUniCreate | undefined;
 }
