@@ -41,6 +41,7 @@ export default function Home() {
     }
   }
   const fetchArticulos = async () => {
+    loadingUpdate(true);
     const { data, status } = await Get(`/api/articulo/list/${page}/${10}`, "");
     if (status === 200) {
       setArticulos(prev => [...prev, ...data]);
@@ -51,16 +52,15 @@ export default function Home() {
     } else {
       console.error("Error al traer los articulos");
     }
+    loadingUpdate(false);
   }
 
   useEffect(() => {
-    loadingUpdate(true);
     if (categories.length === 0) {
       fetchCategorias();
     }
     fetchFirtsArticulos();
-    loadingUpdate(false);
-  }, [reload]);
+  }, [reload, categories.length]);
 
   useEffect(() => {
     if (page < 1) {
@@ -79,11 +79,13 @@ export default function Home() {
       observer.observe(observerTarget.current);
     }
 
+    const currentTarget = observerTarget.current;
     return () => {
-      if (observerTarget.current) {
-        observer.unobserve(observerTarget.current);
+      if (currentTarget) {
+        observer.unobserve(currentTarget);
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasMore, loading, articulos]);
 
   const categoriasPadre = categories.filter((categoria) => {
@@ -92,8 +94,8 @@ export default function Home() {
 
   const articulosFiltrados = articulos.filter((articulo) => {
     const idCategoria = Object.entries(selectedCategories)
-      .filter(([_, value]) => value)
-      .map(([key, _]) => parseInt(key));
+      .filter(([, value]) => value)
+      .map(([key]) => parseInt(key));
     const categoriaSelect = articulo.categorias.filter((categoria) => {
       return idCategoria.includes(categoria.idCategoria);
     });

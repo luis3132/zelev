@@ -56,6 +56,7 @@ export default function Home() {
             fetchArticulos();
             loadingUpdate(false);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [reload, token]);
 
     useEffect(() => {
@@ -75,11 +76,13 @@ export default function Home() {
             observer.observe(observerTarget.current);
         }
 
+        const currentTarget = observerTarget.current;
         return () => {
-            if (observerTarget.current) {
-                observer.unobserve(observerTarget.current);
+            if (currentTarget) {
+                observer.unobserve(currentTarget);
             }
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [hasMore, loading, articulos]);
 
     const categoriasPadre = categories.filter((categoria) => {
@@ -88,8 +91,8 @@ export default function Home() {
 
     const articulosFiltrados = articulos.filter((articulo) => {
         const idCategoria = Object.entries(selectedCategories)
-            .filter(([_, value]) => value)
-            .map(([key, _]) => parseInt(key));
+            .filter(([, value]) => value)
+            .map(([key]) => parseInt(key));
         const categoriaSelect = articulo.categorias.filter((categoria) => {
             return idCategoria.includes(categoria.idCategoria);
         });

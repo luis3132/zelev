@@ -15,9 +15,10 @@ interface UnidadProps {
     idArticulo: number;
     nuevo: boolean;
     idImagen: Imagen | undefined;
+    handleDeleteUnidad: (upc: number) => void;
 }
 
-const UnidadCard: FC<UnidadProps> = ({ unidad, editArticulo, editUnidad, setEditUnidad, token, idArticulo, nuevo, idImagen }) => {
+const UnidadCard: FC<UnidadProps> = ({ unidad, editArticulo, editUnidad, setEditUnidad, token, idArticulo, nuevo, idImagen, handleDeleteUnidad }) => {
 
     const [editMode, setEditMode] = useState(false);
     const { update } = useContext(ReloadContext);
@@ -59,7 +60,7 @@ const UnidadCard: FC<UnidadProps> = ({ unidad, editArticulo, editUnidad, setEdit
         return () => {
             if (fotoRef.current) URL.revokeObjectURL(fotoRef.current);
         };
-    }, []);
+    }, [idImagen, token]);
 
     const handleEdit = () => {
         if (editArticulo || editUnidad) {
@@ -169,21 +170,25 @@ const UnidadCard: FC<UnidadProps> = ({ unidad, editArticulo, editUnidad, setEdit
             });
             return;
         }
+        let upc = unidad.upc.toString().length < 2 ? unidadState.upc : unidad.upc;
+        if (typeof upc !== "number") {
+            upc = parseInt(upc);
+        }
         let ImgArtUni: ImgArtUniCreate | undefined = undefined;
         if (file) {
             const imagen = await loadImage();
             const temp = idImagen?.url;
-            if (imagen && !temp) {
+            if (imagen && (!temp || temp === "")) {
                 ImgArtUni = {
                     articulo: idArticulo,
-                    unidad: unidad.upc,
+                    unidad: upc,
                     imagen: imagen.idImagen
                 }
             }
         }
 
         const data: UnidadCreate = {
-            upc: unidad.upc,
+            upc: upc,
             label: unidadState.label,
             precio: unidadState.precio,
             cantidad: unidadState.cantidad,
@@ -211,6 +216,9 @@ const UnidadCard: FC<UnidadProps> = ({ unidad, editArticulo, editUnidad, setEdit
                 background: "#000000",
                 color: "#fff",
             });
+            if (nuevo) {
+                handleDeleteUnidad(unidad.upc);
+            }
             setEditMode(false);
             setEditUnidad();
             update();
@@ -240,9 +248,32 @@ const UnidadCard: FC<UnidadProps> = ({ unidad, editArticulo, editUnidad, setEdit
         })
     }
 
+    const handleDelete = async () => {
+        if (nuevo) {
+            handleDeleteUnidad(unidad.upc);
+            return;
+        }
+    }
+
     return (
         <form className="flex flex-col gap-2 bg-gray-700 p-2 rounded-lg" onSubmit={handleSubmit}>
-            <h1 className="text-lg font-bold">{unidadState.upc}</h1>
+            {nuevo ? (
+                <label className="flex flex-col">
+                    <span className="font-bold">UPC:</span>
+                    <input
+                        id="upc"
+                        name="upc"
+                        type="number"
+                        value={unidadState.upc || ""}
+                        onChange={(e) => handleChange(e)}
+                        className="border rounded p-2"
+                        disabled={!editMode}
+                        autoFocus
+                    />
+                </label>
+            ) : (
+                <h1 className="text-lg font-bold">{unidadState.upc}</h1>
+            )}
             <div className="w-full flex flex-col justify-center items-center max-h-[80vh]">
                 <div className='max-w-64'>
                     <Image
@@ -272,6 +303,7 @@ const UnidadCard: FC<UnidadProps> = ({ unidad, editArticulo, editUnidad, setEdit
                                 name="alt"
                                 type="text"
                                 maxLength={200}
+                                defaultValue={alt}
                                 className="border rounded p-2"
                                 disabled={!editMode}
                             />
@@ -362,6 +394,7 @@ const UnidadCard: FC<UnidadProps> = ({ unidad, editArticulo, editUnidad, setEdit
                         </button>
                         <button
                             type="button"
+                            onClick={handleDelete}
                             className="bg-red-500 text-white p-2 rounded hover:bg-red-600 flex gap-2 items-center"
                         >
                             <DeleteIcon />

@@ -1,5 +1,6 @@
 package com.zelev.zelevbe.domain.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -126,7 +127,20 @@ public class ArticuloService implements IArticuloService {
 
     @Override
     public Unidad saveUnidad(UnidadCreateDTO unidad) {
-        return unidadRepository.save(mapUnidad(unidad, null));
+        Optional<Unidad> unidadEntity = findByIdUnidad(unidad.getUpc());
+        if (unidadEntity.isPresent()) {
+            return null;
+        } else {
+            Unidad temp = unidadRepository.save(mapUnidad(unidad, null));
+            if (unidad.getImagen() != null) {
+                ImgArtUniCreateDTO imgArtUni = unidad.getImagen();
+                imgArtUni.setUnidad(temp.getUpc());
+                imgArtUni.setArticulo(temp.getArticulo().getIdArticulo());
+
+                imagenService.saveImgArtUni(imgArtUni);
+            }
+            return temp;
+        }
     }
 
     @Override
@@ -239,6 +253,12 @@ public class ArticuloService implements IArticuloService {
         unidadEntity.setPrecio(unidad.getPrecio());
         unidadEntity.setCantidad(unidad.getCantidad());
         unidadEntity.setDescripcion(unidad.getDescripcion());
+
+        if (unidadEntity.getFechaCreacion() == null) {
+            unidadEntity.setFechaCreacion(new Date());
+        } else {
+            unidadEntity.setFechaCreacion(unidadEntity.getFechaCreacion());
+        }
 
         Optional<Articulo> articulo = findByIdArticulo(unidad.getArticulo());
         if (articulo.isPresent()) {

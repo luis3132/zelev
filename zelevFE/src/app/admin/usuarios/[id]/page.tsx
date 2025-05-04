@@ -131,7 +131,7 @@ export default function Home() {
     }
 
     const deleteImage = async () => {
-        let usr = usuarioEdit as UsuarioUpdate;
+        const usr = usuarioEdit as UsuarioUpdate;
         usr.imagen = 0;
         const { status} = await Put(`/api/usuario/update`, token, usr);
         if (status === 200) {

@@ -89,7 +89,11 @@ public class ArticuloController {
     @PostMapping("/unidad/new")
     @Secured({"ADMIN", "INVENTARIO"})
     public ResponseEntity<Unidad> createUnidad(@RequestBody UnidadCreateDTO unidad) {
-        return ResponseEntity.ok(articuloService.saveUnidad(unidad));
+        Unidad temp = articuloService.saveUnidad(unidad);
+        if (temp == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(temp);
     }
     
     @PutMapping("/unidad/{id}")

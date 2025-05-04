@@ -5,10 +5,10 @@ import CategoriaDeleteButton from "@/components/inventario/categoriaDeleteButton
 import UnidadCard from "@/components/inventario/unidad";
 import useReload from "@/lib/hooks/reload";
 import { Get, Post, UploadPost } from "@/lib/scripts/fetch";
-import { Articulo, ArticuloUpdate, Categoria, Imagen, ImgArtUniCreate, UnidadCreate } from "@/lib/types/types";
+import { Articulo, ArticuloUpdate, Categoria, Imagen, ImgArtUniCreate, Unidad, UnidadCreate } from "@/lib/types/types";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
+import { ChangeEvent, FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
 
 export default function Home() {
@@ -57,7 +57,7 @@ export default function Home() {
         };
     }, [articulo, token]);
 
-    const fetchArticulo = async () => {
+    const fetchArticulo = useCallback(async () => {
         const { data, status } = await Get(`/api/articulo/${id}`, token);
         if (status === 200) {
             setArticulo(data);
@@ -65,15 +65,17 @@ export default function Home() {
         } else {
             console.error("Error al traer el articulo");
         }
-    }
-    const fetchCategorias = async () => {
+    }, [id, token]); 
+
+    const fetchCategorias = useCallback(async () => {
         const { data, status } = await Get("/api/categoria/list", token);
         if (status === 200) {
             setCategories(data);
         } else {
             console.error("Error al traer las categorias");
         }
-    }
+    }, [token]);
+
     const categoriasPadre = categories.filter((categoria) => {
         return categoria.subcategoria === "";
     });
@@ -97,7 +99,8 @@ export default function Home() {
             fetchArticulo();
             fetchCategorias();
         }
-    }, [id, token, reload]);
+        
+    }, [id, token, reload, fetchArticulo, fetchCategorias]);
 
     const handleEditCancelbutton = () => {
         if (editMode) {
@@ -264,6 +267,24 @@ export default function Home() {
                 color: "#fff",
             });
         }
+    }
+
+    const handleAddUnidad = () => {
+        const unidad: UnidadCreate = {
+            upc: unidadEdit.length + 1,
+            label: "",
+            precio: "",
+            cantidad: 0,
+            estado: "STOCK",
+            descripcion: "",
+            articulo: articulo?.idArticulo || 0,
+            imagen: undefined,
+        }
+        setUnidadEdit([...unidadEdit, unidad]);
+    }
+
+    const handleDeleteUnidad = (upc: number) => {
+        setUnidadEdit(unidadEdit.filter((unidad) => unidad.upc !== upc));
     }
 
     return (
@@ -467,11 +488,27 @@ export default function Home() {
                             {articulo?.unidades.map((unidad, index) => {
                                 const idImagen = articulo.imagenes?.find((img) => img.unidad?.upc === unidad.upc);
                                 return (
-                                <UnidadCard key={index} idArticulo={articulo.idArticulo} unidad={unidad} editArticulo={editMode} editUnidad={editUnidad} setEditUnidad={handleEditUnidad} token={token} nuevo={false} idImagen={idImagen?.imagen} />
-                            )})}
+                                    <UnidadCard key={index} handleDeleteUnidad={handleDeleteUnidad} idArticulo={articulo.idArticulo} unidad={unidad} editArticulo={editMode} editUnidad={editUnidad} setEditUnidad={handleEditUnidad} token={token} nuevo={false} idImagen={idImagen?.imagen} />
+                                )
+                            })}
+                            {articulo && unidadEdit.map((unidad, index) => {
+                                const temp: Unidad = {
+                                    upc: unidad.upc,
+                                    label: unidad.label,
+                                    precio: unidad.precio,
+                                    cantidad: unidad.cantidad,
+                                    estado: unidad.estado,
+                                    descripcion: unidad.descripcion,
+                                    fechaCreacion: new Date(),
+                                }
+                                return (
+                                    <UnidadCard key={index} handleDeleteUnidad={handleDeleteUnidad} idImagen={undefined} idArticulo={articulo.idArticulo} unidad={temp} editArticulo={editMode} editUnidad={editUnidad} setEditUnidad={handleEditUnidad} token={token} nuevo={true} />
+                                )
+                            })}
                             <div className="flex justify-center items-center">
                                 <button
                                     type="button"
+                                    onClick={handleAddUnidad}
                                     className="bg-green-500 text-white p-2 rounded flex gap-2 items-center"
                                 >
                                     <Anadir />
