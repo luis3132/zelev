@@ -80,6 +80,7 @@ public class ArticuloService implements IArticuloService {
         Articulo temp = articuloRepository.save(mapArticulo(articulo));
 
         articulo.getUnidades().forEach(unidad -> {
+            unidad.setArticulo(temp.getIdArticulo());
             saveUnidad(unidad);
         });
 
@@ -90,6 +91,13 @@ public class ArticuloService implements IArticuloService {
 
             categoriaService.saveArtiCate(artiCatePK);
         });
+
+        if (articulo.getImagen() != null) {
+            ImgArtUniCreateDTO imgArtUni = articulo.getImagen();
+            imgArtUni.setArticulo(temp.getIdArticulo());
+
+            imagenService.saveImgArtUni(imgArtUni);
+        }
 
         return temp;
     }

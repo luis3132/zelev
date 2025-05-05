@@ -318,7 +318,7 @@ const NavbarAdmin = () => {
                         <section className="w-full flex md:justify-end md:pr-4 pl-4">
                             <Link
                                 href="/admin/profile"
-                                className={`flex items-center cursor-pointer p-2 rounded-lg ${clickedMenu === "Perfil" ? "bg-white/20" : "bg-white/5"}`}
+                                className={`flex items-center cursor-pointer p-2 gap-1 rounded-lg ${clickedMenu === "Perfil" ? "bg-white/20" : "bg-white/5"}`}
                                 onClick={() => clicked("Perfil")}
                             >
                                 <Image

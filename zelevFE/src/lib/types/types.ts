@@ -101,6 +101,7 @@ export interface ArticuloCreate {
     estado: string;
     categorias: number[];
     unidades: UnidadCreate[];
+    imagen: ImgArtUniCreate | undefined;
 }
 export interface ArticuloUpdate {
     idArticulo: number;
