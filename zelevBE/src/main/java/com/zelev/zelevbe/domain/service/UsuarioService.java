@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.zelev.zelevbe.constants.EstadoUsuario;
+import com.zelev.zelevbe.domain.dto.Imagen.ImagenProfileDTO;
 import com.zelev.zelevbe.domain.dto.usuario.UsuarioCreateDTO;
 import com.zelev.zelevbe.domain.dto.usuario.UsuarioListDTO;
 import com.zelev.zelevbe.domain.dto.usuario.UsuarioUpdateDTO;
@@ -126,22 +127,44 @@ public class UsuarioService implements IUsuarioService {
     private Usuario convertDTOtoEntity(Usuario usr, UsuarioUpdateDTO usuarioUpdateDTO) {
         Usuario usuario = usr;
 
-        usuario.setCedula(usuarioUpdateDTO.getCedula());
-        usuario.setNombres(usuarioUpdateDTO.getNombres());
-        usuario.setApellidos(usuarioUpdateDTO.getApellidos());
-        usuario.setEmail(usuarioUpdateDTO.getEmail());
-        usuario.setTelefono(usuarioUpdateDTO.getTelefono());
-        usuario.setDireccion(usuarioUpdateDTO.getDireccion());
-        usuario.setFechaNacimiento(usuarioUpdateDTO.getFechaNacimiento());
-        usuario.setDepartamento(usuarioUpdateDTO.getDepartamento());
-        usuario.setCiudad(usuarioUpdateDTO.getCiudad());
-        usuario.setZipcode(usuarioUpdateDTO.getZipcode());
+        if (usuarioUpdateDTO.getCedula() != null) {
+            usuario.setCedula(usuarioUpdateDTO.getCedula());
+        }
+        if (usuarioUpdateDTO.getNombres() != null) {
+            usuario.setNombres(usuarioUpdateDTO.getNombres());
+        }
+        if (usuarioUpdateDTO.getApellidos() != null) {
+            usuario.setApellidos(usuarioUpdateDTO.getApellidos());
+        }
+        if (usuarioUpdateDTO.getEmail() != null) {
+            usuario.setEmail(usuarioUpdateDTO.getEmail());
+        }
+        if (usuarioUpdateDTO.getTelefono() != null) {
+            usuario.setTelefono(usuarioUpdateDTO.getTelefono());
+        }
+        if (usuarioUpdateDTO.getDireccion() != null) {
+            usuario.setDireccion(usuarioUpdateDTO.getDireccion());
+        }
+        if (usuarioUpdateDTO.getFechaNacimiento() != null) {
+            usuario.setFechaNacimiento(usuarioUpdateDTO.getFechaNacimiento());
+        }
+        if (usuarioUpdateDTO.getDepartamento() != null) {
+            usuario.setDepartamento(usuarioUpdateDTO.getDepartamento());
+        }
+        if (usuarioUpdateDTO.getCiudad() != null) {
+            usuario.setCiudad(usuarioUpdateDTO.getCiudad());
+        }
+        if (usuarioUpdateDTO.getZipcode() != null) {
+            usuario.setZipcode(usuarioUpdateDTO.getZipcode());
+        }
         
-        Optional<Imagen> imagen = imagenService.findById(usuarioUpdateDTO.getImagen());
-        if (imagen.isPresent()) {
+        if (usuarioUpdateDTO.getImagen() != null) {
+            Optional<Imagen> imagen = imagenService.findById(usuarioUpdateDTO.getImagen());
+            if (imagen.isPresent()) {
             usuario.setImagen(imagen.get());
-        } else {
+            } else {
             usuario.setImagen(null);
+            }
         }
 
         if (usuarioUpdateDTO.getNuevosRoles() != null) {
@@ -173,12 +196,15 @@ public class UsuarioService implements IUsuarioService {
         usuario.setDireccion(usuarioCreateDTO.getDireccion());
         usuario.setFechaNacimiento(usuarioCreateDTO.getFechaNacimiento());
         usuario.setFechaCreacion(Date.from(new Date().toInstant()));
+        usuario.setZipcode(usuarioCreateDTO.getZipcode());
+        usuario.setDepartamento(usuarioCreateDTO.getDepartamento());
+        usuario.setCiudad(usuarioCreateDTO.getCiudad());
         usuario.setEstado(EstadoUsuario.ACTIVO);
 
         return usuario;
     }
 
-    private UsuarioListDTO convertEntitytoDTOlist(Usuario usuario) {
+    public UsuarioListDTO convertEntitytoDTOlist(Usuario usuario) {
         UsuarioListDTO usuarioListDTO = new UsuarioListDTO();
 
         usuarioListDTO.setCedula(usuario.getCedula());
@@ -188,8 +214,20 @@ public class UsuarioService implements IUsuarioService {
         usuarioListDTO.setEmail(usuario.getEmail());
         usuarioListDTO.setTelefono(usuario.getTelefono());
         usuarioListDTO.setDireccion(usuario.getDireccion());
+        usuarioListDTO.setDepartamento(usuario.getDepartamento());
+        usuarioListDTO.setCiudad(usuario.getCiudad());
+        usuarioListDTO.setZipcode(usuario.getZipcode());
         usuarioListDTO.setFechaNacimiento(usuario.getFechaNacimiento());
         usuarioListDTO.setEstado(usuario.getEstado());
+        
+        ImagenProfileDTO imagenProfileDTO = new ImagenProfileDTO();
+        if (usuario.getImagen() != null) {
+            imagenProfileDTO.setIdImagen(usuario.getImagen().getIdImagen());
+            imagenProfileDTO.setUrl(usuario.getImagen().getUrl());
+            imagenProfileDTO.setAlt(usuario.getImagen().getAlt());
+            
+            usuarioListDTO.setImagen(imagenProfileDTO);
+        }
 
         List<Rol> roles = usuario.getRoles().stream().map(rol -> {
             Rol rolDTO = rol.getRol();

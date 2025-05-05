@@ -7,7 +7,8 @@ import DecodeUsr from '@/lib/scripts/decodeUser';
 import { Delete, Put, UploadPost, Get } from '@/lib/scripts/fetch';
 import { Imagen, Usuario, UsuarioUpdate } from '@/lib/types/types';
 import Image from 'next/image';
-import { ChangeEvent, useEffect, useState } from 'react';
+import Link from 'next/link';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import Swal from 'sweetalert2';
 
 export default function Home() {
@@ -17,6 +18,7 @@ export default function Home() {
     const [foto, setFoto] = useState<string>("/logo/largeLogo.webp");
     const [token, setToken] = useState<string>("");
     const [file, setFile] = useState<File | null>(null);
+    const fotoRef = useRef("");
 
     useEffect(() => {
         if (typeof window !== undefined) {
@@ -69,30 +71,23 @@ export default function Home() {
                 const { data, status } = await Get(`/api/imagen/${usuario?.imagen.idImagen}`, token, undefined, true);
 
                 if (status === 200 && data instanceof Blob) {
-                    // Crear URL para el Blob
                     const imageUrl = URL.createObjectURL(data);
-
-                    // Liberar la URL anterior si existe
-                    if (foto) {
-                        URL.revokeObjectURL(foto);
-                    }
-
+                    if (fotoRef.current) URL.revokeObjectURL(fotoRef.current);
+                    fotoRef.current = imageUrl;
                     setFoto(imageUrl);
                 }
             } catch (error) {
                 console.error("Error cargando imagen:", error);
                 setFoto("/logo/logo.png");
             }
-        }
+        };
 
         if (usuario?.imagen?.idImagen) {
             fetchImagen();
         }
 
         return () => {
-            if (foto) {
-                URL.revokeObjectURL(foto);
-            }
+            if (fotoRef.current) URL.revokeObjectURL(fotoRef.current);
         };
     }, [token, usuario]);
 
@@ -152,6 +147,7 @@ export default function Home() {
             formData.append("imagen", file);
             formData.append("ruta", "profile");
             formData.append("existe", usuario?.imagen ? usuario.imagen.idImagen.toString() : "false");
+            formData.append("alt", "Imagen de perfil de " + usuario?.nombres);
             const { data, status } = await UploadPost("/api/imagen/upload", token, formData);
             if (status !== 200) {
                 Swal.fire({
@@ -165,7 +161,7 @@ export default function Home() {
                 });
                 return;
             }
-            return data.data as Imagen;
+            return data as Imagen;
         }
     }
 
@@ -618,28 +614,34 @@ export default function Home() {
                     </div>
                 )}
                 <div className='w-full flex md:justify-end pt-4'>
-                    <div className='w-full md:w-3/4 flex md:justify-end gap-4'>
+                    <div className='w-full md:w-3/4 md:flex md:justify-end gap-4'>
                         {usuario && usuario?.roles.length > 1 && (
-                            <button>
+                            <Link
+                                href={"/admin"}
+                                className='bg-cyan-300/50 hover:bg-cyan-400/50 text-white font-bold py-2 gap-1 px-3 mb-3 rounded-lg max-md:w-full shadow-md shadow-cyan-300/50 transition duration-300 ease-in-out flex items-center justify-center'
+                            >
                                 <Admin />
                                 Administrar
-                            </button>
+                            </Link>
                         )}
                         {isEditing ? (
                             <>
-                                <button className='bg-red-500/50 hover:bg-red-600/50 text-white font-bold py-2 gap-1 px-3 rounded-lg shadow-md shadow-red-500/50 transition duration-300 ease-in-out flex items-center justify-center'
+                                <button
+                                    className='bg-red-500/50 hover:bg-red-600/50 text-white font-bold py-2 gap-1 px-3 mb-3 rounded-lg max-md:w-full shadow-md shadow-red-500/50 transition duration-300 ease-in-out flex items-center justify-center'
                                     onClick={handleDelete}
                                 >
                                     <DeleteIcon />
                                     Borrar Cuenta
                                 </button>
-                                <button className='bg-amber-300/50 hover:bg-amber-400/50 text-white font-bold py-2 gap-1 px-3 rounded-lg shadow-md shadow-amber-300/50 transition duration-300 ease-in-out flex items-center justify-center'
+                                <button
+                                    className='bg-amber-300/50 hover:bg-amber-400/50 text-white font-bold py-2 gap-1 px-3 mb-3 rounded-lg max-md:w-full shadow-md shadow-amber-300/50 transition duration-300 ease-in-out flex items-center justify-center'
                                     onClick={handleEditToggle}
                                 >
                                     <CancelIcon />
                                     Cancelar
                                 </button>
-                                <button className='bg-green-400/50 hover:bg-green-500/50 text-white font-bold py-2 gap-1 px-3 rounded-lg shadow-md shadow-green-400/50 transition duration-300 ease-in-out flex items-center justify-center'
+                                <button
+                                    className='bg-green-400/50 hover:bg-green-500/50 text-white font-bold py-2 gap-1 px-3 mb-3 rounded-lg max-md:w-full shadow-md shadow-green-400/50 transition duration-300 ease-in-out flex items-center justify-center'
                                     form='formUpate'
                                     type='submit'
                                 >
@@ -648,14 +650,16 @@ export default function Home() {
                                 </button>
                             </>
                         ) : (
-                            <button className='bg-amber-300/50 hover:bg-amber-400/50 text-white font-bold py-2 gap-1 px-3 rounded-lg shadow-md shadow-amber-300/50 transition duration-300 ease-in-out flex items-center justify-center'
+                            <button
+                                className='bg-amber-300/50 hover:bg-amber-400/50 text-white font-bold py-2 gap-1 px-3 mb-3 rounded-lg max-md:w-full shadow-md shadow-amber-300/50 transition duration-300 ease-in-out flex items-center justify-center'
                                 onClick={handleEditToggle}
                             >
                                 <Edit />
                                 Editar
                             </button>
                         )}
-                        <button className='bg-red-500/50 hover:bg-red-600/50 text-white font-bold py-2 gap-1 px-3 rounded-lg shadow-md shadow-red-500/50 transition duration-300 ease-in-out flex items-center justify-center'
+                        <button
+                            className='bg-red-500/50 hover:bg-red-600/50 text-white font-bold py-2 gap-1 px-3 mb-3 rounded-lg max-md:w-full shadow-md shadow-red-500/50 transition duration-300 ease-in-out flex items-center justify-center'
                             onClick={handleLogOut}
                         >
                             <LogOut />

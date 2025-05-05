@@ -2,7 +2,7 @@ export interface token {
     token: string;
 }
 export interface Rol {
-    id: number;
+    idRol: number;
     rol: string;
 }
 export interface Usuario {
@@ -36,11 +36,80 @@ export interface UsuarioUpdate {
     imagen: number;
     fechaNacimiento: Date;
     estado: string;
-    NuevosRoles: number[];
-    EliminarRoles: number[];
+    roles: Rol[];
+    nuevosRoles: number[];
+    eliminarRoles: number[];
 }
 export interface Imagen {
     idImagen: number;
     url: string;
     alt: string;
+}
+export interface Categoria {
+    idCategoria: number;
+    categoria: string;
+    subcategoria: string;
+}
+export interface CategoriaCreate {
+    categoria: string;
+    subCategoria: string;
+}
+export interface Unidad {
+    upc: number;
+    label: string;
+    precio: string;
+    cantidad: number;
+    fechaCreacion: Date;
+    estado: string;
+    descripcion: string;
+}
+export interface UnidadCreate {
+    upc: number;
+    label: string;
+    precio: string;
+    cantidad: number;
+    estado: string;
+    descripcion: string;
+    articulo: number;
+    imagen: ImgArtUniCreate | undefined;
+}
+export interface ImgArtUni {
+    idImgArtUni: number;
+    articulo: Articulo;
+    unidad: Unidad;
+    imagen: Imagen;
+}
+export interface ImgArtUniCreate {
+    articulo: number;
+    unidad: number | null;
+    imagen: number;
+}
+export interface Articulo {
+    idArticulo: number;
+    nombre: string;
+    descripcion: string;
+    impuesto: number;
+    estado: string;
+    categorias: Categoria[];
+    unidades: Unidad[];
+    imagenes: ImgArtUni[];
+}
+export interface ArticuloCreate {
+    nombre: string;
+    descripcion: string;
+    impuesto: number;
+    estado: string;
+    categorias: number[];
+    unidades: UnidadCreate[];
+}
+export interface ArticuloUpdate {
+    idArticulo: number;
+    nombre: string;
+    descripcion: string;
+    impuesto: number;
+    estado: string;
+    categoriasNuevas: number[];
+    categoriasEliminar: number[];
+    unidades: UnidadCreate[];
+    imagen: ImgArtUniCreate | undefined;
 }

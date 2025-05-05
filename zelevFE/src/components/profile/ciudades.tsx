@@ -10,7 +10,7 @@ const Ciudades = ({ departamento }: CiudadesProps) => {
     if (departamentos) {
         return (
             <>
-                <option value="" selected>Seleccione una ciudad</option>
+                <option defaultValue="" >Seleccione una ciudad</option>
                 {departamentos?.ciudades.map((ciudad, i) => (
                     <option key={i} value={ciudad}>
                         {ciudad}
@@ -21,7 +21,7 @@ const Ciudades = ({ departamento }: CiudadesProps) => {
     }
     return (
         <>
-            <option value="" selected>Seleccione un Departamento</option>
+            <option defaultValue="" >Seleccione un Departamento</option>
         </>
     )
 }

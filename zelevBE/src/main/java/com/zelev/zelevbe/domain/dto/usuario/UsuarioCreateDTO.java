@@ -28,6 +28,9 @@ public class UsuarioCreateDTO {
     private Date fechaNacimiento;
     private String contrasena;
     private Date fechaCreacion;
+    private String departamento;
+    private String ciudad;
+    private Integer zipcode;
     private EstadoUsuario estado;
     private List<Integer> roles;
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,8 +23,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 /**
  * 
  * @author Luis Andres Gonzalez Corzo
- * 
- * Controller for Rol
  */
 
 @RestController
@@ -34,11 +33,13 @@ public class RolController {
     private RolService rolService;
 
     @GetMapping("/list")
+    @Secured({"ADMIN"})
     public ResponseEntity<List<Rol>> getAllRol() {
         return ResponseEntity.ok(rolService.getAll());
     }
     
     @PostMapping("/new")
+    @Secured({"ADMIN"})
     public ResponseEntity<Rol> createRolEntity(@RequestBody RolCreateDTO entity) {
         Rol rol = rolService.save(entity);
         if (rol == null) {
@@ -48,6 +49,7 @@ public class RolController {
     }
 
     @DeleteMapping("/delete/{id}")
+    @Secured({"ADMIN"})
     public ResponseEntity<Boolean> deleteRol(@PathVariable("id") Integer id) {
         if (rolService.delete(id)) {
             return ResponseEntity.ok().build();

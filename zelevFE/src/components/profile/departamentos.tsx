@@ -5,7 +5,7 @@ export default function Departamentos() {
     const departamentos = DepartamentosyCiudades;
     return (
         <>
-            <option value="" selected>Seleccione un departamento</option>
+            <option defaultValue="">Seleccione un Departamento</option>
             {departamentos.map((departamento, i) => (
                 <option key={i} value={departamento.departamento}>
                     {departamento.departamento}

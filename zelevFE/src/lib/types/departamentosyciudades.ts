@@ -1,5 +1,3 @@
-
-
 const DepartamentosyCiudades = [
     {
         "departamento": "Amazonas",

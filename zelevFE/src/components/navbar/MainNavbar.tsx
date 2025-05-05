@@ -37,7 +37,7 @@ export default function MainNavbar() {
                     window.location.href = "/auth/login";
                 });
             }
-            const usr: Usuario = data.data;
+            const usr: Usuario = data;
             if (!usr || usr.estado !== "ACTIVO") {
                 if (!usr) {
                     Swal.fire({
@@ -81,6 +81,15 @@ export default function MainNavbar() {
             }
         }
     }, []);
+
+    useEffect(() => {
+        if (!usuario) {
+            return;
+        }
+        if (usuario && usuario.roles.length === 1 && usuario.roles[0].rol === "ADMIN") {
+            window.location.href = "/admin";
+        }
+    }, [usuario]);
 
     return (
         <>
