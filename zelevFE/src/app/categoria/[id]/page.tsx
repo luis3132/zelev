@@ -30,9 +30,18 @@ export default function Home() {
             console.error("Error al traer las categorias");
         }
     }
+    const fetchFirtsArticulos = async (categoria: number) => {
+        const { data, status } = await Get(`/api/articulo/${categoria}/list/${0}/${process.env.NEXT_PUBLIC_SIZE}`, "");
+        if (status === 200) {
+          setArticulos(data);
+          setPage(1);
+        } else {
+          console.error("Error al traer los articulos");
+        }
+      }
     const fetchArticulos = async (categoria: number) => {
         loadingUpdate(true);
-        const { data, status } = await Get(`/api/articulo/${categoria}/list/${page}/${10}`, token ? token : "");
+        const { data, status } = await Get(`/api/articulo/${categoria}/list/${page}/${process.env.NEXT_PUBLIC_SIZE}`, token ? token : "");
         if (status === 200) {
             setArticulos(prev => [...prev, ...data]);
             setPage(prev => prev + 1);
@@ -58,19 +67,19 @@ export default function Home() {
                 fetchCategorias();
             }
             if (id === "hombre") {
-                fetchArticulos(62);
+                fetchFirtsArticulos(62);
                 setIdCategoria(62);
             }
             if (id === "mujer") {
-                fetchArticulos(61);
+                fetchFirtsArticulos(61);
                 setIdCategoria(61);
             }
             if (id === "nino") {
-                fetchArticulos(64);
+                fetchFirtsArticulos(64);
                 setIdCategoria(64);
             }
             if (id === "outlet") {
-                fetchArticulos(90);
+                fetchFirtsArticulos(90);
                 setIdCategoria(90);
             }
         }
@@ -157,7 +166,7 @@ export default function Home() {
     return (
         <ReloadContext.Provider value={{ reload, update, loadingUpdate, loading }}>
             <div className="w-full h-full md:flex">
-                <FiltersComponent toggleCategory={toggleCategory} handleSelectCategory={handleSelectCategory} expandedCategories={expandedCategories} selectedCategories={selectedCategories} categoriasPadre={categoriasPadre} categories={categories} showAnadir={true} />
+                <FiltersComponent toggleCategory={toggleCategory} handleSelectCategory={handleSelectCategory} expandedCategories={expandedCategories} selectedCategories={selectedCategories} categoriasPadre={categoriasPadre} categories={categories} showAnadir={false} />
 
                 <main className="md:w-4/5 w-full max-h-full overflow-y-scroll p-4">
                     <div className="mb-4">

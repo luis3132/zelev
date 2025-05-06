@@ -1,3 +1,18 @@
+export interface Slide {
+    id: number;
+    src: string;
+    alt: string;
+    caption?: string;
+}
+export interface Carrito {
+    upc: number;
+    nombre: string;
+    precio: string;
+    cantidad: number;
+    subtotal: number;
+    imagen: number | undefined;
+    url: string;
+}
 export interface token {
     token: string;
 }

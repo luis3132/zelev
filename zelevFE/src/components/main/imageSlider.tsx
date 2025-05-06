@@ -3,13 +3,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import Image from 'next/image';
-
-interface Slide {
-    id: number;
-    src: string;
-    alt: string;
-    caption?: string;
-}
+import { Slide } from '@/lib/types/types';
 
 export default function ImageSlider({ slides }: { slides: Slide[] }) {
     const [currentSlide, setCurrentSlide] = useState(0);

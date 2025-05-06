@@ -32,7 +32,7 @@ export default function Home() {
     }
   }
   const fetchFirtsArticulos = async () => {
-    const { data, status } = await Get(`/api/articulo/list/${0}/${10}`, "");
+    const { data, status } = await Get(`/api/articulo/list/${0}/${process.env.NEXT_PUBLIC_SIZE}`, "");
     if (status === 200) {
       setArticulos(data);
       setPage(1);
@@ -42,7 +42,7 @@ export default function Home() {
   }
   const fetchArticulos = async () => {
     loadingUpdate(true);
-    const { data, status } = await Get(`/api/articulo/list/${page}/${10}`, "");
+    const { data, status } = await Get(`/api/articulo/list/${page}/${process.env.NEXT_PUBLIC_SIZE}`, "");
     if (status === 200) {
       setArticulos(prev => [...prev, ...data]);
       setPage(prev => prev + 1);
@@ -144,25 +144,25 @@ export default function Home() {
       id: 1,
       src: '/bolsos/bolsos.webp',
       alt: 'Descripción de la primera imagen',
-      caption: 'Título de la imagen 1'
+      caption: 'Pagina con fines educativos, no comercial'
     },
     {
       id: 2,
-      src: '/bolsos/bolso1.jpeg',
+      src: '/bolsos/bolso1.webp',
       alt: 'Descripción de la segunda imagen',
-      caption: 'Título de la imagen 2'
+      caption: 'Pagina con fines educativos, no comercial'
     },
     {
       id: 3,
-      src: '/bolsos/bolso2.jpeg',
+      src: '/bolsos/bolso2.webp',
       alt: 'Descripción de la tercera imagen',
-      caption: 'Título de la imagen 3'
+      caption: 'Pagina con fines educativos, no comercial'
     },
     {
       id: 4,
-      src: '/bolsos/bolso3.jpg',
+      src: '/bolsos/bolso3.webp',
       alt: 'Descripción de la tercera imagen',
-      caption: 'Título de la imagen 4'
+      caption: 'Pagina con fines educativos, no comercial'
     },
   ];
   return (

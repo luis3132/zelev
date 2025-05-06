@@ -1,5 +1,6 @@
 "use client";
 
+import { BackIcon } from "@/components/icons/icons";
 import { Post } from "@/lib/scripts/fetch";
 import { token } from "@/lib/types/types";
 import Image from "next/image";
@@ -66,7 +67,7 @@ export default function Login() {
         <>
             <div className="fixed top-0 left-0 z-50 hover:font-bold p-4 md:p-8">
                 <Link href={url} className="flex items-center justify-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="m7.825 13l5.6 5.6L12 20l-8-8l8-8l1.425 1.4l-5.6 5.6H20v2z" /></svg>
+                    <BackIcon />
                     <h1>Inicio</h1>
                 </Link>
             </div>
