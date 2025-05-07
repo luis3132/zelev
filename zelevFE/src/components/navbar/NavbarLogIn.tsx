@@ -84,7 +84,7 @@ const NavbarLogIn: FC<NavbarLogInProps> = ({ usuario }) => {
     return (
         <>
             <div className="w-full pt-2 px-2 fixed z-50 md:h-24 md:top-0 bottom-0 left-0 max-md:pb-2">
-                <nav className={`flex flex-col items-end duration-500 transition-all bg-white/25 shadow-lg backdrop-blur-xs 
+                <nav className={`flex flex-col items-end duration-500 transition-all bg-white/25 shadow-lg backdrop-blur-sm
                     rounded-2xl shadow-white-10 w-full ${openMenus ? "max-md:h-28" : "max-md:h-16"} overflow-hidden`}>
                     <ul className={`w-full flex list-none justify-around text-lg md:hidden overflow-hidden transition-all duration-300 
                         ${openMenus ? "pt-4 pb-1" : "h-0"}`}>
@@ -185,7 +185,7 @@ const NavbarLogIn: FC<NavbarLogInProps> = ({ usuario }) => {
                         <section className="w-full flex md:justify-end md:pr-4 pl-4">
                             <Link
                                 href="/profile"
-                                className={`flex items-center cursor-pointer p-2 rounded-lg ${clickedMenu === "Perfil" ? "bg-white/20" : "bg-white/5"}`}
+                                className={`flex items-center cursor-pointer p-2 gap-1 rounded-lg ${clickedMenu === "Perfil" ? "bg-white/20" : "bg-white/5"}`}
                                 onClick={() => clicked("Perfil")}
                             >
                                 <Image

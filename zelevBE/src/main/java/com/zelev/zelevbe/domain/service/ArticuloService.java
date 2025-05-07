@@ -56,7 +56,7 @@ public class ArticuloService implements IArticuloService {
         List<Articulo> articulos = articuloRepository.findAll(pageable).getContent();
 
         return articulos.stream()
-                .map(this::mapArticuloList)
+                .map(articulo -> this.mapArticuloList(articulo, false))
                 .toList();
     }
 
@@ -66,7 +66,7 @@ public class ArticuloService implements IArticuloService {
         List<Articulo> articulos = articuloRepository.findByCategoria(id, pageable).getContent();
 
         return articulos.stream()
-                .map(this::mapArticuloList)
+                .map(articulo -> this.mapArticuloList(articulo, false))
                 .toList();
     }
 
@@ -80,6 +80,7 @@ public class ArticuloService implements IArticuloService {
         Articulo temp = articuloRepository.save(mapArticulo(articulo));
 
         articulo.getUnidades().forEach(unidad -> {
+            unidad.setArticulo(temp.getIdArticulo());
             saveUnidad(unidad);
         });
 
@@ -90,6 +91,13 @@ public class ArticuloService implements IArticuloService {
 
             categoriaService.saveArtiCate(artiCatePK);
         });
+
+        if (articulo.getImagen() != null) {
+            ImgArtUniCreateDTO imgArtUni = articulo.getImagen();
+            imgArtUni.setArticulo(temp.getIdArticulo());
+
+            imagenService.saveImgArtUni(imgArtUni);
+        }
 
         return temp;
     }
@@ -223,7 +231,7 @@ public class ArticuloService implements IArticuloService {
         return articuloEntity;
     }
 
-    public ArticuloListDTO mapArticuloList(Articulo articulo) {
+    public ArticuloListDTO mapArticuloList(Articulo articulo, Boolean admin) {
         ArticuloListDTO articuloListDTO = new ArticuloListDTO();
         articuloListDTO.setIdArticulo(articulo.getIdArticulo());
         articuloListDTO.setNombre(articulo.getNombre());
@@ -239,7 +247,13 @@ public class ArticuloService implements IArticuloService {
         articuloListDTO.setCategorias(categorias);
 
         List<Unidad> unidades = articulo.getUnidades().stream()
-                .filter(unidad -> unidad.getEstado() == EstadoUnidad.STOCK)
+                .filter(unidad -> {
+                    if (admin) {
+                        return true;
+                    } else {
+                        return unidad.getEstado() == EstadoUnidad.STOCK;
+                    }
+                })
                 .toList();
         articuloListDTO.setUnidades(unidades);
 

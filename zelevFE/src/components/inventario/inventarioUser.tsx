@@ -45,7 +45,7 @@ const InventarioUser: FC<InventarioProps> = ({ articulo }) => {
     }
 
     return (
-        <Link onClick={handlePrevius} href={`/${articulo.idArticulo}`} className="border rounded-lg p-4 shadow-md flex flex-col hover:bg-black items-center justify-center ">
+        <Link onClick={handlePrevius} href={`/${articulo.idArticulo}`} className="bg-black/30 rounded-lg p-4 shadow-md flex flex-col hover:bg-black items-center justify-center ">
             <main className="w-full flex justify-center items-center mb-2">
                 <div className="w-[250px] flex justify-center items-center">
                     <Image

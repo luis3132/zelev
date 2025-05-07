@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS img_art_uni (
 CREATE TABLE IF NOT EXISTS pedido (
 	id_pedido int auto_increment primary key not null,
 	cliente varchar(20) not null,
-	empleado varchar(20) not null,
+	empleado varchar(20) null,
 	fecha_pedido timestamp default CURRENT_TIMESTAMP(),
 	estado enum('PROCESO', 'ENTREGADO', 'ENVIADO', 'CANCELADO') not null,
 	CONSTRAINT pedido_cliente_FK FOREIGN KEY (cliente) REFERENCES usuario (cedula),
@@ -95,6 +95,7 @@ CREATE TABLE IF NOT EXISTS pedi_unid (
 	pedido int not null,
 	unidad bigint not null,
 	precio varchar(20) not null,
+	cantidad int not null,
 	PRIMARY KEY (pedido, unidad),
 	CONSTRAINT peun_pedido_FK FOREIGN KEY (pedido) REFERENCES pedido (id_pedido) ON DELETE CASCADE,
 	CONSTRAINT peun_unidad_FK FOREIGN KEY (unidad) REFERENCES unidad (upc) ON DELETE CASCADE

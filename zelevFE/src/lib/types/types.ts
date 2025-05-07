@@ -1,3 +1,19 @@
+export interface Slide {
+    id: number;
+    src: string;
+    alt: string;
+    caption?: string;
+}
+export interface Carrito {
+    upc: number;
+    nombre: string;
+    precio: string;
+    cantidad: number;
+    subtotal: number;
+    imagen: number | undefined;
+    url: string;
+    label: string;
+}
 export interface token {
     token: string;
 }
@@ -101,6 +117,7 @@ export interface ArticuloCreate {
     estado: string;
     categorias: number[];
     unidades: UnidadCreate[];
+    imagen: ImgArtUniCreate | undefined;
 }
 export interface ArticuloUpdate {
     idArticulo: number;
@@ -112,4 +129,24 @@ export interface ArticuloUpdate {
     categoriasEliminar: number[];
     unidades: UnidadCreate[];
     imagen: ImgArtUniCreate | undefined;
+}
+export interface Pedido {
+    idPedido: number;
+    cliente: Usuario;
+    empleado: Usuario;
+    fechaCreacion: Date;
+    estado: string;
+    pediUnidList: PediUnid[];
+}
+export interface PediUnid {
+    pedido: Pedido;
+    unidad: Unidad;
+    cantidad: number;
+    precio: string;
+}
+export interface PedidoCreate {
+    unidad: number;
+    precio: string;
+    cantidad: number;
+    usuario: string;
 }

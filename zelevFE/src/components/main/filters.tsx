@@ -1,6 +1,7 @@
 import { FC, useState } from "react";
 import { Anadir, ChevronDownIcon, ChevronUpIcon, FilterIcon } from "../icons/icons";
 import { Categoria } from "@/lib/types/types";
+import AnadirArticulo from "../inventario/AnadirArticulo";
 
 interface FiltersComponentProps {
     toggleCategory: (categoryId: number) => void;
@@ -15,9 +16,14 @@ interface FiltersComponentProps {
 const FiltersComponent: FC<FiltersComponentProps> = ({ categoriasPadre, categories, expandedCategories, handleSelectCategory, selectedCategories, toggleCategory, showAnadir }) => {
 
     const [showFilters, setShowFilters] = useState(false);
+    const [showAdd, setShowAdd] = useState(false);
 
     const toggleFilters = () => {
         setShowFilters(!showFilters);
+    };
+
+    const handleAdd = () => {
+        setShowAdd(!showAdd);
     };
 
     const color = (expanded: boolean, select: boolean, category?: boolean) => {
@@ -43,7 +49,7 @@ const FiltersComponent: FC<FiltersComponentProps> = ({ categoriasPadre, categori
                     {showAnadir && (
                         <button
                             className="flex items-center justify-center bg-green-600 text-white px-2 py-1 rounded gap-2"
-                            onClick={() => alert("Añadir algo")}
+                            onClick={handleAdd}
                         >
                             <Anadir />
                             Añadir
@@ -95,6 +101,7 @@ const FiltersComponent: FC<FiltersComponentProps> = ({ categoriasPadre, categori
                     </div>
                 </main>
             </aside>
+            {showAdd && <AnadirArticulo key={986} closeModal={handleAdd} />}
         </>
     )
 }

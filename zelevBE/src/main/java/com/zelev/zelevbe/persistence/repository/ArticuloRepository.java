@@ -14,7 +14,7 @@ import com.zelev.zelevbe.persistence.entity.Articulo;
 
 public interface ArticuloRepository extends JpaRepository<Articulo, Integer> {
 
-    @Query("SELECT a FROM Articulo a JOIN a.categorias c WHERE a.estado = 'ACTIVO' AND c.categoria = ?1")
+    @Query("SELECT a FROM Articulo a JOIN a.categorias c WHERE a.estado = 'ACTIVO' AND c.categoria.idCategoria = ?1")
     Page<Articulo> findByCategoria(Integer categoria, Pageable pageable);
 
 }

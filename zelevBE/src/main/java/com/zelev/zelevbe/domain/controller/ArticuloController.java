@@ -58,11 +58,11 @@ public class ArticuloController {
         return ResponseEntity.ok(articuloService.findAllArticulosByCategorie(categoria, page, size));
     }
     
-    @GetMapping("/articulo/{id}")
-    public ResponseEntity<ArticuloListDTO> findArticulo(@PathVariable("id") Integer id) {
+    @GetMapping("/articulo/{id}/{admin}")
+    public ResponseEntity<ArticuloListDTO> findArticulo(@PathVariable("id") Integer id, @PathVariable("admin") Boolean admin) {
         Optional<Articulo> articulo = articuloService.findByIdArticulo(id);
         if (articulo.isPresent()) {
-            return ResponseEntity.ok(articuloService.mapArticuloList(articulo.get()));
+            return ResponseEntity.ok(articuloService.mapArticuloList(articulo.get(), admin));   
         } else {
             return ResponseEntity.notFound().build();
         }

@@ -29,7 +29,7 @@ const Inventario: FC<InventarioProps> = ({ articulo, token }) => {
                 setFoto("/logo/largeLogo.webp");
             }
         }
-        const singleImg = articulo.imagenes.find((img) => img.unidad === undefined && img.articulo === undefined);
+        const singleImg = articulo.imagenes.find((img) => !img.unidad);
         if (singleImg) {
             fetchImagenes(singleImg.imagen.idImagen);
             setAlt(singleImg.imagen.alt);
