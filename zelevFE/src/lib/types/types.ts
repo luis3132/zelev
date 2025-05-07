@@ -12,6 +12,7 @@ export interface Carrito {
     subtotal: number;
     imagen: number | undefined;
     url: string;
+    label: string;
 }
 export interface token {
     token: string;

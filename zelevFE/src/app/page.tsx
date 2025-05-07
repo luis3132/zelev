@@ -2,20 +2,22 @@
 
 import InventarioUser from "@/components/inventario/inventarioUser";
 import AboutUs from "@/components/main/aboutUs";
+import CarritoComponent from "@/components/main/carrito";
 import FiltersComponent from "@/components/main/filters";
 import ImageSlider from "@/components/main/imageSlider";
 import Tecnologies from "@/components/main/tecnologies";
 import MainNavbar from "@/components/navbar/MainNavbar";
 import useReload from "@/lib/hooks/reload";
 import { Get } from "@/lib/scripts/fetch";
-import { Articulo, Categoria } from "@/lib/types/types";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { Articulo, Carrito, Categoria } from "@/lib/types/types";
+import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 
 export default function Home() {
 
   const [categories, setCategories] = useState<Categoria[]>([]);
   const [articulos, setArticulos] = useState<Articulo[]>([]);
   const [page, setPage] = useState<number>(0);
+  const [carrito, setCarrito] = useState<Carrito[]>([]);
   const { ReloadContext, loading, loadingUpdate, reload, update } = useReload();
   const [hasMore, setHasMore] = useState<boolean>(true);
   const observerTarget = useRef(null);
@@ -40,53 +42,69 @@ export default function Home() {
       console.error("Error al traer los articulos");
     }
   }
-  const fetchArticulos = async () => {
-    loadingUpdate(true);
-    const { data, status } = await Get(`/api/articulo/list/${page}/${process.env.NEXT_PUBLIC_SIZE}`, "");
-    if (status === 200) {
-      setArticulos(prev => [...prev, ...data]);
-      setPage(prev => prev + 1);
-      if (data.length < 10) {
-        setHasMore(false);
+  const [isFetching, setIsFetching] = useState(false);
+
+  const fetchArticulos = useCallback(async () => {
+    if (isFetching || !hasMore) return;
+
+    setIsFetching(true);
+    try {
+      const { data, status } = await Get(`/api/articulo/list/${page}/${process.env.NEXT_PUBLIC_SIZE}`, "");
+
+      if (status === 200) {
+        const articulos: Articulo[] = data;
+        setArticulos(prev => {
+          // Evita duplicados usando un Set
+          const existingIds = new Set(prev.map(item => item.idArticulo));
+          const newItems = articulos.filter(item => !existingIds.has(item.idArticulo));
+          return [...prev, ...newItems];
+        });
+
+        setPage(prev => prev + 1);
+        setHasMore(data.length >= Number(process.env.NEXT_PUBLIC_SIZE));
       }
-    } else {
-      console.error("Error al traer los articulos");
+    } catch (error) {
+      console.error("Error al traer los articulos:", error);
+    } finally {
+      setIsFetching(false);
     }
-    loadingUpdate(false);
-  }
+  }, [page, isFetching, hasMore]);
 
+  // Efecto para infinite scroll
   useEffect(() => {
-    if (categories.length === 0) {
-      fetchCategorias();
-    }
-    fetchFirtsArticulos();
-  }, [reload, categories.length]);
-
-  useEffect(() => {
-    if (page < 1) {
-      return;
-    }
     const observer = new IntersectionObserver(
       entries => {
-        if (entries[0].isIntersecting && hasMore) {
+        if (entries[0].isIntersecting && !isFetching && hasMore) {
           fetchArticulos();
         }
       },
       { threshold: 1.0 }
     );
 
-    if (observerTarget.current) {
-      observer.observe(observerTarget.current);
+    const currentTarget = observerTarget.current;
+    if (currentTarget) {
+      observer.observe(currentTarget);
     }
 
-    const currentTarget = observerTarget.current;
     return () => {
       if (currentTarget) {
         observer.unobserve(currentTarget);
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hasMore, loading, articulos]);
+  }, [fetchArticulos, isFetching, hasMore]); // Elimina articulos de las dependencias
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedCarrito = localStorage.getItem("carrito");
+      if (storedCarrito) {
+        setCarrito(JSON.parse(storedCarrito));
+      }
+    }
+    if (categories.length === 0) {
+      fetchCategorias();
+    }
+    fetchFirtsArticulos();
+  }, [reload, categories.length]);
 
   const categoriasPadre = categories.filter((categoria) => {
     return categoria.subcategoria === "";
@@ -121,6 +139,12 @@ export default function Home() {
     });
     return nombreMatch && categoriaMatch;
   });
+
+  const handleSetCarrito = (carrito: Carrito[]) => {
+    localStorage.removeItem("carrito");
+    setCarrito(carrito);
+    localStorage.setItem("carrito", JSON.stringify(carrito));
+  }
 
   const handleNombreQueryChange = (e: ChangeEvent<HTMLInputElement>) => {
     setNombreQuery(e.target.value);
@@ -221,6 +245,7 @@ export default function Home() {
           <h4 className="font-Quintessential text-center text-white/50 text-2xl py-4">Tecnologías utilizadas</h4>
           <Tecnologies />
         </section>
+        {carrito.length > 0 && <CarritoComponent carrito={carrito} setCarrito={handleSetCarrito} />}
       </main>
     </ReloadContext.Provider>
   );

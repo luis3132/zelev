@@ -1,6 +1,7 @@
 "use client";
 
 import { Anadir, BackIcon } from "@/components/icons/icons";
+import CarritoComponent from "@/components/main/carrito";
 import ImageSlider from "@/components/main/imageSlider";
 import { Get } from "@/lib/scripts/fetch";
 import { Articulo, Carrito, Imagen, Slide } from "@/lib/types/types";
@@ -19,6 +20,7 @@ const Home = () => {
         alt: "Imagen 1",
         caption: "Logo de la tienda, No hay imagenes disponibles",
     }
+    const [carrito, setCarrito] = useState<Carrito[]>([]);
     const [unidadSeleccionada, setUnidadSeleccionada] = useState<number>(0);
 
     const fetchArticulo = async () => {
@@ -31,6 +33,12 @@ const Home = () => {
     }
 
     useEffect(() => {
+        if (typeof window !== "undefined") {
+            const storedCarrito = localStorage.getItem("carrito");
+            if (storedCarrito) {
+                setCarrito(JSON.parse(storedCarrito));
+            }
+        }
         if (id) {
             fetchArticulo();
         }
@@ -76,6 +84,13 @@ const Home = () => {
 
     const handleShowPrecio = (index: number) => {
         setUnidadSeleccionada(index);
+        (document.getElementById("cantidad") as HTMLSelectElement)!.value = "1";
+    }
+
+    const handleSetCarrito = (carrito: Carrito[]) => {
+        localStorage.removeItem("carrito");
+        setCarrito(carrito);
+        localStorage.setItem("carrito", JSON.stringify(carrito));
     }
 
     const handleAddCarrito = () => {
@@ -94,6 +109,7 @@ const Home = () => {
         const unidad = articulo?.unidades.find(u => u.upc === unidadSeleccionada);
         const imagen = articulo?.imagenes.find(i => i.unidad?.upc === unidadSeleccionada);
         if (unidad && articulo) {
+            localStorage.removeItem("carrito");
             const cantidad = document.getElementById("cantidad") as HTMLSelectElement;
             const data: Carrito = {
                 upc: unidad.upc,
@@ -103,8 +119,23 @@ const Home = () => {
                 precio: unidad.precio,
                 subtotal: parseInt(unidad.precio) * parseInt(cantidad.value),
                 url: window.location.pathname,
+                label: unidad.label,
             }
-            console.log(data);
+            setCarrito((prevCarrito) => {
+                const existingItem = prevCarrito.find(item => item.upc === data.upc);
+                let updatedCarrito;
+                if (existingItem) {
+                    updatedCarrito = prevCarrito.map(item =>
+                        item.upc === data.upc
+                            ? { ...item, cantidad: data.cantidad, subtotal: data.subtotal }
+                            : item
+                    );
+                } else {
+                    updatedCarrito = [...prevCarrito, data];
+                }
+                localStorage.setItem("carrito", JSON.stringify(updatedCarrito));
+                return updatedCarrito;
+            });
         }
     }
 
@@ -112,7 +143,7 @@ const Home = () => {
         <main className="flex flex-col items-center justify-center w-full h-full">
             <button
                 onClick={() => window.history.back()}
-                className="fixed top-20 left-5 text-white p-4 cursor-pointer flex items-center gap-2"
+                className="fixed top-2 md:top-20 left-5 text-white p-4 cursor-pointer flex items-center gap-2"
             >
                 <BackIcon />
                 Volver
@@ -165,6 +196,7 @@ const Home = () => {
                     </div>
                 </article>
             </section>
+            {carrito.length > 0 && <CarritoComponent carrito={carrito} setCarrito={handleSetCarrito} />}
         </main>
     )
 }

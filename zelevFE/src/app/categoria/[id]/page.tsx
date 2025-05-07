@@ -1,12 +1,13 @@
 "use client";
 
 import InventarioUser from "@/components/inventario/inventarioUser";
+import CarritoComponent from "@/components/main/carrito";
 import FiltersComponent from "@/components/main/filters";
 import useReload from "@/lib/hooks/reload";
 import { Get } from "@/lib/scripts/fetch";
-import { Articulo, Categoria } from "@/lib/types/types";
+import { Articulo, Carrito, Categoria } from "@/lib/types/types";
 import { useParams } from "next/navigation";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 
 export default function Home() {
     const { id } = useParams();
@@ -14,6 +15,7 @@ export default function Home() {
     const [token, setToken] = useState<string>("");
     const [categories, setCategories] = useState<Categoria[]>([]);
     const [articulos, setArticulos] = useState<Articulo[]>([]);
+    const [carrito, setCarrito] = useState<Carrito[]>([]);
     const [page, setPage] = useState<number>(0);
     const { ReloadContext, loading, loadingUpdate, reload, update } = useReload();
     const [hasMore, setHasMore] = useState<boolean>(true);
@@ -33,26 +35,62 @@ export default function Home() {
     const fetchFirtsArticulos = async (categoria: number) => {
         const { data, status } = await Get(`/api/articulo/${categoria}/list/${0}/${process.env.NEXT_PUBLIC_SIZE}`, "");
         if (status === 200) {
-          setArticulos(data);
-          setPage(1);
-        } else {
-          console.error("Error al traer los articulos");
-        }
-      }
-    const fetchArticulos = async (categoria: number) => {
-        loadingUpdate(true);
-        const { data, status } = await Get(`/api/articulo/${categoria}/list/${page}/${process.env.NEXT_PUBLIC_SIZE}`, token ? token : "");
-        if (status === 200) {
-            setArticulos(prev => [...prev, ...data]);
-            setPage(prev => prev + 1);
-            if (data.length < 10) {
-                setHasMore(false);
-            }
+            setArticulos(data);
+            setPage(1);
         } else {
             console.error("Error al traer los articulos");
         }
-        loadingUpdate(false);
     }
+    const [isFetching, setIsFetching] = useState(false);
+
+    const fetchArticulos = useCallback(async (categoria: number) => {
+        if (isFetching || !hasMore) return;
+
+        setIsFetching(true);
+        try {
+            const { data, status } = await Get(`/api/articulo/${categoria}/list/${page}/${process.env.NEXT_PUBLIC_SIZE}`, "");
+
+            if (status === 200) {
+                const articulos: Articulo[] = data;
+                setArticulos(prev => {
+                    // Evita duplicados usando un Set
+                    const existingIds = new Set(prev.map(item => item.idArticulo));
+                    const newItems = articulos.filter(item => !existingIds.has(item.idArticulo));
+                    return [...prev, ...newItems];
+                });
+
+                setPage(prev => prev + 1);
+                setHasMore(data.length >= Number(process.env.NEXT_PUBLIC_SIZE));
+            }
+        } catch (error) {
+            console.error("Error al traer los articulos:", error);
+        } finally {
+            setIsFetching(false);
+        }
+    }, [page, isFetching, hasMore]);
+
+    // Efecto para infinite scroll
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            entries => {
+                if (entries[0].isIntersecting && !isFetching && hasMore) {
+                    fetchArticulos(idCategoria);
+                }
+            },
+            { threshold: 1.0 }
+        );
+
+        const currentTarget = observerTarget.current;
+        if (currentTarget) {
+            observer.observe(currentTarget);
+        }
+
+        return () => {
+            if (currentTarget) {
+                observer.unobserve(currentTarget);
+            }
+        };
+    }, [fetchArticulos, isFetching, hasMore, idCategoria]); // Elimina articulos de las dependencias
 
     useEffect(() => {
         if (typeof window !== "undefined" && token === "") {
@@ -60,6 +98,10 @@ export default function Home() {
             if (tokenString) {
                 const tokenValue = tokenString.split("=")[1];
                 setToken(tokenValue);
+            }
+            const storedCarrito = localStorage.getItem("carrito");
+            if (storedCarrito) {
+                setCarrito(JSON.parse(storedCarrito));
             }
         }
         if (id) {
@@ -85,32 +127,6 @@ export default function Home() {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [reload, token, id]);
-
-    useEffect(() => {
-        if (page < 1) {
-            return;
-        }
-        const observer = new IntersectionObserver(
-            entries => {
-                if (entries[0].isIntersecting && hasMore) {
-                    fetchArticulos(idCategoria);
-                }
-            },
-            { threshold: 1.0 }
-        );
-
-        if (observerTarget.current) {
-            observer.observe(observerTarget.current);
-        }
-
-        const currentTarget = observerTarget.current;
-        return () => {
-            if (currentTarget) {
-                observer.unobserve(currentTarget);
-            }
-        };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [hasMore, loading, articulos, idCategoria]);
 
     const categoriasPadre = categories.filter((categoria) => {
         return categoria.subcategoria === "";
@@ -163,6 +179,12 @@ export default function Home() {
         }));
     }
 
+    const handleSetCarrito = (carrito: Carrito[]) => {
+        localStorage.removeItem("carrito");
+        setCarrito(carrito);
+        localStorage.setItem("carrito", JSON.stringify(carrito));
+    }
+
     return (
         <ReloadContext.Provider value={{ reload, update, loadingUpdate, loading }}>
             <div className="w-full h-full md:flex">
@@ -193,6 +215,7 @@ export default function Home() {
                             <p className="text-center text-gray-500">No hay más elementos para mostrar</p>
                         )}
                     </div>
+                    {carrito.length > 0 && <CarritoComponent carrito={carrito} setCarrito={handleSetCarrito} />}
                 </main>
             </div>
         </ReloadContext.Provider>

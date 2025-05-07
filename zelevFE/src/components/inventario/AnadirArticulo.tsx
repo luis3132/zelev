@@ -226,7 +226,7 @@ const AnadirArticulo: FC<AnadirArticuloProps> = ({ closeModal }) => {
                                     <input
                                         type="file"
                                         accept="image/*"
-                                        className="border rounded p-2"
+                                        className="border rounded p-2 h-10"
                                         onChange={handleFileChange}
                                     />
                                 </label>
@@ -237,7 +237,7 @@ const AnadirArticulo: FC<AnadirArticuloProps> = ({ closeModal }) => {
                                         name="alt"
                                         type="text"
                                         maxLength={200}
-                                        className="border rounded p-2"
+                                        className="border rounded p-2 h-10"
                                         required={file !== undefined}
                                     />
                                 </label>
@@ -256,7 +256,7 @@ const AnadirArticulo: FC<AnadirArticuloProps> = ({ closeModal }) => {
                                                 type="text"
                                                 maxLength={100}
                                                 required
-                                                className="border rounded p-2"
+                                                className="border rounded p-2 h-10"
                                             />
                                         </label>
                                         <label className="flex flex-col">
@@ -266,7 +266,7 @@ const AnadirArticulo: FC<AnadirArticuloProps> = ({ closeModal }) => {
                                                 name="descripcion"
                                                 maxLength={500}
                                                 required
-                                                className="border rounded p-2"
+                                                className="border rounded p-2 h-10"
                                             />
                                         </label>
                                         <label className="flex flex-col">
@@ -275,7 +275,7 @@ const AnadirArticulo: FC<AnadirArticuloProps> = ({ closeModal }) => {
                                                 id="impuesto"
                                                 name="impuesto"
                                                 type="number"
-                                                className="border rounded p-2"
+                                                className="border rounded p-2 h-10"
                                                 min="0"
                                                 max="1"
                                                 step="0.01"
@@ -288,7 +288,7 @@ const AnadirArticulo: FC<AnadirArticuloProps> = ({ closeModal }) => {
                                                 id="estado"
                                                 name="estado"
                                                 required
-                                                className="border rounded p-2"
+                                                className="border rounded p-2 h-10"
                                             >
                                                 <option className="text-black" value="ACTIVO">Activo</option>
                                                 <option className="text-black" value="NOACTIVO">Inactivo</option>
@@ -314,7 +314,7 @@ const AnadirArticulo: FC<AnadirArticuloProps> = ({ closeModal }) => {
                                             <select
                                                 id="categoria"
                                                 name="categoria"
-                                                className="border rounded p-2"
+                                                className="border rounded p-2 h-10"
                                                 onChange={(e) => setCategoriaSeleccionada(e.target.value)}
                                             >
                                                 <option defaultValue="" className="text-black">Selecciona una categoría</option>
@@ -334,7 +334,7 @@ const AnadirArticulo: FC<AnadirArticuloProps> = ({ closeModal }) => {
                                             <select
                                                 id="subcategoria"
                                                 name="subcategoria"
-                                                className="border rounded p-2"
+                                                className="border rounded p-2 h-10"
                                             >
                                                 {categoriaSeleccionada === "" ? (
                                                     <option defaultValue="" className="text-black">Selecciona una categoría</option>
