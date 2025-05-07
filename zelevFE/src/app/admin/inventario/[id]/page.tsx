@@ -58,7 +58,7 @@ export default function Home() {
     }, [articulo, token]);
 
     const fetchArticulo = useCallback(async () => {
-        const { data, status } = await Get(`/api/articulo/${id}`, token);
+        const { data, status } = await Get(`/api/articulo/${id}/true`, token);
         if (status === 200) {
             setArticulo(data);
             setCategoriasSeleccionadas(data.categorias);

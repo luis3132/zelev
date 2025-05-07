@@ -24,7 +24,7 @@ const Home = () => {
     const [unidadSeleccionada, setUnidadSeleccionada] = useState<number>(0);
 
     const fetchArticulo = async () => {
-        const { data, status } = await Get(`/api/articulo/${id}`, "");
+        const { data, status } = await Get(`/api/articulo/${id}/false`, "");
         if (status === 200) {
             setArticulo(data);
         } else {
@@ -135,6 +135,15 @@ const Home = () => {
                 }
                 localStorage.setItem("carrito", JSON.stringify(updatedCarrito));
                 return updatedCarrito;
+            });
+            Swal.fire({
+                icon: "success",
+                title: "Agregado al carrito",
+                text: `Se ha agregado ${data.cantidad} ${articulo.nombre} al carrito.`,
+                confirmButtonText: "Aceptar",
+                confirmButtonColor: "#4CAF50",
+                background: "#0f0f0f",
+                color: "#FFFFFF",
             });
         }
     }

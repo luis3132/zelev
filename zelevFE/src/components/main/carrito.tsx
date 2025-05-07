@@ -1,9 +1,10 @@
-import { Carrito, Usuario } from "@/lib/types/types";
+import { Carrito, PedidoCreate, Usuario } from "@/lib/types/types";
 import { FC, useEffect, useState } from "react";
 import { CancelIcon, CartIcon } from "../icons/icons";
 import ItemCarrito from "./itemCarrito";
 import DecodeUsr from "@/lib/scripts/decodeUser";
 import Swal from "sweetalert2";
+import { Post } from "@/lib/scripts/fetch";
 
 interface CarritoProps {
     carrito: Carrito[];
@@ -14,11 +15,17 @@ const CarritoComponent: FC<CarritoProps> = ({ carrito, setCarrito }) => {
 
     const [showCarrito, setShowCarrito] = useState(false);
     const [usuario, setUsuario] = useState<Usuario>();
+    const [token, setToken] = useState<string>("");
 
     useEffect(() => {
         if (typeof window !== "undefined") {
             const storedCarrito = localStorage.getItem("carrito");
             const storedUsuario = sessionStorage.getItem("usuario");
+            const tokenString = document.cookie.split("; ").find(row => row.startsWith("token="));
+            if (tokenString) {
+                const tokenValue = tokenString.split("=")[1];
+                setToken(tokenValue);
+            }
             if (storedCarrito) {
                 setCarrito(JSON.parse(storedCarrito));
             }
@@ -42,7 +49,7 @@ const CarritoComponent: FC<CarritoProps> = ({ carrito, setCarrito }) => {
         localStorage.setItem("carrito", JSON.stringify(updatedCarrito));
     }
 
-    const handleComprar = () => {
+    const handleComprar = async () => {
         if (!usuario) {
             Swal.fire({
                 title: "Inicia sesión",
@@ -76,6 +83,48 @@ const CarritoComponent: FC<CarritoProps> = ({ carrito, setCarrito }) => {
                 }
             });
             return;
+        }
+        const { isConfirmed } = await Swal.fire({
+            title: "Seguro que deseas realizar el pedido?",
+            text: "Una vez realizada la compra solo podrás cancelar desde tu perfil",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Sí, comprar",
+            cancelButtonText: "Cancelar",
+            background: "#0f0f0f",
+            color: "#fff",
+        });
+        if (!isConfirmed) {
+            return;
+        }
+        const data: PedidoCreate[] = carrito.map(item => ({
+            unidad: item.upc,
+            precio: item.precio,
+            cantidad: item.cantidad,
+            usuario: usuario.cedula,
+        }));
+
+        const { status } = await Post("/api/pedido/new", token, data);
+        if (status === 200) {
+            await Swal.fire({
+                title: "Pedio realizado",
+                text: "Tu pedido se ha realizado con éxito",
+                icon: "success",
+                background: "#0f0f0f",
+                color: "#fff",
+                timer: 2000,
+            });
+            setCarrito([]);
+            localStorage.removeItem("carrito");
+            window.location.reload();
+        } else {
+            Swal.fire({
+                title: "Error",
+                text: "Hubo un error al realizar el pedido",
+                icon: "error",
+                background: "#0f0f0f",
+                color: "#fff",
+            });
         }
     }
 

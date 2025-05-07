@@ -130,3 +130,23 @@ export interface ArticuloUpdate {
     unidades: UnidadCreate[];
     imagen: ImgArtUniCreate | undefined;
 }
+export interface Pedido {
+    idPedido: number;
+    cliente: Usuario;
+    empleado: Usuario;
+    fechaCreacion: Date;
+    estado: string;
+    pediUnidList: PediUnid[];
+}
+export interface PediUnid {
+    pedido: Pedido;
+    unidad: Unidad;
+    cantidad: number;
+    precio: string;
+}
+export interface PedidoCreate {
+    unidad: number;
+    precio: string;
+    cantidad: number;
+    usuario: string;
+}

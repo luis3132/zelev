@@ -1,0 +1,54 @@
+services:
+
+  front:
+    image: node:23
+    container_name: nextjs
+    working_dir: /app
+    volumes:
+      - /home/luis/docker/software2/zelev/zelevFE:/app
+    command: >
+      /bin/bash -c "
+      npm i && npm run build && npm run start"
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+
+  back:
+    image: gradle:8.11.1-jdk21
+    container_name: springboot
+    working_dir: /app
+    volumes:
+      - /home/luis/docker/software2/zelev/zelevBE:/app
+      - gradle_cache:/home/gradle/.gradle
+    command: >
+      /bin/bash -c "
+      ./gradlew build &&
+      java -jar build/libs/*.jar"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+    networks:
+      - app-network
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: zelev
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - /home/luis/docker/software2/zelev/zelevBE/src/main/resources/static/dataBase.sql:/docker-entrypoint-initdb.d/dataBase.sql
+    networks:
+      - app-network
+
+volumes:
+  gradle_cache:
+  mysql_data:
+
+networks:
+  app-network:
