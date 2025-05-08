@@ -159,3 +159,8 @@ export interface PedidoGrafica {
     estado: string;
     pediUnidList: PediUnid[];
 }
+export interface PedidoUpdate {
+    idPedido: number;
+    empleado: string;
+    estado: string;
+}

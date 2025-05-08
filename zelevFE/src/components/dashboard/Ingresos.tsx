@@ -37,7 +37,7 @@ const Ingresos: FC<IngresosProps> = ({ pedidos }) => {
     }, 0);
 
     return (
-        <main className="bg-gray-800 flex mb-6 gap-6 p-6 rounded-lg" title="Solo cuenta los pedidos entregados">
+        <main className="bg-gray-800 flex mb-6 gap-6 p-6 rounded-lg overflow-x-scroll" title="Solo cuenta los pedidos entregados">
             <div className="bg-black/50 hover:bg-black ease-in-out transition-colors duration-200 shadow-lg rounded-lg p-6 w-full">
                 <h2 className="text-2xl font-bold text-white mb-4">Ingresos Totales</h2>
                 <p className="text-lg text-white">{`$${ingresos}`}</p>

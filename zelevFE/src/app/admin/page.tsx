@@ -46,7 +46,7 @@ export default function Home() {
 
     return (
         <div className="w-full h-full text-white">
-            <div className="px-6 md:px-14 py-8 w-full">
+            <div className="px-6 md:px-14 py-6 w-full">
                 <header className="bg-gray-800 shadow-lg rounded-lg p-6 mb-6">
                     <h1 className="text-4xl font-bold text-white">Dashboard</h1>
                     <p className="text-lg text-gray-400 mt-2">Visualiza los datos de tus pedidos</p>

@@ -50,7 +50,7 @@ public class PedidoService implements IPedidoService {
     public List<PedidoGraficaDTO> findAllPedido() {
         List<Pedido> lista = pedidoRepository.findAll();
         List<PedidoGraficaDTO> listaGrafica = new ArrayList<>();
-        
+
         for (Pedido pedido : lista) {
             PedidoGraficaDTO pedidoGrafica = new PedidoGraficaDTO();
             pedidoGrafica.setIdPedido(pedido.getIdPedido());
@@ -94,7 +94,7 @@ public class PedidoService implements IPedidoService {
         for (PedidoCreateDTO item : pedido) {
             PediUnid pediUnid = new PediUnid();
             PediUnidPK pediUnidPK = new PediUnidPK();
-            // crear PediUnid 
+            // crear PediUnid
             pediUnidPK.setPedido(Creado.getIdPedido());
             pediUnidPK.setUnidad(item.getUnidad());
 
@@ -110,8 +110,9 @@ public class PedidoService implements IPedidoService {
                 // si la cantidad es menor a 0 no se puede realizar el pedido
                 // si la cantidad es 0 se cambia el estado a NOSTOCK
                 UnidadCreateDTO unidadTemp = new UnidadCreateDTO(unidad.get().getUpc(), unidad.get().getLabel(),
-                        unidad.get().getPrecio(), unidad.get().getArticulo().getIdArticulo(), unidad.get().getCantidad(), unidad.get().getEstado(),
-                        unidad.get().getDescripcion(), null); 
+                        unidad.get().getPrecio(), unidad.get().getArticulo().getIdArticulo(),
+                        unidad.get().getCantidad(), unidad.get().getEstado(),
+                        unidad.get().getDescripcion(), null);
                 Integer restante = unidadTemp.getCantidad() - item.getCantidad();
                 if (restante < 0) {
                     return null;
@@ -138,11 +139,13 @@ public class PedidoService implements IPedidoService {
             Pedido pedidoActualizado = pedidoExistente.get();
             pedidoActualizado.setEstado(pedido.getEstado());
 
-            Optional<Usuario> usuario = usuarioService.findById(pedido.getEmpleado());
-            if (usuario.isPresent()) {
-                pedidoActualizado.setEmpleado(usuario.get());
-            } else {
-                return null;
+            if (!pedido.getEmpleado().equals("")) {
+                Optional<Usuario> usuario = usuarioService.findById(pedido.getEmpleado());
+                if (usuario.isPresent()) {
+                    pedidoActualizado.setEmpleado(usuario.get());
+                } else {
+                    return null;
+                }
             }
 
             if (pedido.getEstado() == EstadoPedido.CANCELADO) {
@@ -152,7 +155,8 @@ public class PedidoService implements IPedidoService {
                     Optional<Unidad> unidad = articuloService.findByIdUnidad(item.getUnidad().getUpc());
                     if (unidad.isPresent()) {
                         UnidadCreateDTO unidadTemp = new UnidadCreateDTO(unidad.get().getUpc(), unidad.get().getLabel(),
-                                unidad.get().getPrecio(), unidad.get().getArticulo().getIdArticulo(), unidad.get().getCantidad(), unidad.get().getEstado(),
+                                unidad.get().getPrecio(), unidad.get().getArticulo().getIdArticulo(),
+                                unidad.get().getCantidad(), unidad.get().getEstado(),
                                 unidad.get().getDescripcion(), null);
                         Integer restante = unidadTemp.getCantidad() + item.getCantidad();
                         unidadTemp.setCantidad(restante);

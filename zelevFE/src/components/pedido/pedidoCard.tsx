@@ -1,12 +1,19 @@
 import { Pedido } from "@/lib/types/types"
-import { FC } from "react";
+import { FC, useState } from "react";
+import EstadoPedido from "./estadoPedido";
 
 interface PedidoCardProps {
     pedido: Pedido;
+    cliente?: boolean;
 }
 
-const PedidoCard: FC<PedidoCardProps> = ({ pedido }) => {
+const PedidoCard: FC<PedidoCardProps> = ({ pedido, cliente }) => {
+    const [show, setShow] = useState(false);
     const total = pedido.pediUnidList.reduce((total, item) => total + (parseInt(item.precio) * item.cantidad), 0).toFixed(2);
+
+    const handleShow = () => {
+        setShow(!show);
+    }
 
     return (
         <div className="bg-gray-700 hover:bg-gray-600 shadow-lg rounded-lg p-6 mb-4 w-full">
@@ -21,7 +28,7 @@ const PedidoCard: FC<PedidoCardProps> = ({ pedido }) => {
                 <div className="flex flex-col justify-end items-end">
                     <button 
                         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                        onClick={() => console.log('Inspeccionar pedido:', pedido)}
+                        onClick={handleShow}
                     >
                         Inspeccionar
                     </button>
@@ -45,6 +52,7 @@ const PedidoCard: FC<PedidoCardProps> = ({ pedido }) => {
                     <p className="text-lg text-white">{pedido.cliente.direccion}</p>
                 </div>
             </div>
+            {show && <EstadoPedido pedido={pedido} estado={pedido.estado} closeModal={handleShow} cliente={cliente} />}
         </div>
     )
 }
