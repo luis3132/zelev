@@ -109,8 +109,16 @@ INSERT INTO zelev.rol (rol) VALUES ('PEDIDOS');
 INSERT INTO zelev.usuario (cedula, nombres, apellidos, nombre_usuario, email, telefono, direccion, contrasena, fecha_nacimiento, fecha_creacion, estado, imagen, departamento, ciudad, zipcode)
 VALUES('123456', 'admin', 'admin', 'admin123', 'admin@admin.com', '123456', 'admin', '$2a$10$OCVOIHsI50HnS9wAjhKm3eMZl41J3afszGWA6A5YTc7IGR44Zioru', '2025-01-01', CURRENT_TIMESTAMP, "ACTIVO", null, null, null, null);
 
-INSERT INTO zelev.rol_usuario (usuario, rol)
-VALUES('123456', 1);
+INSERT INTO zelev.usuario (cedula, nombres, apellidos, nombre_usuario, email, telefono, direccion, contrasena, fecha_nacimiento, fecha_creacion, estado, imagen, departamento, ciudad, zipcode)
+VALUES('222222', 'Cliente', 'Ejemplo', 'cliente222', 'cliente@example.com', '222222', 'Calle 123', '$2a$10$OCVOIHsI50HnS9wAjhKm3eMZl41J3afszGWA6A5YTc7IGR44Zioru', '1990-01-01', CURRENT_TIMESTAMP, "ACTIVO", null, "Santander", "Bucaramanga", 680003);
+
+INSERT INTO zelev.usuario (cedula, nombres, apellidos, nombre_usuario, email, telefono, direccion, contrasena, fecha_nacimiento, fecha_creacion, estado, imagen, departamento, ciudad, zipcode)
+VALUES('111111', 'Empleado', 'Ejemplo', 'emple111', 'empleado@example.com', '111111', 'Calle 456', '$2a$10$OCVOIHsI50HnS9wAjhKm3eMZl41J3afszGWA6A5YTc7IGR44Zioru', '1985-01-01', CURRENT_TIMESTAMP, "ACTIVO", null, null, null, null);
+
+INSERT INTO zelev.rol_usuario (usuario, rol) VALUES('123456', 1);
+INSERT INTO zelev.rol_usuario (usuario, rol) VALUES('222222', 2);
+INSERT INTO zelev.rol_usuario (usuario, rol) VALUES('111111', 4);
+INSERT INTO zelev.rol_usuario (usuario, rol) VALUES('111111', 2);
 
 INSERT INTO zelev.categoria (id_categoria, categoria, subcategoria) VALUES 
 (1, 'Estilo', ''),
@@ -590,160 +598,480 @@ INSERT INTO unidad (upc, label, precio, articulo, cantidad, estado, descripcion)
 -- Relaciones entre artículos y categorías (arti_cate)
 -- Artículo 1 relacionado con varias categorías
 INSERT INTO arti_cate (articulo, categoria) VALUES
-(1, 1), (1, 7), (1, 15), (1, 22), (1, 61); -- Estilo, Tote, Cuero, Casual, Mujeres
+(1, 7), (1, 15), (1, 22), (1, 61); -- Estilo, Tote, Cuero, Casual, Mujeres
 
 -- Artículo 2
 INSERT INTO arti_cate (articulo, categoria) VALUES
-(2, 1), (2, 8), (2, 15), (2, 77), (2, 61); -- Estilo, Bandolera, Cuero, Vintage, Mujeres
+(2, 8), (2, 15), (2, 77), (2, 61); -- Estilo, Bandolera, Cuero, Vintage, Mujeres
 
 -- Artículo 3
 INSERT INTO arti_cate (articulo, categoria) VALUES
-(3, 1), (3, 10), (3, 17), (3, 26), (3, 68); -- Estilo, Mochila, Lona, Viaje, Impermeables
+(3, 10), (3, 17), (3, 26), (3, 68); -- Estilo, Mochila, Lona, Viaje, Impermeables
 
 -- Artículo 4
 INSERT INTO arti_cate (articulo, categoria) VALUES
-(4, 1), (4, 11), (4, 19), (4, 24), (4, 61); -- Estilo, Clutch, Metalizados, Fiesta, Mujeres
+(4, 11), (4, 19), (4, 24), (4, 61); -- Estilo, Clutch, Metalizados, Fiesta, Mujeres
 
 -- Artículo 5
 INSERT INTO arti_cate (articulo, categoria) VALUES
-(5, 1), (5, 7), (5, 22), (5, 61), (5, 78); -- Estilo, Tote, Casual, Mujeres, Minimalista
+(5, 7), (5, 22), (5, 61), (5, 78); -- Estilo, Tote, Casual, Mujeres, Minimalista
 
 -- Artículo 6
 INSERT INTO arti_cate (articulo, categoria) VALUES
-(6, 1), (6, 8), (6, 44), (6, 67), (6, 61); -- Estilo, Bandolera, Función, Antirrobo, Mujeres
+(6, 8), (6, 44), (6, 67), (6, 61); -- Estilo, Bandolera, Función, Antirrobo, Mujeres
 
 -- Artículo 7
 INSERT INTO arti_cate (articulo, categoria) VALUES
-(7, 1), (7, 10), (7, 26), (7, 69), (7, 63); -- Estilo, Mochila, Viaje, Convertibles, Unisex
+(7, 10), (7, 26), (7, 69), (7, 63); -- Estilo, Mochila, Viaje, Convertibles, Unisex
 
 -- Artículo 8
 INSERT INTO arti_cate (articulo, categoria) VALUES
-(8, 1), (8, 12), (8, 15), (8, 22), (8, 61); -- Estilo, Hobo, Cuero, Casual, Mujeres
+(8, 12), (8, 15), (8, 22), (8, 61); -- Estilo, Hobo, Cuero, Casual, Mujeres
 
 -- Artículo 9
 INSERT INTO arti_cate (articulo, categoria) VALUES
-(9, 1), (9, 13), (9, 27), (9, 33), (9, 62); -- Estilo, Satchel, Trabajo, Lujo, Hombres
+(9, 13), (9, 27), (9, 33), (9, 62); -- Estilo, Satchel, Trabajo, Lujo, Hombres
 
 -- Artículo 10
 INSERT INTO arti_cate (articulo, categoria) VALUES
-(10, 1), (10, 14), (10, 24), (10, 46), (10, 61); -- Estilo, Bucket, Fiesta, Tendencias, Mujeres
+(10, 14), (10, 24), (10, 46), (10, 61); -- Estilo, Bucket, Fiesta, Tendencias, Mujeres
 
 -- Artículo 11
 INSERT INTO arti_cate (articulo, categoria) VALUES
-(11, 1), (11, 9), (11, 47), (11, 82), (11, 79); -- Estilo, Mano, Artesanales, Hechos a Mano, Boho-Chic
+(11, 9), (11, 47), (11, 82), (11, 79); -- Estilo, Mano, Artesanales, Hechos a Mano, Boho-Chic
 
 -- Artículo 12
 INSERT INTO arti_cate (articulo, categoria) VALUES
-(12, 1), (12, 9), (12, 27), (12, 33), (12, 62); -- Estilo, Mano, Trabajo, Lujo, Hombres
+(12, 9), (12, 27), (12, 33), (12, 62); -- Estilo, Mano, Trabajo, Lujo, Hombres
 
 -- Artículo 13
 INSERT INTO arti_cate (articulo, categoria) VALUES
-(13, 1), (13, 8), (13, 22), (13, 63), (13, 72); -- Estilo, Bandolera, Casual, Unisex, Cortas
+(13, 8), (13, 22), (13, 63), (13, 72); -- Estilo, Bandolera, Casual, Unisex, Cortas
 
 -- Artículo 14
 INSERT INTO arti_cate (articulo, categoria) VALUES
-(14, 1), (14, 7), (14, 37), (14, 79), (14, 61); -- Estilo, Tote, Primavera/Verano, Boho-Chic, Mujeres
+(14, 7), (14, 37), (14, 79), (14, 61); -- Estilo, Tote, Primavera/Verano, Boho-Chic, Mujeres
 
 -- Artículo 15
 INSERT INTO arti_cate (articulo, categoria) VALUES
-(15, 1), (15, 10), (15, 66), (15, 28), (15, 63); -- Estilo, Mochila, Organizador, Mini, Unisex
+(15, 10), (15, 66), (15, 28), (15, 63); -- Estilo, Mochila, Organizador, Mini, Unisex
 
 -- Artículo 16
 INSERT INTO arti_cate (articulo, categoria) VALUES
-(16, 1), (16, 11), (16, 24), (16, 50), (16, 61); -- Estilo, Clutch, Fiesta, Imán, Mujeres
+(16, 11), (16, 24), (16, 50), (16, 61); -- Estilo, Clutch, Fiesta, Imán, Mujeres
 
 -- Artículo 17
 INSERT INTO arti_cate (articulo, categoria) VALUES
-(17, 1), (17, 12), (17, 15), (17, 77), (17, 61); -- Estilo, Hobo, Cuero, Vintage, Mujeres
+(17, 12), (17, 15), (17, 77), (17, 61); -- Estilo, Hobo, Cuero, Vintage, Mujeres
 
 -- Artículo 18
 INSERT INTO arti_cate (articulo, categoria) VALUES
-(18, 1), (18, 8), (18, 44), (18, 69), (18, 63); -- Estilo, Bandolera, Función, Convertibles, Unisex
+(18, 8), (18, 44), (18, 69), (18, 63); -- Estilo, Bandolera, Función, Convertibles, Unisex
 
 -- Artículo 19
 INSERT INTO arti_cate (articulo, categoria) VALUES
-(19, 1), (19, 7), (19, 44), (19, 71), (19, 61); -- Estilo, Tote, Función, Mamá, Mujeres
+(19, 7), (19, 44), (19, 71), (19, 61); -- Estilo, Tote, Función, Mamá, Mujeres
 
 -- Artículo 20 (ejemplo final)
 INSERT INTO arti_cate (articulo, categoria) VALUES
-(20, 1), (20, 10), (20, 44), (20, 70), (20, 63); -- Estilo, Mochila, Función, Portátil, Unisex
+(20, 10), (20, 44), (20, 70), (20, 63); -- Estilo, Mochila, Función, Portátil, Unisex
 
 -- Artículo 21
 INSERT INTO arti_cate (articulo, categoria) VALUES
-(21, 1), (21, 9), (21, 27), (21, 62), (21, 33); -- Estilo, Mano, Trabajo, Hombres, Lujo
+(21, 9), (21, 27), (21, 62), (21, 33); -- Estilo, Mano, Trabajo, Hombres, Lujo
 
 -- Artículo 22
 INSERT INTO arti_cate (articulo, categoria) VALUES
-(22, 1), (22, 8), (22, 24), (22, 28), (22, 61); -- Estilo, Bandolera, Fiesta, Mini, Mujeres
+(22, 8), (22, 24), (22, 28), (22, 61); -- Estilo, Bandolera, Fiesta, Mini, Mujeres
 
 -- Artículo 23
 INSERT INTO arti_cate (articulo, categoria) VALUES
-(23, 1), (23, 10), (23, 26), (23, 63), (23, 68); -- Estilo, Mochila, Viaje, Unisex, Impermeables
+(23, 10), (23, 26), (23, 63), (23, 68); -- Estilo, Mochila, Viaje, Unisex, Impermeables
 
 -- Artículo 24
 INSERT INTO arti_cate (articulo, categoria) VALUES
-(24, 1), (24, 11), (24, 24), (24, 19), (24, 61); -- Estilo, Clutch, Fiesta, Metalizados, Mujeres
+(24, 11), (24, 24), (24, 19), (24, 61); -- Estilo, Clutch, Fiesta, Metalizados, Mujeres
 
 -- Artículo 25
 INSERT INTO arti_cate (articulo, categoria) VALUES
-(25, 1), (25, 7), (25, 17), (25, 31), (25, 36); -- Estilo, Tote, Lona, Grande, Sostenibles
+(25, 7), (25, 17), (25, 31), (25, 36); -- Estilo, Tote, Lona, Grande, Sostenibles
 
 -- Artículo 26
 INSERT INTO arti_cate (articulo, categoria) VALUES
-(26, 1), (26, 8), (26, 58), (26, 46), (26, 61); -- Estilo, Bandolera, Estampados, Tendencias, Mujeres
+(26, 8), (26, 58), (26, 46), (26, 61); -- Estilo, Bandolera, Estampados, Tendencias, Mujeres
 
 -- Artículo 27
 INSERT INTO arti_cate (articulo, categoria) VALUES
-(27, 1), (27, 10), (27, 44), (27, 67), (27, 63); -- Estilo, Mochila, Función, Antirrobo, Unisex
+(27, 10), (27, 44), (27, 67), (27, 63); -- Estilo, Mochila, Función, Antirrobo, Unisex
 
 -- Artículo 28
 INSERT INTO arti_cate (articulo, categoria) VALUES
-(28, 1), (28, 12), (28, 15), (28, 77), (28, 61); -- Estilo, Hobo, Cuero, Vintage, Mujeres
+(28, 12), (28, 15), (28, 77), (28, 61); -- Estilo, Hobo, Cuero, Vintage, Mujeres
 
 -- Artículo 29
 INSERT INTO arti_cate (articulo, categoria) VALUES
-(29, 1), (29, 9), (29, 27), (29, 62), (29, 33); -- Estilo, Mano, Trabajo, Hombres, Lujo
+(29, 9), (29, 27), (29, 62), (29, 33); -- Estilo, Mano, Trabajo, Hombres, Lujo
 
 -- Artículo 30
 INSERT INTO arti_cate (articulo, categoria) VALUES
-(30, 1), (30, 7), (30, 37), (30, 47), (30, 36); -- Estilo, Tote, Primavera/Verano, Artesanales, Sostenibles
+(30, 7), (30, 37), (30, 47), (30, 36); -- Estilo, Tote, Primavera/Verano, Artesanales, Sostenibles
 
 -- Artículo 31
 INSERT INTO arti_cate (articulo, categoria) VALUES
-(31, 1), (31, 10), (31, 15), (31, 28), (31, 63); -- Estilo, Mochila, Cuero, Mini, Unisex
+(31, 10), (31, 15), (31, 28), (31, 63); -- Estilo, Mochila, Cuero, Mini, Unisex
 
 -- Artículo 32
 INSERT INTO arti_cate (articulo, categoria) VALUES
-(32, 1), (32, 7), (32, 37), (32, 46), (32, 80); -- Estilo, Tote, Primavera/Verano, Tendencias, Futurista
+(32, 7), (32, 37), (32, 46), (32, 80); -- Estilo, Tote, Primavera/Verano, Tendencias, Futurista
 
 -- Artículo 33
 INSERT INTO arti_cate (articulo, categoria) VALUES
-(33, 1), (33, 8), (33, 13), (33, 44), (33, 63); -- Estilo, Bandolera, Deportivo, Función, Unisex
+(33, 8), (33, 13), (33, 44), (33, 63); -- Estilo, Bandolera, Deportivo, Función, Unisex
 
 -- Artículo 34
 INSERT INTO arti_cate (articulo, categoria) VALUES
-(34, 1), (34, 11), (34, 44), (34, 69), (34, 61); -- Estilo, Clutch, Función, Convertibles, Mujeres
+(34, 11), (34, 44), (34, 69), (34, 61); -- Estilo, Clutch, Función, Convertibles, Mujeres
 
 -- Artículo 35
 INSERT INTO arti_cate (articulo, categoria) VALUES
-(35, 1), (35, 12), (35, 16), (35, 36), (35, 61); -- Estilo, Hobo, Sintética, Sostenibles, Mujeres
+(35, 12), (35, 16), (35, 36), (35, 61); -- Estilo, Hobo, Sintética, Sostenibles, Mujeres
 
 -- Artículo 36
 INSERT INTO arti_cate (articulo, categoria) VALUES
-(36, 1), (36, 10), (36, 26), (36, 44), (36, 63); -- Estilo, Mochila, Viaje, Función, Unisex
+(36, 10), (36, 26), (36, 44), (36, 63); -- Estilo, Mochila, Viaje, Función, Unisex
 
 -- Artículo 37
 INSERT INTO arti_cate (articulo, categoria) VALUES
-(37, 1), (37, 9), (37, 27), (37, 44), (37, 63); -- Estilo, Mano, Trabajo, Función, Unisex
+(37, 9), (37, 27), (37, 44), (37, 63); -- Estilo, Mano, Trabajo, Función, Unisex
 
 -- Artículo 38
 INSERT INTO arti_cate (articulo, categoria) VALUES
-(38, 1), (38, 8), (38, 47), (38, 82), (38, 79); -- Estilo, Bandolera, Artesanales, Hechos a Mano, Boho-Chic
+(38, 8), (38, 47), (38, 82), (38, 79); -- Estilo, Bandolera, Artesanales, Hechos a Mano, Boho-Chic
 
 -- Artículo 39
 INSERT INTO arti_cate (articulo, categoria) VALUES
-(39, 1), (39, 7), (39, 37), (39, 68), (39, 61); -- Estilo, Tote, Primavera/Verano, Impermeables, Mujeres
+(39, 7), (39, 37), (39, 68), (39, 61); -- Estilo, Tote, Primavera/Verano, Impermeables, Mujeres
 
 -- Artículo 40
 INSERT INTO arti_cate (articulo, categoria) VALUES
-(40, 1), (40, 10), (40, 44), (40, 70), (40, 80); -- Estilo, Mochila, Función, Portátil, Futurista
+(40, 10), (40, 44), (40, 70), (40, 80); -- Estilo, Mochila, Función, Portátil, Futurista
+
+-- Insertar 50 pedidos con diferentes estados y fechas
+INSERT INTO pedido (id_pedido, cliente, empleado, fecha_pedido, estado) VALUES
+(1, '222222', '111111', '2024-01-05 09:15:22', 'ENTREGADO'),
+(2, '222222', '111111', '2024-01-10 14:30:45', 'ENTREGADO'),
+(3, '222222', '111111', '2024-01-15 11:45:12', 'CANCELADO'),
+(4, '222222', '111111', '2024-01-20 16:20:33', 'ENTREGADO'),
+(5, '222222', '111111', '2024-01-25 10:10:10', 'ENVIADO'),
+(6, '222222', null, '2024-02-01 13:25:18', 'PROCESO'),
+(7, '222222', '111111', '2024-02-05 15:35:29', 'ENTREGADO'),
+(8, '222222', '111111', '2024-02-10 12:40:55', 'CANCELADO'),
+(9, '222222', '111111', '2024-02-15 17:50:42', 'ENTREGADO'),
+(10, '222222', '111111', '2024-02-20 09:05:37', 'ENVIADO'),
+(11, '222222', null, '2024-02-25 14:15:24', 'PROCESO'),
+(12, '222222', '111111', '2024-03-01 11:30:19', 'ENTREGADO'),
+(13, '222222', '111111', '2024-03-05 16:45:31', 'CANCELADO'),
+(14, '222222', '111111', '2024-03-10 10:55:48', 'ENTREGADO'),
+(15, '222222', '111111', '2024-03-15 13:20:16', 'ENVIADO'),
+(16, '222222', null, '2024-03-20 15:30:27', 'PROCESO'),
+(17, '222222', '111111', '2024-03-25 12:40:39', 'ENTREGADO'),
+(18, '222222', '111111', '2024-04-01 17:50:51', 'CANCELADO'),
+(19, '222222', '111111', '2024-04-05 09:10:23', 'ENTREGADO'),
+(20, '222222', '111111', '2024-04-10 14:25:34', 'ENVIADO'),
+(21, '222222', null, '2024-04-15 11:35:45', 'PROCESO'),
+(22, '222222', '111111', '2024-04-20 16:45:56', 'ENTREGADO'),
+(23, '222222', '111111', '2024-04-25 10:55:07', 'CANCELADO'),
+(24, '222222', '111111', '2024-05-01 13:05:18', 'ENTREGADO'),
+(25, '222222', '111111', '2024-05-05 15:15:29', 'ENVIADO'),
+(26, '222222', null, '2024-05-10 12:25:39', 'PROCESO'),
+(27, '222222', '111111', '2024-05-15 17:35:49', 'ENTREGADO'),
+(28, '222222', '111111', '2024-05-20 09:45:59', 'CANCELADO'),
+(29, '222222', '111111', '2024-05-25 14:55:09', 'ENTREGADO'),
+(30, '222222', '111111', '2024-06-01 11:05:19', 'ENVIADO'),
+(31, '222222', null, '2024-06-05 16:15:29', 'PROCESO'),
+(32, '222222', '111111', '2024-06-10 10:25:39', 'ENTREGADO'),
+(33, '222222', '111111', '2024-06-15 13:35:49', 'CANCELADO'),
+(34, '222222', '111111', '2024-06-20 15:45:59', 'ENTREGADO'),
+(35, '222222', '111111', '2024-06-25 12:55:09', 'ENVIADO'),
+(36, '222222', null, '2024-07-01 17:05:19', 'PROCESO'),
+(37, '222222', '111111', '2024-07-05 09:15:29', 'ENTREGADO'),
+(38, '222222', '111111', '2024-07-10 14:25:39', 'CANCELADO'),
+(39, '222222', '111111', '2024-07-15 11:35:49', 'ENTREGADO'),
+(40, '222222', '111111', '2024-07-20 16:45:59', 'ENVIADO'),
+(41, '222222', null, '2024-07-25 10:55:09', 'PROCESO'),
+(42, '222222', '111111', '2024-08-01 13:05:19', 'ENTREGADO'),
+(43, '222222', '111111', '2024-08-05 15:15:29', 'CANCELADO'),
+(44, '222222', '111111', '2024-08-10 12:25:39', 'ENTREGADO'),
+(45, '222222', '111111', '2024-08-15 17:35:49', 'ENVIADO'),
+(46, '222222', null, '2024-08-20 09:45:59', 'PROCESO'),
+(47, '222222', '111111', '2024-08-25 14:55:09', 'ENTREGADO'),
+(48, '222222', '111111', '2024-09-01 11:05:19', 'CANCELADO'),
+(49, '222222', '111111', '2024-09-05 16:15:29', 'ENTREGADO'),
+(50, '222222', '111111', '2024-09-10 10:25:39', 'ENVIADO');
+
+-- Insertar unidades para los pedidos (pedi_unid)
+-- Pedido 1 (2 unidades)
+INSERT INTO pedi_unid (pedido, unidad, precio, cantidad) VALUES
+(1, 100000000001, '159900', 1),
+(1, 100000000005, '129900', 2);
+
+-- Pedido 2 (1 unidad)
+INSERT INTO pedi_unid (pedido, unidad, precio, cantidad) VALUES
+(2, 100000000010, '199900', 1);
+
+-- Pedido 3 (3 unidades) - Cancelado
+INSERT INTO pedi_unid (pedido, unidad, precio, cantidad) VALUES
+(3, 100000000015, '94900', 1),
+(3, 100000000020, '109900', 1),
+(3, 100000000025, '159900', 1);
+
+-- Pedido 4 (4 unidades)
+INSERT INTO pedi_unid (pedido, unidad, precio, cantidad) VALUES
+(4, 100000000030, '149900', 2),
+(4, 100000000035, '189900', 1),
+(4, 100000000040, '139900', 1);
+
+-- Pedido 5 (1 unidad) - Enviado
+INSERT INTO pedi_unid (pedido, unidad, precio, cantidad) VALUES
+(5, 100000000045, '229900', 1);
+
+-- Pedido 6 (2 unidades) - Proceso
+INSERT INTO pedi_unid (pedido, unidad, precio, cantidad) VALUES
+(6, 100000000050, '109900', 1),
+(6, 100000000055, '74900', 1);
+
+-- Pedido 7 (3 unidades)
+INSERT INTO pedi_unid (pedido, unidad, precio, cantidad) VALUES
+(7, 100000000060, '124900', 1),
+(7, 100000000065, '149900', 1),
+(7, 100000000070, '149900', 1);
+
+-- Pedido 8 (1 unidad) - Cancelado
+INSERT INTO pedi_unid (pedido, unidad, precio, cantidad) VALUES
+(8, 100000000075, '169900', 1);
+
+-- Pedido 9 (5 unidades)
+INSERT INTO pedi_unid (pedido, unidad, precio, cantidad) VALUES
+(9, 100000000080, '179900', 1),
+(9, 100000000085, '99900', 2),
+(9, 100000000090, '199900', 1),
+(9, 100000000095, '149900', 1);
+
+-- Pedido 10 (2 unidades) - Enviado
+INSERT INTO pedi_unid (pedido, unidad, precio, cantidad) VALUES
+(10, 100000000100, '99900', 1),
+(10, 100000000105, '159900', 1);
+
+-- Pedido 11 (1 unidad) - Proceso
+INSERT INTO pedi_unid (pedido, unidad, precio, cantidad) VALUES
+(11, 100000000110, '149900', 1);
+
+-- Pedido 12 (3 unidades)
+INSERT INTO pedi_unid (pedido, unidad, precio, cantidad) VALUES
+(12, 100000000115, '99900', 1),
+(12, 100000000120, '84900', 1),
+(12, 100000000125, '79900', 1);
+
+-- Pedido 13 (2 unidades) - Cancelado
+INSERT INTO pedi_unid (pedido, unidad, precio, cantidad) VALUES
+(13, 100000000130, '74900', 1),
+(13, 100000000135, '119900', 1);
+
+-- Pedido 14 (4 unidades)
+INSERT INTO pedi_unid (pedido, unidad, precio, cantidad) VALUES
+(14, 100000000140, '129900', 1),
+(14, 100000000145, '89900', 2),
+(14, 100000000150, '129900', 1);
+
+-- Pedido 15 (1 unidad) - Enviado
+INSERT INTO pedi_unid (pedido, unidad, precio, cantidad) VALUES
+(15, 100000000155, '54900', 1);
+
+-- Pedido 16 (2 unidades) - Proceso
+INSERT INTO pedi_unid (pedido, unidad, precio, cantidad) VALUES
+(16, 100000000160, '249900', 1),
+(16, 100000000005, '129900', 1);
+
+-- Pedido 17 (3 unidades)
+INSERT INTO pedi_unid (pedido, unidad, precio, cantidad) VALUES
+(17, 100000000010, '199900', 1),
+(17, 100000000015, '94900', 1),
+(17, 100000000020, '109900', 1);
+
+-- Pedido 18 (1 unidad) - Cancelado
+INSERT INTO pedi_unid (pedido, unidad, precio, cantidad) VALUES
+(18, 100000000025, '159900', 1);
+
+-- Pedido 19 (5 unidades)
+INSERT INTO pedi_unid (pedido, unidad, precio, cantidad) VALUES
+(19, 100000000030, '149900', 2),
+(19, 100000000035, '189900', 1),
+(19, 100000000040, '139900', 1),
+(19, 100000000045, '229900', 1);
+
+-- Pedido 20 (2 unidades) - Enviado
+INSERT INTO pedi_unid (pedido, unidad, precio, cantidad) VALUES
+(20, 100000000050, '109900', 1),
+(20, 100000000055, '74900', 1);
+
+-- Pedido 21 (1 unidad) - Proceso
+INSERT INTO pedi_unid (pedido, unidad, precio, cantidad) VALUES
+(21, 100000000060, '124900', 1);
+
+-- Pedido 22 (3 unidades)
+INSERT INTO pedi_unid (pedido, unidad, precio, cantidad) VALUES
+(22, 100000000065, '149900', 1),
+(22, 100000000070, '149900', 1),
+(22, 100000000075, '169900', 1);
+
+-- Pedido 23 (2 unidades) - Cancelado
+INSERT INTO pedi_unid (pedido, unidad, precio, cantidad) VALUES
+(23, 100000000080, '179900', 1),
+(23, 100000000085, '99900', 1);
+
+-- Pedido 24 (4 unidades)
+INSERT INTO pedi_unid (pedido, unidad, precio, cantidad) VALUES
+(24, 100000000090, '199900', 1),
+(24, 100000000095, '149900', 1),
+(24, 100000000100, '99900', 1),
+(24, 100000000105, '159900', 1);
+
+-- Pedido 25 (1 unidad) - Enviado
+INSERT INTO pedi_unid (pedido, unidad, precio, cantidad) VALUES
+(25, 100000000110, '149900', 1);
+
+-- Pedido 26 (2 unidades) - Proceso
+INSERT INTO pedi_unid (pedido, unidad, precio, cantidad) VALUES
+(26, 100000000115, '99900', 1),
+(26, 100000000120, '84900', 1);
+
+-- Pedido 27 (3 unidades)
+INSERT INTO pedi_unid (pedido, unidad, precio, cantidad) VALUES
+(27, 100000000125, '79900', 1),
+(27, 100000000130, '74900', 1),
+(27, 100000000135, '119900', 1);
+
+-- Pedido 28 (1 unidad) - Cancelado
+INSERT INTO pedi_unid (pedido, unidad, precio, cantidad) VALUES
+(28, 100000000140, '129900', 1);
+
+-- Pedido 29 (5 unidades)
+INSERT INTO pedi_unid (pedido, unidad, precio, cantidad) VALUES
+(29, 100000000145, '89900', 2),
+(29, 100000000150, '129900', 1),
+(29, 100000000155, '54900', 1),
+(29, 100000000160, '249900', 1);
+
+-- Pedido 30 (2 unidades) - Enviado
+INSERT INTO pedi_unid (pedido, unidad, precio, cantidad) VALUES
+(30, 100000000005, '129900', 1),
+(30, 100000000010, '199900', 1);
+
+-- Pedido 31 (1 unidad) - Proceso
+INSERT INTO pedi_unid (pedido, unidad, precio, cantidad) VALUES
+(31, 100000000015, '94900', 1);
+
+-- Pedido 32 (3 unidades)
+INSERT INTO pedi_unid (pedido, unidad, precio, cantidad) VALUES
+(32, 100000000020, '109900', 1),
+(32, 100000000025, '159900', 1),
+(32, 100000000030, '149900', 1);
+
+-- Pedido 33 (2 unidades) - Cancelado
+INSERT INTO pedi_unid (pedido, unidad, precio, cantidad) VALUES
+(33, 100000000035, '189900', 1),
+(33, 100000000040, '139900', 1);
+
+-- Pedido 34 (4 unidades)
+INSERT INTO pedi_unid (pedido, unidad, precio, cantidad) VALUES
+(34, 100000000045, '229900', 1),
+(34, 100000000050, '109900', 1),
+(34, 100000000055, '74900', 1),
+(34, 100000000060, '124900', 1);
+
+-- Pedido 35 (1 unidad) - Enviado
+INSERT INTO pedi_unid (pedido, unidad, precio, cantidad) VALUES
+(35, 100000000065, '149900', 1);
+
+-- Pedido 36 (2 unidades) - Proceso
+INSERT INTO pedi_unid (pedido, unidad, precio, cantidad) VALUES
+(36, 100000000070, '149900', 1),
+(36, 100000000075, '169900', 1);
+
+-- Pedido 37 (3 unidades)
+INSERT INTO pedi_unid (pedido, unidad, precio, cantidad) VALUES
+(37, 100000000080, '179900', 1),
+(37, 100000000085, '99900', 1),
+(37, 100000000090, '199900', 1);
+
+-- Pedido 38 (1 unidad) - Cancelado
+INSERT INTO pedi_unid (pedido, unidad, precio, cantidad) VALUES
+(38, 100000000095, '149900', 1);
+
+-- Pedido 39 (5 unidades)
+INSERT INTO pedi_unid (pedido, unidad, precio, cantidad) VALUES
+(39, 100000000100, '99900', 1),
+(39, 100000000105, '159900', 1),
+(39, 100000000110, '149900', 1),
+(39, 100000000115, '99900', 1),
+(39, 100000000120, '84900', 1);
+
+-- Pedido 40 (2 unidades) - Enviado
+INSERT INTO pedi_unid (pedido, unidad, precio, cantidad) VALUES
+(40, 100000000125, '79900', 1),
+(40, 100000000130, '74900', 1);
+
+-- Pedido 41 (1 unidad) - Proceso
+INSERT INTO pedi_unid (pedido, unidad, precio, cantidad) VALUES
+(41, 100000000135, '119900', 1);
+
+-- Pedido 42 (3 unidades)
+INSERT INTO pedi_unid (pedido, unidad, precio, cantidad) VALUES
+(42, 100000000140, '129900', 1),
+(42, 100000000145, '89900', 1),
+(42, 100000000150, '129900', 1);
+
+-- Pedido 43 (2 unidades) - Cancelado
+INSERT INTO pedi_unid (pedido, unidad, precio, cantidad) VALUES
+(43, 100000000155, '54900', 1),
+(43, 100000000160, '249900', 1);
+
+-- Pedido 44 (4 unidades)
+INSERT INTO pedi_unid (pedido, unidad, precio, cantidad) VALUES
+(44, 100000000005, '129900', 1),
+(44, 100000000010, '199900', 1),
+(44, 100000000015, '94900', 1),
+(44, 100000000020, '109900', 1);
+
+-- Pedido 45 (1 unidad) - Enviado
+INSERT INTO pedi_unid (pedido, unidad, precio, cantidad) VALUES
+(45, 100000000025, '159900', 1);
+
+-- Pedido 46 (2 unidades) - Proceso
+INSERT INTO pedi_unid (pedido, unidad, precio, cantidad) VALUES
+(46, 100000000030, '149900', 1),
+(46, 100000000035, '189900', 1);
+
+-- Pedido 47 (3 unidades)
+INSERT INTO pedi_unid (pedido, unidad, precio, cantidad) VALUES
+(47, 100000000040, '139900', 1),
+(47, 100000000045, '229900', 1),
+(47, 100000000050, '109900', 1);
+
+-- Pedido 48 (1 unidad) - Cancelado
+INSERT INTO pedi_unid (pedido, unidad, precio, cantidad) VALUES
+(48, 100000000055, '74900', 1);
+
+-- Pedido 49 (5 unidades)
+INSERT INTO pedi_unid (pedido, unidad, precio, cantidad) VALUES
+(49, 100000000060, '124900', 1),
+(49, 100000000065, '149900', 1),
+(49, 100000000070, '149900', 1),
+(49, 100000000075, '169900', 1),
+(49, 100000000080, '179900', 1);
+
+-- Pedido 50 (2 unidades) - Enviado
+INSERT INTO pedi_unid (pedido, unidad, precio, cantidad) VALUES
+(50, 100000000085, '99900', 1),
+(50, 100000000090, '199900', 1);
+

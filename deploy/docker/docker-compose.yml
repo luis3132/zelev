@@ -1,14 +1,21 @@
 services:
 
   front:
-    image: node:23
+    image: node:23-slim
     container_name: nextjs
     working_dir: /app
     volumes:
       - /home/luis/docker/software2/zelev/zelevFE:/app
+    environment:
+      - PNPM_HOME=/pnpm
+      - PATH=/pnpm:$PATH
     command: >
       /bin/bash -c "
-      npm i && npm run build && npm run start"
+        corepack enable &&
+        corepack prepare pnpm@latest --activate &&
+        pnpm i &&
+        pnpm run build &&
+        pnpm run start"
     ports:
       - "3000:3000"
     networks:

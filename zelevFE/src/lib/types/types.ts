@@ -134,7 +134,7 @@ export interface Pedido {
     idPedido: number;
     cliente: Usuario;
     empleado: Usuario;
-    fechaCreacion: Date;
+    fechaPedido: Date;
     estado: string;
     pediUnidList: PediUnid[];
 }
@@ -149,4 +149,13 @@ export interface PedidoCreate {
     precio: string;
     cantidad: number;
     usuario: string;
+}
+export interface PedidoGrafica {
+    idPedido: number;
+    empleado: Usuario;
+    ciudad: string;
+    departamento: string;
+    fechaPedido: Date;
+    estado: string;
+    pediUnidList: PediUnid[];
 }

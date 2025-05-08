@@ -3,15 +3,17 @@ import PedidoCard from "@/components/pedido/pedidoCard";
 import { Get } from "@/lib/scripts/fetch";
 import { Pedido } from "@/lib/types/types";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function Home() {
+    const { id } = useParams();
     const [pedidos, setPedidos] = useState<Pedido[]>([]);
     const [token, setToken] = useState<string>("");
 
     useEffect(() => {
         const fetchPedidos = async () => {
-            const { status, data } = await Get("/api/pedido/list/PROCESO", token);
+            const { status, data } = await Get(`/api/pedido/list/${id}`, token);
             if (status === 200) {
                 setPedidos(data);
             }
@@ -25,10 +27,10 @@ export default function Home() {
             }
         }
 
-        if (token) {
+        if (token && id) {
             fetchPedidos();
         }
-    }, [token]);
+    }, [token, id]);
 
     return (
         <>
@@ -36,16 +38,16 @@ export default function Home() {
                 <h1 className="text-6xl font-bold text-white mb-6 font-Quintessential">Pedidos</h1>
                 <aside className="w-full max-md:mx-2 md:w-1/2 flex flex-col justify-center items-center p-3 mb-5">
                     <div className="bg-black shadow-lg rounded-lg p-6 flex w-full gap-6">
-                        <Link href="/admin/pedidos" className="flex justify-center items-center rounded-lg p-2 bg-gray-600 w-full">
+                        <Link href="/admin/pedidos" className="flex justify-center items-center rounded-lg p-2 bg-gray-700 w-full">
                             <p>Proceso</p>
                         </Link>
-                        <Link href="/admin/pedidos/ENVIADO" className="flex justify-center items-center rounded-lg p-2 bg-gray-700 w-full">
+                        <Link href="/admin/pedidos/ENVIADO" className={`flex justify-center items-center rounded-lg p-2 ${id === "ENVIADO" ? "bg-gray-600" : "bg-gray-700"} w-full`}>
                             <p>Enviado</p>
                         </Link>
-                        <Link href="/admin/pedidos/ENTREGADO" className="flex justify-center items-center rounded-lg p-2 bg-gray-700 w-full">
+                        <Link href="/admin/pedidos/ENTREGADO" className={`flex justify-center items-center rounded-lg p-2 ${id === "ENTREGADO" ? "bg-gray-600" : "bg-gray-700"} w-full`}>
                             <p>Entregado</p>
                         </Link>
-                        <Link href="/admin/pedidos/CANCELADO" className="flex justify-center items-center rounded-lg p-2 bg-gray-700 w-full">
+                        <Link href="/admin/pedidos/CANCELADO" className={`flex justify-center items-center rounded-lg p-2 ${id === "CANCELADO" ? "bg-gray-600" : "bg-gray-700"} w-full`}>
                             <p>Cancelado</p>
                         </Link>
                     </div>
