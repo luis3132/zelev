@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-proxy-manager
+  namespace: zelev-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-proxy-manager
+  template:
+    metadata:
+      labels:
+        app: nginx-proxy-manager
+    spec:
+      containers:
+      - name: nginx-proxy-manager
+        image: jc21/nginx-proxy-manager:latest
+        ports:
+        - containerPort: 80
+          name: http
+        - containerPort: 81
+          name: admin
+        - containerPort: 443
+          name: https
+        - containerPort: 8443
+          name: https
+        env:
+        - name: DB_SQLITE_FILE
+          value: "/data/database.sqlite"
+        volumeMounts:
+        - name: npm-data
+          mountPath: /data
+      volumes:
+      - name: npm-data
+        persistentVolumeClaim:
+          claimName: npm-pvc
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: npm-pvc
+  namespace: zelev-app
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-proxy-manager
+  namespace: zelev-app
+spec:
+  type: LoadBalancer  # Expone NPM al exterior
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80
+    protocol: TCP
+  - name: https
+    port: 443
+    targetPort: 443
+    protocol: TCP
+  - name: https
+    port: 8443
+    targetPort: 8443
+    protocol: TCP
+  - name: admin
+    port: 81
+    targetPort: 81
+    protocol: TCP
+  selector:
+    app: nginx-proxy-manager

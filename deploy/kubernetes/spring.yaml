@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: springboot
+  namespace: zelev-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: springboot
+  template:
+    metadata:
+      labels:
+        app: springboot
+    spec:
+      containers:
+      - name: springboot
+        image: gradle:8.11.1-jdk21
+        workingDir: /app
+        command: ["/bin/bash", "-c", "./gradlew build && java -jar build/libs/*.jar"]
+        env:
+        - name: SPRING_DATASOURCE_URL
+          value: "jdbc:mysql://mysql:3306/zelev?useSSL=false"
+        - name: SPRING_DATASOURCE_USERNAME
+          value: "root"
+        - name: SPRING_DATASOURCE_PASSWORD
+          value: "1234"
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: app-code
+          mountPath: /app
+        - name: gradle-cache
+          mountPath: /home/gradle/.gradle
+      volumes:
+      - name: app-code
+        hostPath:
+          path: /home/luis/docker/software2/zelev/zelevBE
+          type: Directory
+      - name: gradle-cache
+        emptyDir: {}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: springboot
+  namespace: zelev-app
+spec:
+  type: ClusterIP  # Solo accesible dentro del cluster pues tenemos NGINX proxy manager para acceder desde fuera
+  selector:
+    app: springboot
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080

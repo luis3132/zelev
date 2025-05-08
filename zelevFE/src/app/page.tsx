@@ -11,6 +11,8 @@ import useReload from "@/lib/hooks/reload";
 import { Get } from "@/lib/scripts/fetch";
 import { Articulo, Carrito, Categoria } from "@/lib/types/types";
 import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
 
 export default function Home() {
 
@@ -205,7 +207,14 @@ export default function Home() {
                 <AboutUs />
               </div>
               <div className="w-full md:max-w-[230px] overflow-hidden md:h-[50%]">
-                aqui va otra vaina
+                <div className="flex items-center justify-center h-full">
+                  <Link href="https://github.com/luis3132/zelev" target="_blank" rel="noopener noreferrer">
+                    <div className="flex flex-col items-center gap-2 w-full bg-white overflow-hidden rounded-2xl">
+                      <Image alt="github logo" src="/logo/github.png" height={200} width={200} />
+                      <span className="text-black hover:underline">Repositorio</span>
+                    </div>
+                  </Link>
+                </div>
               </div>
             </div>
           </div>

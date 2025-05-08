@@ -3,6 +3,7 @@ package com.zelev.zelevbe.persistence.entity.Pedido;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.zelev.zelevbe.constants.EstadoPedido;
 import com.zelev.zelevbe.persistence.entity.Usuario;
@@ -18,6 +19,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -48,6 +51,8 @@ public class Pedido {
     private Usuario empleado;
 
     @Column(name = "fecha_pedido")
+    @Temporal(TemporalType.TIMESTAMP)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private Date fechaPedido;
 
     @Enumerated(EnumType.STRING)
