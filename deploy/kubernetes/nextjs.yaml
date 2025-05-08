@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextjs
+  namespace: zelev-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nextjs
+  template:
+    metadata:
+      labels:
+        app: nextjs
+    spec:
+      containers:
+      - name: nextjs
+        image: node:23-slim
+        workingDir: /app
+        command: ["/bin/bash", "-c", "corepack enable && corepack prepare pnpm@latest --activate && pnpm i && pnpm run build && pnpm run start"]
+        env:
+        - name: PNPM_HOME
+          value: "/pnpm"
+        - name: PATH
+          value: "/pnpm:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+        ports:
+        - containerPort: 3000
+        volumeMounts:
+        - name: app-code
+          mountPath: /app
+      volumes:
+      - name: app-code
+        hostPath:
+          path: /home/luis/docker/software2/zelev/zelevFE
+          type: Directory
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nextjs
+  namespace: zelev-app
+spec:
+  type: ClusterIP  # Solo accesible dentro del cluster pues tenemos NGINX proxy manager para acceder desde fuera
+  selector:
+    app: nextjs
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
